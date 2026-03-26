@@ -1,0 +1,65 @@
+"ArthurRank1Convo2",
+                "ArthurRank1Convo3",
+                "ArthurRank1Convo4",
+            ],
+            
+            2: [
+                "ArthurRank2Convo1",
+                "ArthurRank2Convo2",
+                "ArthurRank2Convo3",
+                "ArthurRank2Convo4",
+                "ArthurRank2Convo5",
+                "ArthurRank2Convo6",
+            ],
+            
+            3: [
+                "ArthurRank3Convo1",
+                "ArthurRank3Convo2",
+                "ArthurRank3Convo3",
+                "ArthurRank3Convo4",
+                "ArthurRank3Convo5",
+                "ArthurRank3Convo6",
+            ],
+            
+            4: [
+                "ArthurRank4Convo1",
+                "ArthurRank4Convo2",
+                "ArthurRank4Convo3",
+                "ArthurRank4Convo4",
+                "ArthurRank4Convo5",
+                "ArthurRank4Convo6",
+            ],
+            
+            5: [
+                "ArthurRank5Convo1",
+                "ArthurRank5Convo2",
+                "ArthurRank5Convo3",
+                "ArthurRank5Convo4",
+                "ArthurRank5Convo5",
+                "ArthurRank5Convo6",
+            ],
+            
+            6: [
+                "ArthurRank6Convo1",
+                "ArthurRank6Convo2",
+                "ArthurRank6Convo3",
+                "ArthurRank6Convo4",
+                "ArthurRank6Convo5",
+                "ArthurRank6Convo6",
+                "ArthurRank6Convo7",
+                "ArthurRank6Convo8",
+                "ArthurRank6Convo9",
+                "ArthurRank6Convo10",
+                "ArthurRank6Convo11",
+
+
+
+
+            # ---- одноразові «врізки»
+            "special": {
+                "ArthurSoldier": "ArthurSoldier",   # прапор → label
+            },
+
+            # ---- fallback-балаканина ----
+            "small_talk": "ArthurSmallTalk",
+        },

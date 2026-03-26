@@ -1,0 +1,1154 @@
+{
+        "id": 546,
+        "type": "/EE/Types/Engine/StartDialogueNode",
+        "name": "ArthurRank1Convo1",
+        "choices": [
+            547,
+            548,
+            549
+        ]
+    },
+    {
+        "id": 547,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1839",
+        "choices": [
+            550
+        ]
+    },
+    {
+        "id": 548,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1840",
+        "choices": [
+            552
+        ]
+    },
+    {
+        "id": 549,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1841",
+        "choices": [
+            553
+        ]
+    },
+    {
+        "id": 550,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurSoldier",
+        "choices": [
+            555
+        ]
+    },
+    {
+        "id": 551,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1842",
+        "choices": [
+            558
+        ]
+    },
+    {
+        "id": 552,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFamily",
+        "choices": [
+            555
+        ]
+    },
+    {
+        "id": 553,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1843",
+        "choices": [
+            551,
+            554,
+            556
+        ]
+    },
+    {
+        "id": 554,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1844",
+        "choices": [
+            558
+        ]
+    },
+    {
+        "id": 555,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1845",
+        "choices": [
+            563,
+            562,
+            561
+        ]
+    },
+    {
+        "id": 556,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1846",
+        "choices": [
+            557
+        ]
+    },
+    {
+        "id": 557,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 558,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1847",
+        "choices": [
+            559
+        ]
+    },
+    {
+        "id": 559,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1848",
+        "choices": [
+            570
+        ]
+    },
+    {
+        "id": 560,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1849",
+        "choices": [
+            571,
+            572
+        ]
+    },
+    {
+        "id": 561,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_2165",
+        "choices": [
+            564
+        ]
+    },
+    {
+        "id": 562,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1850",
+        "choices": [
+            565
+        ]
+    },
+    {
+        "id": 563,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1851",
+        "choices": [
+            565
+        ]
+    },
+    {
+        "id": 564,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 565,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1852",
+        "choices": [
+            567,
+            566
+        ]
+    },
+    {
+        "id": 566,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1853",
+        "choices": [
+            568
+        ]
+    },
+    {
+        "id": 567,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1854",
+        "choices": [
+            568
+        ]
+    },
+    {
+        "id": 568,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1855",
+        "choices": [
+            569
+        ]
+    },
+    {
+        "id": 569,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1856",
+        "choices": [
+            576
+        ]
+    },
+    {
+        "id": 570,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            560
+        ],
+        "chemistry": 10
+    },
+    {
+        "id": 571,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1857",
+        "choices": [
+            575
+        ]
+    },
+    {
+        "id": 572,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1858",
+        "choices": [
+            573
+        ]
+    },
+    {
+        "id": 573,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1859",
+        "choices": [
+            574
+        ]
+    },
+    {
+        "id": 574,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1860",
+        "choices": [
+            584,
+            587,
+            588
+        ]
+    },
+    {
+        "id": 575,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1861",
+        "choices": [
+            584,
+            587,
+            588
+        ]
+    },
+    {
+        "id": 576,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1862",
+        "choices": [
+            577,
+            578
+        ]
+    },
+    {
+        "id": 577,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1863",
+        "choices": [
+            579
+        ]
+    },
+    {
+        "id": 578,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1864",
+        "choices": [
+            582
+        ]
+    },
+    {
+        "id": 579,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            580
+        ],
+        "chemistry": 20
+    },
+    {
+        "id": 580,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1865",
+        "choices": [
+            581
+        ]
+    },
+    {
+        "id": 581,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 582,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1866",
+        "choices": [
+            583
+        ]
+    },
+    {
+        "id": 583,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 584,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1867",
+        "choices": [
+            585
+        ]
+    },
+    {
+        "id": 585,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFavoriteColor",
+        "choices": [
+            586
+        ]
+    },
+    {
+        "id": 586,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1868",
+        "choices": [
+            593,
+            592,
+            595,
+            594
+        ]
+    },
+    {
+        "id": 587,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1869",
+        "choices": [
+            589
+        ]
+    },
+    {
+        "id": 588,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1870",
+        "choices": [
+            590
+        ]
+    },
+    {
+        "id": 589,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurMiddleName",
+        "choices": [
+            591
+        ]
+    },
+    {
+        "id": 590,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFirstPet",
+        "choices": [
+            2777
+        ]
+    },
+    {
+        "id": 591,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1871",
+        "choices": [
+            628,
+            629,
+            630,
+            627
+        ]
+    },
+    {
+        "id": 592,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1872",
+        "choices": [
+            596
+        ]
+    },
+    {
+        "id": 593,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1873",
+        "choices": [
+            597
+        ]
+    },
+    {
+        "id": 594,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1874",
+        "choices": [
+            598
+        ]
+    },
+    {
+        "id": 595,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1875",
+        "choices": [
+            601
+        ]
+    },
+    {
+        "id": 596,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1876",
+        "choices": [
+            602
+        ]
+    },
+    {
+        "id": 597,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1877",
+        "choices": [
+            618
+        ]
+    },
+    {
+        "id": 598,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1878",
+        "choices": [
+            618
+        ]
+    },
+    {
+        "id": 599,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1879",
+        "choices": [
+            600
+        ]
+    },
+    {
+        "id": 600,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFavoriteColorRed",
+        "choices": [
+            619,
+            620
+        ]
+    },
+    {
+        "id": 601,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            599
+        ],
+        "chemistry": 10
+    },
+    {
+        "id": 602,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1880",
+        "choices": [
+            603
+        ]
+    },
+    {
+        "id": 603,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1881",
+        "choices": [
+            605,
+            604
+        ]
+    },
+    {
+        "id": 604,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1882",
+        "choices": [
+            608
+        ]
+    },
+    {
+        "id": 605,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1883",
+        "choices": [
+            606
+        ]
+    },
+    {
+        "id": 606,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1884",
+        "choices": [
+            607
+        ]
+    },
+    {
+        "id": 607,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 608,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1885",
+        "choices": [
+            609
+        ]
+    },
+    {
+        "id": 609,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1886",
+        "choices": [
+            610,
+            611
+        ]
+    },
+    {
+        "id": 610,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1887",
+        "choices": [
+            615
+        ]
+    },
+    {
+        "id": 611,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1888",
+        "choices": [
+            612
+        ]
+    },
+    {
+        "id": 612,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1889",
+        "choices": [
+            613
+        ]
+    },
+    {
+        "id": 613,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 614,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            616
+        ],
+        "chemistry": 10
+    },
+    {
+        "id": 615,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFamily",
+        "choices": [
+            614
+        ]
+    },
+    {
+        "id": 616,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1890",
+        "choices": [
+            617
+        ]
+    },
+    {
+        "id": 617,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 618,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1891",
+        "choices": [
+            625
+        ]
+    },
+    {
+        "id": 619,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1892",
+        "choices": [
+            621
+        ]
+    },
+    {
+        "id": 620,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1893",
+        "choices": [
+            626
+        ]
+    },
+    {
+        "id": 621,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1894",
+        "choices": [
+            623
+        ]
+    },
+    {
+        "id": 622,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1895",
+        "choices": [
+            624
+        ]
+    },
+    {
+        "id": 623,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1896",
+        "choices": [
+            622
+        ]
+    },
+    {
+        "id": 624,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurSkana",
+        "choices": [
+            625
+        ]
+    },
+    {
+        "id": 625,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1897",
+        "choices": [
+            658,
+            657
+        ]
+    },
+    {
+        "id": 626,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1898",
+        "choices": [
+            659,
+            660
+        ]
+    },
+    {
+        "id": 627,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1899",
+        "choices": [
+            631
+        ]
+    },
+    {
+        "id": 628,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1900",
+        "choices": [
+            632
+        ]
+    },
+    {
+        "id": 629,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1901",
+        "choices": [
+            637
+        ]
+    },
+    {
+        "id": 630,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1902",
+        "choices": [
+            635
+        ]
+    },
+    {
+        "id": 631,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1903",
+        "choices": [
+            639
+        ]
+    },
+    {
+        "id": 632,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1904",
+        "choices": [
+            640
+        ]
+    },
+    {
+        "id": 633,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1905",
+        "choices": [
+            634
+        ]
+    },
+    {
+        "id": 634,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1906",
+        "choices": [
+            638
+        ]
+    },
+    {
+        "id": 635,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurMiddleNamePetersham",
+        "choices": [
+            636
+        ]
+    },
+    {
+        "id": 636,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1907",
+        "choices": [
+            647
+        ]
+    },
+    {
+        "id": 637,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            633
+        ],
+        "chemistry": 10
+    },
+    {
+        "id": 638,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurMiddleNameJames",
+        "choices": [
+            645,
+            646
+        ]
+    },
+    {
+        "id": 639,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1918",
+        "choices": [
+            640
+        ]
+    },
+    {
+        "id": 640,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1919",
+        "choices": [
+            641
+        ]
+    },
+    {
+        "id": 641,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1920",
+        "choices": [
+            643,
+            642
+        ]
+    },
+    {
+        "id": 642,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1921",
+        "choices": [
+            644
+        ]
+    },
+    {
+        "id": 643,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1922",
+        "choices": [
+            644
+        ]
+    },
+    {
+        "id": 644,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1923",
+        "choices": [
+            625
+        ]
+    },
+    {
+        "id": 645,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1908",
+        "choices": [
+            625
+        ]
+    },
+    {
+        "id": 646,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1909",
+        "choices": [
+            626
+        ]
+    },
+    {
+        "id": 647,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1910",
+        "choices": [
+            648,
+            649
+        ]
+    },
+    {
+        "id": 648,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1911",
+        "choices": [
+            650
+        ]
+    },
+    {
+        "id": 649,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1912",
+        "choices": [
+            650
+        ]
+    },
+    {
+        "id": 650,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1913",
+        "choices": [
+            651
+        ]
+    },
+    {
+        "id": 651,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1914",
+        "choices": [
+            652,
+            653
+        ]
+    },
+    {
+        "id": 652,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1915",
+        "choices": [
+            655
+        ]
+    },
+    {
+        "id": 653,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1916",
+        "choices": [
+            655
+        ]
+    },
+    {
+        "id": 654,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1917",
+        "choices": [
+            656
+        ]
+    },
+    {
+        "id": 655,
+        "type": "/EE/Types/Engine/ChemistryDialogueNode",
+        "choices": [
+            654
+        ],
+        "chemistry": 10
+    },
+    {
+        "id": 656,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 657,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1924",
+        "choices": [
+            663
+        ]
+    },
+    {
+        "id": 658,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1925",
+        "choices": [
+            667
+        ]
+    },
+    {
+        "id": 659,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1926",
+        "choices": [
+            666
+        ]
+    },
+    {
+        "id": 660,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1927",
+        "choices": [
+            661
+        ]
+    },
+    {
+        "id": 661,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1928",
+        "choices": [
+            662
+        ]
+    },
+    {
+        "id": 662,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 663,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1929",
+        "choices": [
+            664
+        ]
+    },
+    {
+        "id": 664,
+        "type": "/EE/Types/Engine/EndDialogueNode",
+        "choices": []
+    },
+    {
+        "id": 665,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1930",
+        "choices": [
+            675
+        ]
+    },
+    {
+        "id": 666,
+        "type": "/EE/Types/Engine/SetBooleanDialogueNode",
+        "name": "ArthurFamily",
+        "choices": [
+            667
+        ]
+    },
+    {
+        "id": 667,
+        "type": "/EE/Types/Engine/CheckBooleanDialogueNode",
+        "name": "ArthurFavoriteColor",
+        "choices": [],
+        "true_choices": [
+            670
+        ],
+        "false_choices": [
+            668
+        ]
+    },
+    {
+        "id": 668,
+        "type": "/EE/Types/Engine/CheckBooleanDialogueNode",
+        "name": "ArthurMiddleName",
+        "choices": [],
+        "true_choices": [
+            671
+        ],
+        "false_choices": [
+            669
+        ]
+    },
+    {
+        "id": 669,
+        "type": "/EE/Types/Engine/CheckBooleanDialogueNode",
+        "name": "ArthurFirstPet",
+        "choices": [],
+        "true_choices": [
+            672
+        ],
+        "false_choices": [
+            673
+        ]
+    },
+    {
+        "id": 670,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1931",
+        "choices": [
+            665,
+            674
+        ]
+    },
+    {
+        "id": 671,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1932",
+        "choices": [
+            665,
+            674
+        ]
+    },
+    {
+        "id": 672,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1933",
+        "choices": [
+            665,
+            674
+        ]
+    },
+    {
+        "id": 673,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1934",
+        "choices": [
+            665,
+            674
+        ]
+    },
+    {
+        "id": 674,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_1935",
+        "choices": [
+            676
+        ]
+    },
+    {
+        "id": 675,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1936",
+        "choices": [
+            677
+        ]
+    },
+    {
+        "id": 676,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_1937",
+        "choices": [
+            678
+        ]
+    },
+{
+        "id": 2020,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_3652",
+        "choices": [
+            2785
+        ]
+    },
+ {
+        "id": 2409,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_3653",
+        "choices": [
+            626
+        ]
+    },
+   {
+        "id": 2777,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3643",
+        "choices": [
+            2778
+        ]
+    },
+    {
+        "id": 2778,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3644",
+        "choices": [
+            2779
+        ]
+    },
+    {
+        "id": 2779,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3645",
+        "choices": [
+            2780
+        ]
+    },
+    {
+        "id": 2780,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3646",
+        "choices": [
+            2781,
+            2782
+        ]
+    },
+    {
+        "id": 2781,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_3647",
+        "choices": [
+            2783
+        ]
+    },
+    {
+        "id": 2782,
+        "type": "/EE/Types/Engine/PlayerChoiceDialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/Choice_ArthurRank1Convo1_3648",
+        "choices": [
+            2784
+        ]
+    },
+    {
+        "id": 2783,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3649",
+        "choices": [
+            625
+        ]
+    },
+    {
+        "id": 2784,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3650",
+        "choices": [
+            2020,
+            2409
+        ]
+    },
+    {
+        "id": 2785,
+        "type": "/EE/Types/Engine/DialogueNode",
+        "name": "/Lotus/Language/1999Texting/ArthurRomance/TxtArthur_ArthurRank1Convo1_3651",
+        "choices": [
+            625
+        ]
+    },
+
+

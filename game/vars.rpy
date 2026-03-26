@@ -1,0 +1,192 @@
+# game/vars.rpy
+# ═══════════════════════════════════════════════════
+# ГЛОБАЛЬНІ ЗМІННІ — Warframe: Drifter Loop
+# ═══════════════════════════════════════════════════
+
+# -------------- час і день --------------
+default day = 1              # 1 грудня
+default minutes = 480        # 08:00 (в хвилинах від 00:00)
+default hour = 8             # derived, для HUD сумісності
+
+# -------------- ресурси --------------
+default money = 0            # крони
+default hex_rep = 0          # репутація Гексу
+
+# -------------- прогресія --------------
+default syndicate_rank = 1   # ранг Гексу (1-6)
+
+# -------------- щоденні скиди --------------
+default talked_today = set()
+default gifted_today = set()
+default mission_chem_today = set()      # замість mission_rel_done
+default tags_used_today = {}            # {"Артур": {"heavy_lore"}, ...}
+
+# -------------- хімія (дружба) --------------
+default chemistry = {
+    "Артур":   0,
+    "Елеонор": 0,
+    "Летті":   0,
+    "Амір":    0,
+    "Аоі":     0,
+    "Квінсі":  0,
+}
+
+# -------------- стосунки & романс --------------
+default dating = None        # None або ім'я (ексклюзивний романс)
+
+# -------------- локація --------------
+default current_location = "mall"
+default current_mission_partner = None
+
+# -------------- діалогова система --------------
+default seen_dialogues = set()          # {"arthur_middle_name", ...}
+default stub_pools = {}                 # {"Артур": ["topic1", ...]}
+default daily_deck = {}                 # {"Артур": [entry1, ...]}
+
+# -------------- флаги --------------
+default flags = {}                      # динамічно заповнюється через set_flag()
+
+# -------------- інвентар --------------
+default inventory = {}                  # {"item_id": кількість}
+
+# -------------- обіцянки --------------
+default promises = []                   # [{who, where, from_min, to_min, day, label}, ...]
+
+# -------------- місії --------------
+default days_without_mission = 0
+
+# -------------- розпад стосунків --------------
+default days_since_interaction = {
+    "Артур":   0,
+    "Елеонор": 0,
+    "Летті":   0,
+    "Амір":    0,
+    "Аоі":     0,
+    "Квінсі":  0,
+}
+default decay_paused_until = 0          # день до якого decay на паузі
+
+# -------------- плітки --------------
+default gossip_heat = 0                 # при >= 10 тригерить awareness
+default active_gossip = []              # [{fact, knowers, day_created, spread_delay}, ...]
+
+# -------------- протухлі івенти --------------
+default expired_events = set()          # {"arthur_eleanor_rooftop_fight", ...}
+
+# -------------- шафа думок --------------
+default insights_log = []               # [{id, text, day, type}, ...]
+default raw_thoughts = []               # [{id, text, requires}, ...]
+
+# -------------- щоденник --------------
+default journal_entries = []            # [{day, text, type}, ...]
+
+# -------------- патерни взаємодії --------------
+default interaction_counts = {
+    "Артур":   0,
+    "Елеонор": 0,
+    "Летті":   0,
+    "Амір":    0,
+    "Аоі":     0,
+    "Квінсі":  0,
+}
+
+# -------------- persistent (між петлями) --------------
+default persistent.loop_count = 0
+default persistent.completed = False
+default persistent.all_friends = False
+default persistent.insights_log = []
+default persistent.previous_journal = []
+
+# -------------- deprecated (для сумісності) --------------
+default convo_idx = {}
+
+
+# ═══════════════════════════════════════════════════
+# СЛУЖБОВІ ФУНКЦІЇ — ЧАС
+# ═══════════════════════════════════════════════════
+
+init python:
+
+    def advance_time(mins):
+        """Просуває час на mins хвилин. Оновлює hour."""
+        store.minutes += mins
+        store.hour = store.minutes // 60
+
+    def has_time_for(mins):
+        """Завжди True — час не блокує дії, але після 24:00 порожньо."""
+        return True
+
+    def is_night():
+        """Після 24:00 (1440 хв) — ніч, персонажі зникли."""
+        return store.minutes >= 1440
+
+    def get_time_display():
+        """Форматує хвилини в 'ГГ:ХХ' для HUD."""
+        h = store.minutes // 60
+        m = store.minutes % 60
+        return "{:02d}:{:02d}".format(h, m)
+
+    def get_chem_rank(name):
+        """Повертає текстовий рівень хімії з персонажем."""
+        pts = store.chemistry.get(name, 0)
+        if pts >= 160: return "Кохання"
+        if pts >= 120: return "Друзі"
+        if pts >= 90:  return "Близько"
+        if pts >= 60:  return "Довіра"
+        if pts >= 35:  return "Подобається"
+        if pts >= 15:  return "Привітно"
+        return "Нейтрально"
+
+    def can_rank_up():
+        """Перевіряє чи можна підвищити ранг Гексу."""
+        thresholds = {2: 100, 3: 300, 4: 600, 5: 1000, 6: 1500}
+        nxt = store.syndicate_rank + 1
+        return nxt <= 6 and store.hex_rep >= thresholds.get(nxt, 99999)
+
+
+# ═══════════════════════════════════════════════════
+# ПЕРСОНАЖІ — hex-vn кольори
+# ═══════════════════════════════════════════════════
+
+define ar = Character("Артур",   namebox_style="namebox_arthur",   what_style="say_window", who_color="#a0c4ff")
+define el = Character("Елеонор", namebox_style="namebox_eleanor",  what_style="say_window", who_color="#d8b4fe")
+define le = Character("Летті",   namebox_style="namebox_lettie",   what_style="say_window", who_color="#a5f3fc")
+define am = Character("Амір",    namebox_style="namebox_amir",     what_style="say_window", who_color="#fef08a")
+define ao = Character("Аоі",     namebox_style="namebox_aoi",      what_style="say_window", who_color="#f0abfc")
+define qu = Character("Квінсі",  namebox_style="namebox_quincy",   what_style="say_window", who_color="#fca5a5")
+define mc = Character("Дрифтер", namebox_style="namebox_mc",       what_style="say_window", who_color="#facc15")
+
+
+# ═══════════════════════════════════════════════════
+# СТИЛІ NAMEBOX
+# ═══════════════════════════════════════════════════
+
+style namebox_npc:
+    background "#0d0d1a99"
+    padding (16, 8, 16, 8)
+
+style namebox_arthur is namebox_npc:
+    background "#1a2a5acc"
+
+style namebox_eleanor is namebox_npc:
+    background "#3a1a5acc"
+
+style namebox_lettie is namebox_npc:
+    background "#0a3a4acc"
+
+style namebox_amir is namebox_npc:
+    background "#4a3f0acc"
+
+style namebox_aoi is namebox_npc:
+    background "#4a1260cc"
+
+style namebox_quincy is namebox_npc:
+    background "#5a1a1acc"
+
+style namebox_mc is namebox_npc:
+    background "#a855f733"
+
+style say_window:
+    background "#09090fdd"
+    xmaximum 600
+    padding (18, 10, 18, 10)
