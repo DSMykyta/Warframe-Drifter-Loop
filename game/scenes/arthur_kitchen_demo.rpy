@@ -1,10 +1,9 @@
 # game/scenes/arthur_kitchen_demo.rpy
-# Демо-сцена: arthur_cooking рівень. Chemistry ~15, rank 1.
-# Потребує: arthur_about_team_done
-# 5 гілок в головному виборі, переплітаються з попередніми відповідями.
-# Гілка матері та гілка обладнання → CG.
-# Гілка команди, гілка допомоги → хімія без CG.
-# Гілка "піду" → негатив.
+# Chemistry ~15, rank 1. Потребує: arthur_about_team_done.
+# Про що: Артур дозволив тобі бути в його просторі. Не зіпсуй.
+# 5 кінцівок визначаються накопиченим warmth, не прямим вибором.
+# Деякі "ввічливі" відповіді дратують. Деякі "грубі" — працюють.
+# Обличчя Артура — єдина підказка для гравця.
 
 image cg_arthur_kitchen = "images/cg/arthur_kitchen_cg.png"
 
@@ -38,307 +37,204 @@ label arthur_kitchen_demo:
     scene bg_foodcourt with dissolve
     play music "audio/boiling.mp3" fadein 1.0 loop
     play audio "<to 30.0>audio/kitchen_ambient.mp3" fadein 1.0
-    pause 1.5
 
     show arthur_kitchen at char_center with dissolve
     $ store.talked_today.add("Артур")
-
-    # Внутрішній трекер — впливає на тон пізніших відповідей
-    $ _arthur_warmth = 0
+    $ _w = 0
 
     ar "Каша з сушеними грибами. Нічого особливого."
     $ advance_time(5)
 
-    # ═══ ПЕРШИЙ ВИБІР — перше враження ═══
+    # ═══ BEAT 1: Перша реакція ═══
     menu:
-        "Пахло на весь коридор.":
+        "О, дякую! Виглядає чудово.":
             $ advance_time(5)
-            mc "Пахло на весь коридор."
-
+            mc "О, дякую! Виглядає чудово."
             show arthur_kitchen aggressive
-            ar "...Перебільшуєш."
+            ar "Не дякуй. Не для тебе старався."
             $ advance_time(5)
-            $ _arthur_warmth += 1
+            # Подяка робить це особистим. Він цього не хоче.
+            $ _w -= 1
 
-        "Можна?":
+        "Виглядає... сумнівно.":
             $ advance_time(5)
-            show arthur_kitchen
-            pause 0.3
-            $ _arthur_warmth += 1
-
-        "Ти що, для всіх готуєш?":
-            $ advance_time(5)
-            mc "Ти що, для всіх готуєш?"
-
+            mc "Виглядає... сумнівно."
             show arthur_kitchen aggressive
-            ar "Що, отак просто? Вперся і питаєш?"
-            $ advance_time(5)
-
-            ar "Хто хоче — їсть. Хто не хоче — сухпайок в шафі."
-            $ advance_time(5)
-
-        "[[Просто сісти.]":
-            $ advance_time(5)
             pause 0.3
-            $ _arthur_warmth += 1
+            show arthur_kitchen smile
+            ar "Чесно. Ціную."
+            $ advance_time(5)
+            ar "Їж. Потім скаржся."
+            $ advance_time(5)
+            # Чесність. Він це поважає.
+            $ _w += 1
+
+        "[[Сісти. Взяти ложку.]":
+            $ advance_time(5)
+            pause 0.5
+            # Мовчки сів — не тиснеш, не лащишся. Правильно.
+            $ _w += 2
 
     show arthur_kitchen
-    ar "Я просто не люблю, коли люди йдуть на завдання голодними. Це впливає на концентрацію."
+    pause 0.3
+
+    ar "Я не люблю, коли люди йдуть на завдання голодними."
     $ advance_time(5)
 
-    # ═══ ДРУГИЙ ВИБІР — тон розмови ═══
-    menu:
-        "Тобто це тактичне рішення, а не турбота?":
-            $ advance_time(5)
-            mc "Тобто це тактичне рішення, а не турбота?"
+    ar "Впливає на концентрацію."
+    $ advance_time(5)
 
+    # ═══ BEAT 2: Тон розмови ═══
+    menu:
+        "Ти турбуєшся за нас.":
+            $ advance_time(5)
+            mc "Ти турбуєшся за нас."
+            show arthur_kitchen aggressive
+            ar "Я турбуюся за результат місій."
+            $ advance_time(5)
+            # Назвав це турботою вголос — він заперечує.
+            $ _w -= 1
+
+        "Тактика.":
+            $ advance_time(5)
+            mc "Тактика."
+            show arthur_kitchen
             ar "Можеш називати як хочеш."
             $ advance_time(5)
+            $ _w += 1
 
-        "Дякую.":
+        "[[Їсти мовчки.]":
             $ advance_time(5)
-            mc "Дякую."
-
-            show arthur_kitchen aggressive
-            ar "Не дякуй. Їж."
-            $ advance_time(5)
-            $ _arthur_warmth += 1
-
-        "Летті казала, що ти для всіх готуєш.":
-            $ advance_time(5)
-            mc "Летті казала, що ти для всіх готуєш."
-
-            show arthur_kitchen aggressive
-            ar "...Хто розповів? Летті, мабуть."
-            $ advance_time(5)
-
+            pause 0.8
+            show arthur_kitchen tired
+            pause 0.3
             show arthur_kitchen
-            ar "Так, готую. Коли є час і продукти."
-            $ advance_time(5)
+            $ _w += 2
 
-            ar "Це... заспокоює."
-            $ advance_time(5)
-            $ _arthur_warmth += 2
-
-    # ═══ ГОЛОВНИЙ ВИБІР — 5 гілок ═══
-    menu:
-
-        # ── ГІЛКА 1: Матір (глибока, CG) ──
-        "Звідки ти взагалі навчився готувати?":
-            $ advance_time(5)
-            mc "Звідки ти взагалі навчився готувати?"
-
-            show arthur_kitchen aggressive
-            ar "Лізти в мою особисту історію — не найліпший спосіб це зробити."
-            $ advance_time(5)
-
-            menu:
-                "Просто хочу пізнати тебе більше.":
-                    $ advance_time(5)
-                    mc "Просто хочу пізнати тебе більше."
-
-                    show arthur_kitchen
-                    ar "..."
-                    $ advance_time(5)
-
-                    # Якщо був теплий до цього — відкривається легше
-                    if _arthur_warmth >= 2:
-                        show arthur_kitchen tired
-                        ar "Мати вчила. Давно. Ще до того, як все змінилося."
-                        $ advance_time(5)
-                    else:
-                        show arthur_kitchen tired
-                        ar "...Мати вчила."
-                        $ advance_time(5)
-                        pause 0.5
-                        ar "Давно."
-                        $ advance_time(5)
-
-                    ar "Вона казала — хто вміє готувати, той ніколи не буде самотнім."
-                    $ advance_time(5)
-                    $ set_flag("arthur_mentioned_mother")
-                    $ chemistry["Артур"] += 3
-
-                    show arthur_kitchen
-                    $ add_insight("arthur_mother_taught", "Мати Артура вчила його готувати. «Хто вміє готувати — ніколи не буде самотнім.»")
-
-                    scene cg_arthur_kitchen with dissolve
-                    pause 3.0
-                    $ persistent.cg_unlocked.add("arthur_kitchen_cg")
-
-                    scene bg_foodcourt with dissolve
-                    show arthur_kitchen at char_center
-
-                "Вибач. Не зважай.":
-                    $ advance_time(5)
-                    mc "Вибач. Не зважай."
-
-                    show arthur_kitchen
-                    ar "Та ні, усе норм."
-                    $ advance_time(5)
-
-                    ar "Спершу треба придбати кілька келихів міцного. Потім особисті питання."
-                    $ advance_time(5)
-                    $ chemistry["Артур"] += 1
-                    $ set_flag("arthur_drinks_first")
-
-                "[[Не тиснути.]":
-                    $ advance_time(5)
-                    show arthur_kitchen
-                    $ chemistry["Артур"] += 1
-
-        # ── ГІЛКА 2: Обладнання (легша, CG) ──
-        "А що з кухонним обладнанням тут?":
-            $ advance_time(5)
-            mc "А що з кухонним обладнанням тут?"
-
-            ar "Жахливе."
-            $ advance_time(5)
-
-            show arthur_kitchen smile
-            ar "Але я знайшов робочий тостер на минулому рейді. Це було... приємно."
-            $ advance_time(5)
-
-            show arthur_kitchen
-            ar "Дрібниці тримають на плаву. Тостер, гострий ніж, чиста сковорідка."
-            $ advance_time(5)
-            $ chemistry["Артур"] += 2
-
-            if _arthur_warmth >= 2:
-                ar "Якщо побачиш щось на рейді — тягни. Я знайду застосування."
-                $ advance_time(5)
-                $ set_flag("arthur_wants_kitchen_gear")
-
-            scene cg_arthur_kitchen with dissolve
-            pause 3.0
-            $ persistent.cg_unlocked.add("arthur_kitchen_cg")
-
-            scene bg_foodcourt with dissolve
-            show arthur_kitchen at char_center
-
-        # ── ГІЛКА 3: Команда (середня, без CG) ──
-        "Хто ще тут їсть?":
-            $ advance_time(5)
-            mc "Хто ще тут їсть?"
-
-            ar "Амір приходить перший. Завжди."
-            $ advance_time(5)
-
-            show arthur_kitchen smile
-            ar "Потім дивується що каша не піца."
-            $ advance_time(5)
-
-            show arthur_kitchen
-            ar "Аоі бере з собою. Летті каже що отруюю. Квінсі не приходить."
-            $ advance_time(5)
-
-            menu:
-                "А Елеонор?":
-                    $ advance_time(5)
-                    mc "А Елеонор?"
-
-                    show arthur_kitchen tired
-                    ar "..."
-                    $ advance_time(5)
-
-                    ar "Елеонор їсть окремо."
-                    $ advance_time(5)
-                    $ set_flag("arthur_eleanor_eats_alone")
-                    $ chemistry["Артур"] += 2
-
-                "Квінсі — його проблеми.":
-                    $ advance_time(5)
-                    mc "Квінсі — його проблеми."
-
-                    show arthur_kitchen aggressive
-                    ar "Мої проблеми. Я відповідаю за кожного."
-                    $ advance_time(5)
-                    $ chemistry["Артур"] += 1
-
-                "[[Не коментувати.]":
-                    $ advance_time(5)
-                    $ chemistry["Артур"] += 1
-
-        # ── ГІЛКА 4: Допомогти (взаємодія, без CG) ──
-        "Можу допомогти? Помити, порізати, що треба.":
-            $ advance_time(5)
-            mc "Можу допомогти? Помити, порізати, що треба."
-
-            show arthur_kitchen very_surprised
-            ar "..."
-            $ advance_time(5)
-
-            if _arthur_warmth >= 2:
-                show arthur_kitchen
-                ar "Ніж на стійці. Гриби дрібно."
-                $ advance_time(5)
-                $ chemistry["Артур"] += 3
-                $ set_flag("arthur_let_help_cook")
-                $ add_insight("arthur_shared_kitchen", "Артур пустив на свою кухню. Це більше ніж здається.")
-            else:
-                show arthur_kitchen aggressive
-                ar "Моя кухня. Моя відповідальність."
-                $ advance_time(5)
-
-                ar "Сядь. Їж."
-                $ advance_time(5)
-                $ chemistry["Артур"] += 1
-
-        # ── ГІЛКА 5: Піти (негатив) ──
-        "Нічого, я піду.":
-            $ advance_time(5)
-            mc "Нічого, я піду."
-
-            show arthur_kitchen aggressive
-            ar "Яка втрата."
-            $ advance_time(5)
-            $ chemistry["Артур"] -= 1
-
-            # Коротка кінцівка — без чайника, без фіналу
-            $ store.seen_dialogues.add("arthur_cooking")
-            $ set_flag("arthur_cooking_done")
-            $ set_flag("arthur_cooking_rejected")
-            $ add_journal_entry("Артур готував. Я пішов.", "conversation")
-
-            hide arthur_kitchen with dissolve
-            stop music fadeout 1.0
-            stop audio fadeout 1.0
-            return
-
-    # ═══ ЧАЙНИК — спільний для гілок 1-4 ═══
-    play sound "audio/kettle_whistle.mp3"
-    show arthur_kitchen surprised
-    pause 0.3
-    show arthur_kitchen angry
-    ar "Заради Сола—"
+    # ═══ BEAT 3: Артур на мить знімає маску ═══
+    show arthur_kitchen tired
+    pause 0.5
+    ar "..."
     $ advance_time(5)
 
-    hide arthur_kitchen with dissolve
-    pause 1.0
-    stop sound fadeout 0.3
-
-    show arthur_kitchen at char_center with dissolve
-
-    show arthur_kitchen
-    ar "Це все що тебе цікавило?"
-    $ advance_time(5)
-
+    # Він дивиться на свої руки. Мить тиші. Що ти робиш?
     menu:
-        "Поки що так.":
+        "Все нормально?":
             $ advance_time(5)
-            ar "Зрозумів."
+            mc "Все нормально?"
+            show arthur_kitchen aggressive
+            ar "Нормально."
             $ advance_time(5)
+            # Прямий виклик. Він закривається.
+            $ _w -= 1
 
-        "[[Кивнути.]":
+        "Хто тебе навчив?":
             $ advance_time(5)
+            mc "Хто тебе навчив?"
+            show arthur_kitchen aggressive
+            ar "Ти думаєш, що я достатньо тебе знаю, щоб ділитися таким?"
+            $ advance_time(5)
+            # Занадто рано. Занадто прямо.
+            $ _w -= 2
+
+        "Каша непогана.":
+            $ advance_time(5)
+            mc "Каша непогана."
+            show arthur_kitchen
+            ar "...Перебільшуєш."
+            $ advance_time(5)
+            # Повернув до їжі — безпечна тема. Не тиснув.
+            $ _w += 1
+
+        "[[Чекати.]":
+            $ advance_time(5)
+            pause 1.0
+            show arthur_kitchen
+            $ _w += 2
+
+    # ═══ РОЗВ'ЯЗКА: залежить від _w ═══
+
+    if _w >= 5:
+        # ── КІНЦІВКА 1: Мати (найглибша, CG) ──
+        show arthur_kitchen tired
+        ar "Мати вчила."
+        $ advance_time(5)
+
+        pause 0.3
+
+        ar "Давно. Ще до того, як все змінилося."
+        $ advance_time(5)
+
+        ar "Казала — хто вміє готувати, той ніколи не буде самотнім."
+        $ advance_time(5)
+
+        show arthur_kitchen
+        pause 0.5
+
+        $ set_flag("arthur_mentioned_mother")
+        $ chemistry["Артур"] += 5
+        $ add_insight("arthur_mother_taught", "Мати Артура вчила його готувати. «Хто вміє готувати — ніколи не буде самотнім.»")
+
+        scene cg_arthur_kitchen with dissolve
+        pause 4.0
+        $ persistent.cg_unlocked.add("arthur_kitchen_cg")
+
+    elif _w >= 3:
+        # ── КІНЦІВКА 2: Тостер (тепла, CG) ──
+        show arthur_kitchen smile
+        ar "Знайшов робочий тостер на минулому рейді."
+        $ advance_time(5)
+
+        show arthur_kitchen
+        ar "Це було... приємно."
+        $ advance_time(5)
+
+        ar "Дрібниці тримають на плаву. Тостер, гострий ніж, чиста сковорідка."
+        $ advance_time(5)
+
+        $ chemistry["Артур"] += 3
+        $ set_flag("arthur_wants_kitchen_gear")
+
+        scene cg_arthur_kitchen with dissolve
+        pause 4.0
+        $ persistent.cg_unlocked.add("arthur_kitchen_cg")
+
+    elif _w >= 1:
+        # ── КІНЦІВКА 3: Нейтральна ──
+        show arthur_kitchen
+        ar "Допомій тарілку, якщо не важко."
+        $ advance_time(5)
+
+        $ chemistry["Артур"] += 1
+
+    elif _w >= -1:
+        # ── КІНЦІВКА 4: Холодна ──
+        show arthur_kitchen aggressive
+        ar "Це все що тебе цікавило?"
+        $ advance_time(5)
+
+        ar "Зрозумів."
+        $ advance_time(5)
+
+    else:
+        # ── КІНЦІВКА 5: Стіна ──
+        show arthur_kitchen aggressive
+        ar "Гадаю, тут є над чим попрацювати."
+        $ advance_time(5)
+
+        ar "Не тобі. Мені."
+        $ advance_time(5)
+        $ chemistry["Артур"] -= 2
 
     # ═══ ЗАКРИТТЯ ═══
     $ store.seen_dialogues.add("arthur_cooking")
     $ set_flag("arthur_cooking_done")
     $ add_insight("arthur_cooks_for_team", "Артур готує для загону. Каже — тактика, не турбота.")
-    $ add_journal_entry("Артур готував кашу з грибами. Каже — для концентрації.", "conversation")
+    $ add_journal_entry("Артур готував кашу з грибами.", "conversation")
 
-    hide arthur_kitchen with dissolve
+    if _w < 3:
+        hide arthur_kitchen with dissolve
+
     stop music fadeout 1.0
     stop audio fadeout 1.0
 
