@@ -6,8 +6,16 @@ define config.screen_height = 1080
 
 # === ФОНИ ===
 image bg mall = "backgrounds/Hollvania_Central_Mall.webp"
-image bg_mall_foodcourt = "backgrounds/Hollvania_Central_Mall.webp"  # TODO: окремий фон футкорту
-image bg_backroom = "backgrounds/Hollvania_Central_Mall.webp"        # TODO: окремий фон бекруму
+image bg_arcade = "backgrounds/bg_arcade.png"
+image bg_backroom = "backgrounds/bg_backroom.png"
+image bg_bar = "backgrounds/bg_bar.jpg"
+image bg_comp_club = "backgrounds/bg_comp_club.png"
+image bg_foodcourt = "backgrounds/bg_foodcourt.png"
+image bg_furniture = "backgrounds/bg_furniture.png"
+image bg_info_desk = "backgrounds/bg_info_desk.png"
+image bg_medbay = "backgrounds/bg_medbay.png"
+image bg_music_shop = "backgrounds/bg_music_shop.png"
+image bg_range = "backgrounds/bg_range.png"
 
 # === ПІДСВІЧУВАННЯ: змінна хто говорить ===
 default _speaking_char = None
