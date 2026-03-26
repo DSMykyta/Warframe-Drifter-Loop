@@ -17,7 +17,7 @@ init python:
     })
 
 label lettie_why_medic:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Ти коли-небудь думав, чому я стала медиком?"

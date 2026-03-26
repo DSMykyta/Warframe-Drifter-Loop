@@ -129,12 +129,13 @@ init -4 python:
     # condition = lambda що повертає True/False
 
     LOCATION_TRIGGERS = [
-        # День 1: всі в молі знайомляться
+        # День 1: всі в молі ТІЛЬКИ до кінця інтро (допит на футкорті)
+        # Після інтро — розходяться по HOME_LOCATIONS
         {
             "id": "day_1_all_mall",
             "chars": ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"],
             "location": "mall",
-            "condition": lambda: store.day == 1,
+            "condition": lambda: store.day == 1 and not store.flags.get("intro_done"),
         },
 
         # Вечірній збір у барі (після 20:00, якщо є тригер)

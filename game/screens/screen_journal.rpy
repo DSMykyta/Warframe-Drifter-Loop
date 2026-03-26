@@ -29,6 +29,9 @@ screen journal():
 
                 # Від найновіших до найстаріших
                 for _entry in reversed(journal_entries):
+                    $ _j_day = _entry.get("day", "?")
+                    $ _j_text = _entry.get("text", "")
+                    $ _j_type = _entry.get("type", "note")
                     frame:
                         background "#a855f710"
                         padding (20, 14, 20, 14)
@@ -38,18 +41,17 @@ screen journal():
                             spacing 6
                             hbox:
                                 spacing 12
-                                text "День [_entry[day]]" size 14 color "#facc15" bold True
-                                $ _entry_type = _entry.get("type", "note")
-                                if _entry_type == "conversation":
+                                text "День [_j_day]" size 14 color "#facc15" bold True
+                                if _j_type == "conversation":
                                     text "розмова" size 12 color "#d8b4fe"
-                                elif _entry_type == "mission":
+                                elif _j_type == "mission":
                                     text "місія" size 12 color "#fca5a5"
-                                elif _entry_type == "promise":
+                                elif _j_type == "promise":
                                     text "обіцянка" size 12 color "#a5f3fc"
-                                elif _entry_type == "insight":
+                                elif _j_type == "insight":
                                     text "інсайт" size 12 color "#f0abfc"
 
-                            text "[_entry[text]]" size 16 color "#ffffffcc"
+                            text "[_j_text]" size 16 color "#ffffffcc"
     else:
         text "Поки порожньо." size 18 color "#ffffff30" align (0.5, 0.5)
 

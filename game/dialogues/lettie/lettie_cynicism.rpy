@@ -15,7 +15,7 @@ init python:
     })
 
 label lettie_cynicism:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Знаєш, що найсмішніше в цьому торговому центрі? Він досі виглядає так, ніби чекає на покупців."

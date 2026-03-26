@@ -18,7 +18,7 @@ init python:
     })
 
 label lettie_breakdown:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Сядь. Будь ласка."

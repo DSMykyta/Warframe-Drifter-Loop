@@ -14,7 +14,7 @@ init python:
     })
 
 label lettie_intro:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Хей, я Летті. Я ловлю настрій місця."

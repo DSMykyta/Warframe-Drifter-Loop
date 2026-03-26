@@ -15,7 +15,7 @@ init python:
     })
 
 label lettie_rats:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Тихіше. Канела тільки заснула."

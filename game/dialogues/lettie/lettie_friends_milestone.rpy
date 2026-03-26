@@ -17,7 +17,7 @@ init python:
     })
 
 label lettie_friends_milestone:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Заходь. Тільки тихо. І закрий двері."

@@ -148,12 +148,12 @@ init python:
 # ПЕРСОНАЖІ — hex-vn кольори
 # ═══════════════════════════════════════════════════
 
-define ar = Character("Артур",   namebox_style="namebox_arthur",   what_style="say_window", who_color="#a0c4ff")
-define el = Character("Елеонор", namebox_style="namebox_eleanor",  what_style="say_window", who_color="#d8b4fe")
-define le = Character("Летті",   namebox_style="namebox_lettie",   what_style="say_window", who_color="#a5f3fc")
-define am = Character("Амір",    namebox_style="namebox_amir",     what_style="say_window", who_color="#fef08a")
-define ao = Character("Аоі",     namebox_style="namebox_aoi",      what_style="say_window", who_color="#f0abfc")
-define qu = Character("Квінсі",  namebox_style="namebox_quincy",   what_style="say_window", who_color="#fca5a5")
+define ar = Character("Артур",   namebox_style="namebox_arthur",   what_style="say_window", who_color="#a0c4ff", image="arthur",  callback=speaker_callback("arthur"))
+define el = Character("Елеонор", namebox_style="namebox_eleanor",  what_style="say_window", who_color="#d8b4fe", image="eleanor", callback=speaker_callback("eleanor"))
+define le = Character("Летті",   namebox_style="namebox_lettie",   what_style="say_window", who_color="#a5f3fc", image="lettie",  callback=speaker_callback("lettie"))
+define am = Character("Амір",    namebox_style="namebox_amir",     what_style="say_window", who_color="#fef08a", image="amir",    callback=speaker_callback("amir"))
+define ao = Character("Аоі",     namebox_style="namebox_aoi",      what_style="say_window", who_color="#f0abfc", image="aoi",     callback=speaker_callback("aoi"))
+define qu = Character("Квінсі",  namebox_style="namebox_quincy",   what_style="say_window", who_color="#fca5a5", image="quince",  callback=speaker_callback("quince"))
 define mc = Character("Дрифтер", namebox_style="namebox_mc",       what_style="say_window", who_color="#facc15")
 
 

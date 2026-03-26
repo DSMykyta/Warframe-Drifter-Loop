@@ -58,7 +58,7 @@ init python:
                 if other_partners:
                     mission["partner2"] = random.choice(other_partners)
                     mission["partner_count"] = 2
-                    mission["name"] = mission["name"] + " [ПАРНА]"
+                    mission["name"] = mission["name"] + " [[ПАРНА]"
 
             store.missions.append(mission)
 

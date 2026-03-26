@@ -1,4 +1,4 @@
-# game/screen_insights.rpy
+# game/screen_thought_cabinet.rpy
 # ═══════════════════════════════════════════════════
 # ШАФА ДУМОК (Thought Cabinet)
 # ═══════════════════════════════════════════════════
@@ -31,6 +31,8 @@ screen thought_cabinet():
                 text "НЕОБДУМАНІ ЗВ'ЯЗКИ" size 16 color "#facc15" bold True
 
                 for _rt in raw_thoughts:
+                    $ _rt_text = _rt.get("text", "")
+                    $ _rt_id = _rt.get("id", "")
                     frame:
                         background "#facc1515"
                         padding (20, 14, 20, 14)
@@ -41,13 +43,13 @@ screen thought_cabinet():
 
                             vbox:
                                 xmaximum 600
-                                text "[_rt[text]]" size 16 color "#facc15cc"
+                                text "[_rt_text]" size 16 color "#facc15cc"
                                 text "Потребує 30 хв осмислення" size 12 color "#ffffff40"
 
                             button:
                                 style "hex_btn_accent"
                                 yalign 0.5
-                                action [Function(contemplate, _rt["id"]), Return()]
+                                action [Function(contemplate, _rt_id), Return()]
                                 text "Обдумати" size 14 color "#facc15"
 
                 null height 10
@@ -56,11 +58,31 @@ screen thought_cabinet():
             if insights_log:
                 text "ВІДОМІ ФАКТИ" size 16 color "#d8b4fe" bold True
 
-                # Згрупувати по персонажах (за першим словом id)
-                for _char_name in ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"]:
-                    # Знайти факти пов'язані з цим персонажем
-                    $ _char_key = _char_name.lower()
-                    $ _char_facts = [i for i in insights_log if i["type"] == "fact" and _char_key in i["id"].lower()]
+                # Загальні факти (не прив'язані до персонажа)
+                python:
+                    _char_keys = {"arthur", "eleanor", "lettie", "amir", "aoi", "quincy"}
+                    _general_facts = [i for i in insights_log if i["type"] == "fact" and not any(k in i["id"] for k in _char_keys)]
+
+                if _general_facts:
+                    frame:
+                        background "#a855f708"
+                        padding (16, 10, 16, 10)
+                        xfill True
+                        vbox:
+                            spacing 6
+                            text "Загальне" size 16 color "#d8b4fe" bold True
+                            for _fact in _general_facts:
+                                $ _fact_text = _fact.get("text", "")
+                                hbox:
+                                    spacing 8
+                                    text ">" size 14 color "#a855f7"
+                                    text "[_fact_text]" size 14 color "#ffffffaa"
+
+                # По персонажах
+                for _char_pair in [("arthur", "Артур"), ("eleanor", "Елеонор"), ("lettie", "Летті"), ("amir", "Амір"), ("aoi", "Аоі"), ("quincy", "Квінсі")]:
+                    $ _ckey = _char_pair[0]
+                    $ _cname = _char_pair[1]
+                    $ _char_facts = [i for i in insights_log if i["type"] == "fact" and _ckey in i["id"]]
 
                     if _char_facts:
                         frame:
@@ -70,13 +92,14 @@ screen thought_cabinet():
 
                             vbox:
                                 spacing 6
-                                text "[_char_name]" size 16 color "#d8b4fe" bold True
+                                text "[_cname]" size 16 color "#d8b4fe" bold True
 
                                 for _fact in _char_facts:
+                                    $ _fact_text = _fact.get("text", "")
                                     hbox:
                                         spacing 8
                                         text ">" size 14 color "#a855f7"
-                                        text "[_fact[text]]" size 14 color "#ffffffaa"
+                                        text "[_fact_text]" size 14 color "#ffffffaa"
 
                 # Зв'язки (осмислені)
                 $ _connections = [i for i in insights_log if i["type"] == "connection"]
@@ -85,6 +108,7 @@ screen thought_cabinet():
                     text "ОСМИСЛЕНІ ЗВ'ЯЗКИ" size 16 color "#22d3ee" bold True
 
                     for _conn in _connections:
+                        $ _conn_text = _conn.get("text", "")
                         frame:
                             background "#22d3ee10"
                             padding (16, 10, 16, 10)
@@ -92,7 +116,7 @@ screen thought_cabinet():
                             hbox:
                                 spacing 8
                                 text "~" size 14 color "#22d3ee"
-                                text "[_conn[text]]" size 14 color "#a5f3fccc"
+                                text "[_conn_text]" size 14 color "#a5f3fccc"
 
             elif not raw_thoughts:
                 text "Поки порожньо. Спілкуйся з людьми." size 16 color "#ffffff30"

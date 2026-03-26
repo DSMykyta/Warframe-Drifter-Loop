@@ -16,7 +16,7 @@ init python:
     })
 
 label lettie_medical_ethics:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Знаєш, скільки разів на тиждень хтось приходить із травмою, якої можна було уникнути?"

@@ -2,76 +2,104 @@
 # ═══════════════════════════════════════════════════
 # ІНТЕРАКТИВНА КАРТА МОЛУ
 # ═══════════════════════════════════════════════════
-# Текстова версія (без focus_mask поки немає арт-ассетів)
-# Буде замінена на imagebutton + focus_mask коли з'являться зображення
+# Фон: backgrounds/map_mall.png (1920x1080, малюєш сам)
+# Кнопки кімнат розміщені на абсолютних координатах поверх фону.
+# Щоб змінити позицію кнопки — міняй числа в MAP_BUTTON_POS.
+
+init python:
+    # Координати кнопок: loc_id → (x, y)
+    # Підганяй під свій малюнок
+    MAP_BUTTON_POS = {
+        "rooftop":    (890, 80),
+        "backroom":   (115, 225),
+        "music_shop": (465, 215),
+        "arcade":     (285, 345),
+        "mall":       (860, 470),
+        "foodcourt":  (990, 300),
+        "info_desk":  (1300, 215),
+        "info_room":  (1555, 130),
+        "range":      (185, 530),
+        "medbay":     (355, 645),
+        "bar":        (700, 790),
+        "furniture":  (1085, 625),
+        "comp_club":  (1330, 505),
+        "garage":     (1570, 610),
+    }
 
 screen mall_map():
     modal True
 
-    use hud
+    # Фон — твій малюнок (заміни на свій файл)
+    # Поки fallback на темний фон
+    if renpy.loadable("backgrounds/map_mall.png"):
+        add "backgrounds/map_mall.png"
+    else:
+        # Тимчасовий темний фон
+        add Solid("#0a0a14")
+        # Сітка
+        for _gx in range(0, 1920, 40):
+            add Solid("#1a1a3f", xsize=1, ysize=1080) xpos _gx
+        for _gy in range(0, 1080, 40):
+            add Solid("#1a1a3f", xsize=1920, ysize=1) ypos _gy
+        # Рамка
+        add Solid("#a855f730", xsize=1880, ysize=2) xpos 20 ypos 20
+        add Solid("#a855f730", xsize=1880, ysize=2) xpos 20 ypos 1058
+        add Solid("#a855f730", xsize=2, ysize=1040) xpos 20 ypos 20
+        add Solid("#a855f730", xsize=2, ysize=1040) xpos 1898 ypos 20
+        text "HOLLVANIA CENTRAL MALL — FLOOR PLAN" size 12 color "#a855f760" xpos 960 ypos 35 xanchor 0.5
 
-    # Фон
-    add Solid("#09090fee")
+    # Годинник
+    $ _time_str = get_time_display()
+    frame:
+        background "#00000088"
+        xpos 50 ypos 50 padding (10, 4, 10, 4)
+        text "[_time_str]" size 22 color "#22d3ee" bold True
 
-    vbox:
-        align (0.5, 0.08)
-        text "КАРТА МОЛУ" size 24 color "#a855f7" xalign 0.5 bold True
-        $ _time_str = get_time_display()
-        text "[_time_str]" size 18 color "#22d3ee" xalign 0.5
+    # Кнопки локацій
+    for _loc_id, _pos in MAP_BUTTON_POS.items():
+        use map_btn(_loc_id, _pos[0], _pos[1])
 
-    # Сітка локацій
-    vpgrid:
-        align (0.5, 0.5)
-        cols 4
-        spacing 12
-        xmaximum 1400
-
-        for _loc_id in ["backroom", "mall", "info_desk", "info_room", "arcade", "music_shop", "furniture", "range", "medbay", "bar", "foodcourt", "comp_club", "garage", "rooftop"]:
-            $ _loc_label = LOCATION_NAMES.get(_loc_id, _loc_id)
-            $ _cost = travel_cost(current_location, _loc_id)
-            $ _chars = get_chars_at(_loc_id)
-            $ _is_current = (current_location == _loc_id)
-
-            button:
-                xminimum 300
-                yminimum 120
-                if _is_current:
-                    background "#a855f740"
-                else:
-                    background "#a855f715"
-                    hover_background "#a855f730"
-                padding (16, 12, 16, 12)
-
-                if _is_current:
-                    action NullAction()
-                else:
-                    action [Function(travel_to, _loc_id), Return()]
-
-                vbox:
-                    spacing 4
-
-                    hbox:
-                        spacing 8
-                        text "[_loc_label]" size 16 color "#d8b4fe" bold True
-                        if _is_current:
-                            text "(тут)" size 12 color "#facc15"
-                        elif _cost > 0:
-                            text "[_cost] хв" size 12 color "#22d3ee"
-
-                    # Персонажі в локації
-                    if _chars:
-                        $ _chars_text = ", ".join(_chars)
-                        text "[_chars_text]" size 13 color "#ffffff60"
-                    else:
-                        if is_night():
-                            text "порожньо" size 13 color "#ffffff20"
-                        else:
-                            text "нікого" size 13 color "#ffffff20"
-
-    # Кнопка закриття
+    # Закрити
     button:
-        xpos 0.96
-        ypos 0.06
-        xanchor 1.0
+        xpos 1860 ypos 50 xanchor 1.0
         action Return()
-        text "Закрити" size 16 color "#fca5a5"
+        frame:
+            background "#00000088"
+            padding (8, 4, 8, 4)
+            text "X" size 22 color "#fca5a5" bold True
+
+
+# ═══ Кнопка однієї локації ═══
+screen map_btn(loc_id, bx, by):
+    $ _loc_label = LOCATION_NAMES.get(loc_id, loc_id)
+    $ _cost = travel_cost(current_location, loc_id)
+    $ _chars = get_chars_at(loc_id)
+    $ _is_current = (current_location == loc_id)
+    $ _chars_text = ", ".join(_chars) if _chars else ""
+
+    button:
+        xpos bx ypos by
+        if _is_current:
+            background "#a855f760"
+        else:
+            background "#09090fcc"
+            hover_background "#a855f750"
+        padding (10, 6, 10, 6)
+        xminimum 150
+
+        if _is_current:
+            action NullAction()
+        else:
+            action [Function(travel_to, loc_id), Return()]
+
+        vbox:
+            spacing 2
+            hbox:
+                spacing 6
+                text "[_loc_label]" size 13 color "#d8b4fe" bold True
+                if _is_current:
+                    text "ТУТ" size 10 color "#facc15" bold True
+                elif _cost > 0:
+                    text "[_cost]хв" size 10 color "#22d3ee"
+            if _chars_text:
+                text "[_chars_text]" size 11 color "#ffffffa0"

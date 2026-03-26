@@ -10,10 +10,10 @@ label intro:
     scene bg_mall_foodcourt with dissolve
 
     show amir at far_left
-    show aoi at left
+    show aoi at center_left
     show arthur at center
     show eleanor at center_right
-    show lettie at right
+    show lettie at right_of_center
     show quince at far_right
 
     pause 0.5
@@ -46,7 +46,7 @@ label intro:
             $ set_flag("intro_asked_to_verify")
             $ chemistry["Артур"] += 2
 
-        "[Нічого не сказати.]":
+        "[[Нічого не сказати.]":
             am "Він... не буде відповідати?"
             $ advance_time(5)
             ar "Амір."
@@ -66,7 +66,7 @@ label intro:
     ar "—і Летті нічого буде зшивати."
     $ advance_time(5)
 
-    le "Підтверджую."
+    le "Si."
     $ advance_time(5)
 
     ar "Ми зрозуміли один одного?"
@@ -118,7 +118,7 @@ label intro:
             $ advance_time(5)
             $ chemistry["Аоі"] += 2
 
-        "[Потиснути руку.]":
+        "[[Потиснути руку.]":
             ao "Небалакучий тип."
             $ advance_time(5)
             $ chemistry["Аоі"] += 1

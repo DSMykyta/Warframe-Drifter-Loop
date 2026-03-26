@@ -17,7 +17,7 @@ init python:
     })
 
 label lettie_rat_names:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Канела сьогодні навчилась новому трюку. Встає на задні лапки, коли я клацаю пальцями."

@@ -208,15 +208,15 @@ screen location_ui():
                 spacing 8
                 text "Щоденник" size 18 color "#a5f3fc"
 
-        # Шафа думок (тільки в бекрумі)
-        if current_location == "backroom":
-            if has_raw_thoughts():
-                button:
-                    style "hex_btn_accent"
-                    action Return("insights")
-                    hbox:
-                        spacing 8
-                        text "Обдумати" size 18 color "#facc15"
+        # Шафа думок — перегляд фактів завжди, обдумування тільки в бекрумі
+        button:
+            style "hex_btn"
+            action Return("insights")
+            hbox:
+                spacing 8
+                text "Шафа думок" size 18 color "#d8b4fe"
+                if has_raw_thoughts() and current_location == "backroom":
+                    text "!" size 18 color "#facc15" bold True
 
         # Зачекати (не вночі)
         if not is_night():

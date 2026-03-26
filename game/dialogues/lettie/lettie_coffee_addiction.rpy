@@ -17,7 +17,7 @@ init python:
     })
 
 label lettie_coffee_addiction:
-    show letty at char_center
+    show lettie at char_center
     $ store.talked_today.add("Летті")
 
     le "Третя чашка. Не коментуй."
