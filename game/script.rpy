@@ -37,6 +37,13 @@ label generic_day:
 # ═══════════════════════════════════════════════════
 
 label location_loop:
+    # Оновити фон локації
+    $ _bg_key = "bg_" + current_location
+    if renpy.has_image(_bg_key):
+        scene expression _bg_key
+    else:
+        scene bg mall
+
     # Показати HUD
     show screen hud
 
@@ -193,6 +200,7 @@ label execute_mission:
     # Нагороди
     $ money += m['reward']
     $ hex_rep += m['rep']
+    $ try_rank_up()
 
     # Хімія напарника (раз на день на персонажа)
     if m['partner'] is not None and m['partner'] not in mission_chem_today:

@@ -31,7 +31,7 @@ init -5 python:
             # Ставимо флаг
             flag_name = "bad_gift_{}_{}".format(character.lower(), item_id)
             set_flag(flag_name)
-            add_gossip(character, "bad_gift", item_id)
+            add_gossip("bad_gift_" + item_id, [character], spread_delay=1)
             return (penalty, reaction, True)
 
         # Перевірка на улюблений подарунок
@@ -53,15 +53,8 @@ init -5 python:
         return (0, "Дякую... мабуть.", False)
 
 
-    def add_gossip(source, gossip_type, detail=""):
-        """Додає пліткy в систему."""
-        store.active_gossip.append({
-            "source": source,
-            "type": gossip_type,
-            "detail": detail,
-            "day": store.day,
-            "spread_delay": 1,
-        })
+    # add_gossip() визначена в dispatcher.rpy — єдина версія
+    # Сигнатура: add_gossip(fact, initial_knowers, spread_delay=2)
 
 
 # ═══════════════════════════════════════════════

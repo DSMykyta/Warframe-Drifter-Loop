@@ -41,7 +41,7 @@ init -5 python:
                     set_flag("flirt_caught_by_" + partner.lower())
                     return "caught"
         # Приватний — шанс через плітки
-        add_gossip(target_name, "flirt", target_name)
+        add_gossip("flirt_with_" + target_name, [target_name], spread_delay=1)
         store.gossip_heat += 1
         return "private"
 

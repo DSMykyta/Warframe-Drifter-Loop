@@ -97,8 +97,8 @@ default persistent.all_friends = False
 default persistent.insights_log = []
 default persistent.previous_journal = []
 
-# -------------- deprecated (для сумісності) --------------
-default convo_idx = {}
+# -------------- місійний трекер --------------
+default missions_today_with = {}     # {"Артур": 2, ...} — місій з ким сьогодні
 
 
 # ═══════════════════════════════════════════════════
@@ -137,11 +137,22 @@ init python:
         if pts >= 15:  return "Привітно"
         return "Нейтрально"
 
+    RANK_THRESHOLDS = {2: 100, 3: 300, 4: 600, 5: 1000, 6: 1500}
+
     def can_rank_up():
         """Перевіряє чи можна підвищити ранг Гексу."""
-        thresholds = {2: 100, 3: 300, 4: 600, 5: 1000, 6: 1500}
         nxt = store.syndicate_rank + 1
-        return nxt <= 6 and store.hex_rep >= thresholds.get(nxt, 99999)
+        return nxt <= 6 and store.hex_rep >= RANK_THRESHOLDS.get(nxt, 99999)
+
+    def try_rank_up():
+        """Підвищує ранг якщо можливо. Повертає True якщо підвищив."""
+        if can_rank_up():
+            store.syndicate_rank += 1
+            set_flag("rank_" + str(store.syndicate_rank))
+            add_journal_entry("Ранг Гексу підвищено до {}.".format(store.syndicate_rank), "event")
+            build_daily_deck()  # Нові діалоги можуть стати доступними
+            return True
+        return False
 
 
 # ═══════════════════════════════════════════════════

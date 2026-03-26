@@ -167,7 +167,7 @@ init -5 python:
         """Раз на день: фільтрує DIALOGUE_ENTRIES по стабільних умовах."""
         store.daily_deck = {}
         for entry in DIALOGUE_ENTRIES:
-            if entry["id"] in store.seen_dialogues:
+            if entry["id"] in store.seen_dialogues and not entry.get("repeatable"):
                 continue
             if not check_stable_conditions(entry.get("conditions", {})):
                 continue
@@ -182,7 +182,7 @@ init -5 python:
         for entry in DIALOGUE_ENTRIES:
             if entry["who"] != name:
                 continue
-            if entry["id"] in store.seen_dialogues:
+            if entry["id"] in store.seen_dialogues and not entry.get("repeatable"):
                 continue
             if not check_stable_conditions(entry.get("conditions", {})):
                 continue
@@ -198,7 +198,7 @@ init -5 python:
         deck = store.daily_deck.get(name, [])
         eligible = []
         for entry in deck:
-            if entry["id"] in store.seen_dialogues:
+            if entry["id"] in store.seen_dialogues and not entry.get("repeatable"):
                 continue
             if not check_dynamic_conditions(entry.get("conditions", {})):
                 continue
