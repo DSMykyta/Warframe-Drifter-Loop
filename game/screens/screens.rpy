@@ -67,64 +67,166 @@ screen scanlines():
     for i in range(0, 1080, 4):
         add Solid("#00000014", xsize=1920, ysize=2) ypos i
 
-# ── HUD — верхня панель ──
+# ── ВЕРХНЄ МЕНЮ — вкладки ──
 screen hud():
     zorder 50
 
     frame:
         xfill True
-        ysize 60
+        ysize 50
         xpos 0
         ypos 0
-        background "#00000099"
-        padding (20, 10, 20, 10)
+        background "#0d0d1ae0"
+        padding (20, 0, 20, 0)
 
         hbox:
             yalign 0.5
-            spacing 40
+            spacing 6
 
-            # День
-            hbox:
-                spacing 8
-                text "ДЕНЬ" size 16 color "#ffffff40"
-                text "[day]" size 22 color "#facc15" bold True
+            # Вкладки
+            for _tab in [("map", "КАРТА"), ("journal", "ЩОДЕННИК"), ("insights", "ШАФА ДУМОК"), ("shop", "ІНВЕНТАР"), ("gallery", "ГАЛЕРЕЯ")]:
+                button:
+                    padding (16, 8, 16, 8)
+                    background "#ffffff08"
+                    hover_background "#a855f730"
+                    action Return(_tab[0])
+                    text _tab[1] size 13 color "#d8b4fe" bold True
 
-            # Гроші
-            hbox:
-                spacing 8
-                text "КРОНИ" size 16 color "#ffffff40"
-                text "[money]" size 22 color "#facc15" bold True
-
-            # Час (хвилини)
-            hbox:
-                spacing 8
-                text "ЧАС" size 16 color "#ffffff40"
-                $ _hud_time = get_time_display()
-                text "[_hud_time]" size 22 color "#22d3ee" bold True
-
-            # Локація
-            hbox:
-                spacing 8
-                text "ЛОКАЦІЯ" size 16 color "#ffffff40"
-                $ _hud_loc = LOCATION_NAMES.get(current_location, current_location)
-                text "[_hud_loc]" size 18 color "#a5f3fc"
-
-        # Права частина HUD
+        # Системні кнопки (справа)
         hbox:
             xalign 1.0
             yalign 0.5
-            spacing 20
+            spacing 16
+            textbutton "Зберегти" action ShowMenu("save") text_size 12 text_color "#ffffff30" text_hover_color "#facc15"
+            textbutton "Завантажити" action ShowMenu("load") text_size 12 text_color "#ffffff30" text_hover_color "#facc15"
+            textbutton "Меню" action MainMenu() text_size 12 text_color "#ffffff30" text_hover_color "#fca5a5"
 
-            # Репутація Гекс
-            hbox:
-                spacing 8
-                text "HEX" size 16 color "#ffffff40"
-                text "[hex_rep]" size 22 color "#a855f7" bold True
+# ── Звуки пейджера ──
+define audio.pager_beep = "<to 2.1>audio/pager_beep.mp3"
+define audio.pager_click = "audio/pager_click.mp3"
 
-            # Системні кнопки
-            textbutton "Зберегти" action ShowMenu("save") text_size 14 text_color "#ffffff40" text_hover_color "#facc15"
-            textbutton "Завантажити" action ShowMenu("load") text_size 14 text_color "#ffffff40" text_hover_color "#facc15"
-            textbutton "Меню" action MainMenu() text_size 14 text_color "#ffffff40" text_hover_color "#fca5a5"
+# ── ПЕЙДЖЕР — лівий нижній кут ──
+screen pager_hud():
+    zorder 50
+
+    fixed:
+        xpos 1900
+        ypos 1060
+        xanchor 1.0
+        yanchor 1.0
+        xsize 424
+        ysize 287
+
+        # Картинка пейджера (1:1)
+        add "gui/pager.png" align (0.0, 0.0)
+
+        # Текстовий блок на LCD екранчику
+        # 265x85, від низу картинки 170px, від ліва 113px
+        fixed:
+            xpos 66
+            ypos 53
+            xsize 265
+            ysize 84
+
+            vbox:
+                xpos 4
+                yalign 0.5
+                spacing 1
+
+                $ _hud_time = get_time_display()
+                $ _hud_loc = LOCATION_NAMES.get(current_location, current_location)
+
+                if pager_mode == "request":
+                    # ═══ ЗАПИТ — ▲ТАК / ▼НІ ═══
+                    text "[pager_request_text]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Bold.ttf"
+                    null height 4
+                    hbox:
+                        spacing 20
+                        textbutton "▲ ТАК" action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))] text_size 12 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
+                        textbutton "▼ НІ" action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))] text_size 12 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
+
+                elif pager_mode == "message" and pager_messages:
+                    # ═══ ПОВІДОМЛЕННЯ ═══
+                    $ _pi = min(pager_msg_index, len(pager_messages) - 1)
+                    $ _pmsg = pager_messages[_pi]
+                    $ _pnum = _pi + 1
+                    $ _ptotal = len(pager_messages)
+                    text "[_pmsg]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Bold.ttf"
+                    hbox:
+                        spacing 8
+                        text "[_pnum]/[_ptotal]" size 10 color "#33ff33aa" font "fonts/JetBrainsMono-Regular.ttf"
+                        textbutton "◄" action Function(pager_prev_msg) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
+                        textbutton "►" action Function(pager_next_msg) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
+                        textbutton "●" action Function(pager_dismiss) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
+
+                else:
+                    # ═══ СТАТУС ═══
+                    text "[_hud_time]  ДЕНЬ [day]" size 13 color "#33ff33" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    text "[_hud_loc]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Regular.ttf"
+                    text "₡[money]  HEX:[hex_rep]" size 10 color "#33ff33cc" font "fonts/JetBrainsMono-Regular.ttf"
+
+        # ═══ ФІЗИЧНІ КНОПКИ ПЕЙДЖЕРА ═══
+
+        # ◄ Попереднє повідомлення
+        button:
+            xpos 44 ypos 161 xsize 99 ysize 34
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            if pager_mode == "message":
+                action Function(pager_prev_msg)
+            elif pager_mode == "request":
+                action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))]
+            else:
+                action NullAction()
+
+        # ► Наступне повідомлення
+        button:
+            xpos 143 ypos 161 xsize 88 ysize 34
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            if pager_mode == "message":
+                action Function(pager_next_msg)
+            elif pager_mode == "request":
+                action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))]
+            else:
+                action NullAction()
+
+        # ▲ Вгору (ТАК в режимі запиту)
+        button:
+            xpos 353 ypos 29 xsize 37 ysize 80
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            if pager_mode == "request":
+                action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))]
+            else:
+                action NullAction()
+
+        # ▼ Вниз (НІ в режимі запиту)
+        button:
+            xpos 353 ypos 110 xsize 37 ysize 73
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            if pager_mode == "request":
+                action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))]
+            else:
+                action NullAction()
+
+        # ● Підтвердити / Закрити повідомлення
+        button:
+            xpos 232 ypos 161 xsize 88 ysize 34
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            if pager_mode in ("message", "request"):
+                action Function(pager_dismiss)
+            else:
+                action NullAction()
+
+        # Бокова кнопка (підсвітка) — поки перемикає на статус
+        button:
+            xpos 327 ypos 221 xsize 76 ysize 39
+            background "#ffffff00"
+            hover_background "#ffffff18"
+            action Function(pager_dismiss)
 
 
 # ═══════════════════════════════════
@@ -136,6 +238,7 @@ screen location_ui():
     use hud
     use scanlines
     use pager
+    use pager_hud
 
     # Назва локації
     $ _loc_name = LOCATION_NAMES.get(current_location, current_location)
@@ -170,75 +273,41 @@ screen location_ui():
             else:
                 text "Тут нікого." size 16 color "#ffffff30" xalign 0.5
 
-    # Нижня панель кнопок
+    # Контекстні кнопки (по центру під персонажами)
     hbox:
-        align (0.5, 0.92)
+        align (0.5, 0.75)
         spacing 16
 
         # Карта
         button:
             style "hex_btn"
             action Return("map")
-            hbox:
-                spacing 8
-                text "Карта" size 18 color "#d8b4fe"
+            text "Карта" size 18 color "#d8b4fe"
 
         # Місії (тільки в гаражі)
         if current_location == "garage":
             button:
                 style "hex_btn"
                 action Return("missions")
-                hbox:
-                    spacing 8
-                    text "Місії" size 18 color "#fca5a5"
-
-        # Магазин
-        button:
-            style "hex_btn"
-            action Return("shop")
-            hbox:
-                spacing 8
-                text "Магазин" size 18 color "#d4a5f7"
-
-        # Щоденник
-        button:
-            style "hex_btn"
-            action Return("journal")
-            hbox:
-                spacing 8
-                text "Щоденник" size 18 color "#a5f3fc"
-
-        # Шафа думок — перегляд фактів завжди, обдумування тільки в бекрумі
-        button:
-            style "hex_btn"
-            action Return("insights")
-            hbox:
-                spacing 8
-                text "Шафа думок" size 18 color "#d8b4fe"
-                if has_raw_thoughts() and current_location == "backroom":
-                    text "!" size 18 color "#facc15" bold True
+                text "Місії" size 18 color "#fca5a5"
 
         # Зачекати (не вночі)
         if not is_night():
             button:
                 style "hex_btn"
                 action Return("wait")
-                hbox:
-                    spacing 8
-                    text "Зачекати" size 18 color "#a5f3fc"
+                text "Зачекати" size 18 color "#a5f3fc"
 
     # Спати (тільки в бекрумі)
     if current_location == "backroom":
         button:
             style "hex_btn_accent"
             xpos 0.96
-            ypos 0.94
+            ypos 0.85
             xanchor 1.0
             yanchor 1.0
             action Return("sleep")
-            hbox:
-                spacing 8
-                text "Спати" size 20 color "#facc15"
+            text "Спати" size 20 color "#facc15"
 
 
 # ═══ СТИЛІ КНОПОК ═══

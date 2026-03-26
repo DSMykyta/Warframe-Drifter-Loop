@@ -77,6 +77,15 @@ default expired_events = set()          # {"arthur_eleanor_rooftop_fight", ...}
 default insights_log = []               # [{id, text, day, type}, ...]
 default raw_thoughts = []               # [{id, text, requires}, ...]
 
+# -------------- пейджер --------------
+default pager_messages = []            # ["Квінсі шукав тебе", ...]
+default pager_mode = "status"          # "status", "message", "request"
+default pager_msg_index = 0
+default pager_unread = False
+default pager_request_text = ""
+default pager_request_accept = None    # label або None
+default pager_request_decline = None
+
 # -------------- щоденник --------------
 default journal_entries = []            # [{day, text, type}, ...]
 
@@ -91,6 +100,7 @@ default interaction_counts = {
 }
 
 # -------------- persistent (між петлями) --------------
+default persistent.cg_unlocked = set()
 default persistent.loop_count = 0
 default persistent.completed = False
 default persistent.all_friends = False

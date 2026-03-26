@@ -497,6 +497,62 @@ init -5 python:
         """Викликати після кожної успішної місії."""
         store.days_without_mission = 0
 
+    # ═══ ПЕЙДЖЕР ═══
+
+    # ═══ ПЕЙДЖЕР: РЕЖИМИ ═══
+    # "status" — час/локація/гроші
+    # "message" — повідомлення (гортається ◄►)
+    # "request" — запит з ▲ТАК / ▼НІ
+
+    def add_pager_message(text):
+        """Додає повідомлення на пейджер."""
+        store.pager_messages.append(text)
+        store.pager_mode = "message"
+        store.pager_msg_index = len(store.pager_messages) - 1
+        store.pager_unread = True
+        renpy.sound.play("<to 2.1>audio/pager_beep.mp3", channel="sound")
+
+    def get_pager_messages():
+        """Повертає всі повідомлення."""
+        return store.pager_messages
+
+    def pager_click():
+        """Звук кліку кнопки."""
+        renpy.sound.play("audio/pager_click.mp3", channel="sound")
+
+    def pager_next_msg():
+        """Наступне повідомлення."""
+        pager_click()
+        if store.pager_messages:
+            store.pager_msg_index = min(store.pager_msg_index + 1, len(store.pager_messages) - 1)
+
+    def pager_prev_msg():
+        """Попереднє повідомлення."""
+        pager_click()
+        store.pager_msg_index = max(store.pager_msg_index - 1, 0)
+
+    def pager_dismiss():
+        """Закрити повідомлення, повернутись до статусу."""
+        pager_click()
+        store.pager_mode = "status"
+        store.pager_unread = False
+
+    def pager_send_request(text, on_accept_label=None, on_decline_label=None):
+        """Надіслати запит з вибором ТАК/НІ."""
+        store.pager_mode = "request"
+        store.pager_request_text = text
+        store.pager_request_accept = on_accept_label
+        store.pager_request_decline = on_decline_label
+        store.pager_unread = True
+        renpy.sound.play("<to 2.1>audio/pager_beep.mp3", channel="sound")
+
+    def clear_pager():
+        """Очищує пейджер."""
+        store.pager_messages = []
+        store.pager_mode = "status"
+        store.pager_msg_index = 0
+        store.pager_unread = False
+
 
 # ═══════════════════════════════════════════════════
 # GENERIC STUB LABEL (fallback)
