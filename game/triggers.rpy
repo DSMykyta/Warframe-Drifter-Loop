@@ -32,8 +32,8 @@ init -5 python:
             "range", "medbay", "bar", "foodcourt", "comp_club",
             "backroom", "rooftop",
         ],
-        "info_desk":  ["mall", "info_room"],
-        "info_room":  ["info_desk"],
+        "info_desk":  ["mall", "info_counter"],
+        "info_counter":  ["info_desk"],
         "arcade":     ["mall"],
         "music_shop": ["mall"],
         "furniture":  ["mall"],
@@ -51,8 +51,8 @@ init -5 python:
 
     LOCATION_NAMES = {
         "mall":       "Мол Гьольванії",
-        "info_desk":  "Інфостійка",
-        "info_room":  "Кімната за стійкою",
+        "info_desk":  "Інфо-острівець",
+        "info_counter":  "Інфостійка",
         "arcade":     "Аркади",
         "music_shop": "Музичний магазин",
         "furniture":  "Магазин меблів",
@@ -64,13 +64,18 @@ init -5 python:
         "garage":     "Гараж",
         "backroom":   "Бекрум",
         "rooftop":    "Дах",
+        "balcony":    "Балкон 2-го поверху",
+        "cafe":       "Кав'ярня",
+        "cafe_balcony": "Біля кав'ярні (2 поверх)",
+        "utility":    "Підсобка",
+        "warehouse":  "Склад",
     }
 
     # ═══ СУБ-ЛОКАЦІЇ ═══
 
     SUB_LOCATIONS = {
-        "info_desk": "info_room",
-        "info_room": "info_desk",
+        "info_desk": "info_counter",
+        "info_counter": "info_desk",
         "comp_club": "garage",
         "garage":    "comp_club",
     }
@@ -104,7 +109,7 @@ init -5 python:
     MAP_POSITIONS = {
         "mall":       (960, 540),
         "info_desk":  (1400, 300),
-        "info_room":  (1600, 200),
+        "info_counter":  (1600, 200),
         "arcade":     (400, 400),
         "music_shop": (600, 300),
         "furniture":  (1200, 700),

@@ -1,0 +1,41 @@
+Put this character's face and hair on this body. REPAINT the face in the same art style as the body — same skin texture, same brushstroke technique, same warm matte tones. The face must look like it was painted by the same artist who painted the body. NOT a 3D render face on a painted body.
+
+---
+
+Fix two things:
+
+Match the body skin color to the face skin color — the whole body should have the same skin tone as the face
+Remove all mechanical parts, tubes, metal pieces, ports, and cybernetic elements from the neck and body. Clean human skin only. Keep the underwear.
+
+---
+
+Now create a face closeup portrait of this character in exactly this art style and framing (attach the style reference portrait). Same crop — head and upper shoulders only. Same grey background, same lighting, same level of skin detail, same painting style.
+
+---
+
+Зміна пози по референсу (прикріпи спрайт персонажа + фото з потрібною позою):
+
+First image is my character. Second image is ONLY a pose reference. Redraw my character in the exact pose from the second image. Keep EVERYTHING from the first image — same face, same hair, same body, same skin tone, same underwear, same art style, same grey background, same painting technique. Take NOTHING from the second image except the pose. No new clothing, no new colors, no new details.
+
+Якщо Gemini додає зайве:
+
+You added elements that don't exist in the original character. Remove everything that wasn't in the first image. ONLY the pose should change, nothing else.
+
+
+----
+
+Одягання (прикріпи спрайт персонажа + фото/картинку одягу):
+
+Dress this character in the outfit from the second image. Keep EVERYTHING else identical — same face, same hair, same pose, same body position, same hands position, same grey background, same art style, same painting technique. ONLY add the clothing. REPAINT the clothing in the same art style as the character — same brushstroke technique, same matte tones. NOT a copy-paste, painted by the same artist.
+
+Якщо треба описати одяг текстом замість картинки:
+
+Dress this character in [опис одягу]. Keep the exact same pose, face, hair, body position, grey background, and art style. Paint the clothing in the same technique as the rest of the image.
+
+Якщо поза змінилася:
+
+The pose changed. Redraw with the EXACT same pose as the original — same arm position, same leg position, same head angle. Only the clothing should be different.
+
+---
+
+First image is my character. Second image is ONLY a reference for arm and hand positions. Redraw my character with the arm and hand positions from the second image. The body MUST stay facing DIRECTLY FORWARD toward the camera — NO rotation, NO turning. Keep EVERYTHING from the first image — same face, same hair, same body, same skin tone, same underwear, same art style, same grey background, same painting technique. Take NOTHING from the second image except arm and hand positions. No new clothing, no new colors, no new details.

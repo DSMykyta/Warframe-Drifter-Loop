@@ -17,13 +17,18 @@ init python:
         "mall":       (860, 470),
         "foodcourt":  (990, 300),
         "info_desk":  (1300, 215),
-        "info_room":  (1555, 130),
+        "info_counter":  (1555, 130),
         "range":      (185, 530),
         "medbay":     (355, 645),
         "bar":        (700, 790),
         "furniture":  (1085, 625),
         "comp_club":  (1330, 505),
         "garage":     (1570, 610),
+        "balcony":    (660, 200),
+        "cafe":       (500, 470),
+        "cafe_balcony": (500, 340),
+        "utility":    (1400, 790),
+        "warehouse":  (1600, 790),
     }
 
 screen mall_map():
