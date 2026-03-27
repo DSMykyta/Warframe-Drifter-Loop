@@ -17,6 +17,38 @@ image bg_medbay = "backgrounds/bg_medbay.png"
 image bg_music_shop = "backgrounds/bg_music_shop.png"
 image bg_range = "backgrounds/bg_range.png"
 
+# === PLACEHOLDER ФОНИ (замінити на реальні пізніше) ===
+image bg_info_room = Solid("#1a2a3a")
+image bg_garage = Solid("#2a1a0a")
+image bg_rooftop = Solid("#0a1a2a")
+image bg_mall_foodcourt = "backgrounds/bg_foodcourt.png"
+
+# === МАППІНГ ЛОКАЦІЙ → ФОНІВ ===
+init python:
+    LOCATION_BG = {
+        "mall":       "bg mall",
+        "arcade":     "bg_arcade",
+        "backroom":   "bg_backroom",
+        "bar":        "bg_bar",
+        "comp_club":  "bg_comp_club",
+        "foodcourt":  "bg_foodcourt",
+        "furniture":  "bg_furniture",
+        "info_desk":  "bg_info_desk",
+        "info_room":  "bg_info_room",
+        "medbay":     "bg_medbay",
+        "music_shop": "bg_music_shop",
+        "range":      "bg_range",
+        "garage":     "bg_garage",
+        "rooftop":    "bg_rooftop",
+    }
+
+    def show_location_bg(loc=None):
+        if loc is None:
+            loc = store.current_location
+        bg_name = LOCATION_BG.get(loc, "bg mall")
+        renpy.scene()
+        renpy.show(bg_name)
+
 # === ПІДСВІЧУВАННЯ: змінна хто говорить ===
 default _speaking_char = None
 

@@ -1,130 +1,148 @@
 # game/screen_thought_cabinet.rpy
 # ═══════════════════════════════════════════════════
-# ШАФА ДУМОК (Thought Cabinet)
+# ШАФА ДУМОК — 3 колонки
 # ═══════════════════════════════════════════════════
+
+init python:
+    def get_char_facts(ckey):
+        return [i for i in store.insights_log if i["type"] == "fact" and ckey in i["id"]]
+
+    def get_general_facts():
+        _char_keys = {"arthur", "eleanor", "lettie", "amir", "aoi", "quincy"}
+        return [i for i in store.insights_log if i["type"] == "fact" and not any(k in i["id"] for k in _char_keys)]
+
+default _cabinet_selected = None
 
 screen thought_cabinet():
     modal True
+    add Solid("#09090bf0")
 
-    use hud
-
-    add Solid("#09090fee")
-
+    # Заголовок
     vbox:
-        align (0.5, 0.08)
+        align (0.5, 0.02)
         text "ШАФА ДУМОК" size 28 color "#a855f7" xalign 0.5 bold True
-        text "Факти та зв'язки" size 14 color "#ffffff40" xalign 0.5
+        text "Факти та зв'язки" size 12 color "#ffffff40" xalign 0.5
 
-    viewport:
-        align (0.5, 0.5)
-        xmaximum 900
-        ymaximum 700
-        scrollbars "vertical"
-        mousewheel True
-        draggable True
+    # ═══ 3 КОЛОНКИ ═══
+    hbox:
+        align (0.5, 0.55)
+        spacing 2
 
-        vbox:
-            spacing 20
+        # ──── КОЛОНКА 1: Список персонажів ────
+        frame:
+            background "#ffffff08"
+            padding (12, 16, 12, 16)
+            xminimum 260
+            xmaximum 260
+            yminimum 700
 
-            # ═══ СИРІ ДУМКИ (потребують осмислення) ═══
-            if raw_thoughts:
-                text "НЕОБДУМАНІ ЗВ'ЯЗКИ" size 16 color "#facc15" bold True
+            vbox:
+                spacing 4
 
-                for _rt in raw_thoughts:
-                    $ _rt_text = _rt.get("text", "")
-                    $ _rt_id = _rt.get("id", "")
-                    frame:
-                        background "#facc1515"
-                        padding (20, 14, 20, 14)
+                text "ПЕРСОНАЖІ" size 14 color "#ffffff50" bold True
+                null height 8
+
+                # Загальне
+                button:
+                    xfill True
+                    padding (12, 10, 12, 10)
+                    if _cabinet_selected == "general":
+                        background "#a855f730"
+                    else:
+                        background "#ffffff06"
+                    hover_background "#a855f720"
+                    action SetVariable("_cabinet_selected", "general")
+
+                    hbox:
+                        spacing 10
+                        text ">" size 14 color "#a855f7"
+                        text "Загальне" size 16 color "#d8b4fe"
+
+                null height 4
+
+                for _cp in [("arthur", "Артур"), ("eleanor", "Елеонор"), ("lettie", "Летті"), ("amir", "Амір"), ("aoi", "Аоі"), ("quincy", "Квінсі")]:
+                    $ _ck = _cp[0]
+                    $ _cn = _cp[1]
+                    $ _chem = store.chemistry.get(_cn, 0)
+
+                    button:
                         xfill True
+                        padding (12, 10, 12, 10)
+                        if _cabinet_selected == _ck:
+                            background "#a855f730"
+                        else:
+                            background "#ffffff06"
+                        hover_background "#a855f720"
+                        action SetVariable("_cabinet_selected", _ck)
 
                         hbox:
-                            spacing 16
-
+                            spacing 10
+                            text ">" size 14 color "#a855f7"
                             vbox:
-                                xmaximum 600
-                                text "[_rt_text]" size 16 color "#facc15cc"
-                                text "Потребує 30 хв осмислення" size 12 color "#ffffff40"
+                                text "[_cn]" size 16 color "#d8b4fe"
+                                text "Хімія: [_chem]" size 11 color "#ffffff30"
 
-                            button:
-                                style "hex_btn_accent"
-                                yalign 0.5
-                                action [Function(contemplate, _rt_id), Return()]
-                                text "Обдумати" size 14 color "#facc15"
+        # ──── КОЛОНКА 2: Факти обраного персонажа ────
+        frame:
+            background "#ffffff05"
+            padding (16, 16, 16, 16)
+            xminimum 440
+            xmaximum 440
+            yminimum 700
 
-                null height 10
+            vbox:
+                spacing 8
 
-            # ═══ ФАКТИ (згруповані по персонажах) ═══
-            if insights_log:
-                text "ВІДОМІ ФАКТИ" size 16 color "#d8b4fe" bold True
+                text "ВІДОМІ ФАКТИ" size 14 color "#ffffff50" bold True
+                null height 4
 
-                # Загальні факти (не прив'язані до персонажа)
-                python:
-                    _char_keys = {"arthur", "eleanor", "lettie", "amir", "aoi", "quincy"}
-                    _general_facts = [i for i in insights_log if i["type"] == "fact" and not any(k in i["id"] for k in _char_keys)]
+                if _cabinet_selected is not None:
+                    if _cabinet_selected == "general":
+                        $ _facts = get_general_facts()
+                    else:
+                        $ _facts = get_char_facts(_cabinet_selected)
 
-                if _general_facts:
-                    frame:
-                        background "#a855f708"
-                        padding (16, 10, 16, 10)
-                        xfill True
-                        vbox:
-                            spacing 6
-                            text "Загальне" size 16 color "#d8b4fe" bold True
-                            for _fact in _general_facts:
-                                $ _fact_text = _fact.get("text", "")
+                    if _facts:
+                        for _f in _facts:
+                            $ _ft = _f.get("text", "")
+                            frame:
+                                background "#a855f70a"
+                                padding (12, 8, 12, 8)
+                                xfill True
                                 hbox:
                                     spacing 8
                                     text ">" size 14 color "#a855f7"
-                                    text "[_fact_text]" size 14 color "#ffffffaa"
+                                    text "[_ft]" size 14 color "#ffffffaa"
+                    else:
+                        text "Немає фактів." size 14 color "#ffffff20"
+                else:
+                    text "Обери персонажа зліва." size 14 color "#ffffff20"
 
-                # По персонажах
-                for _char_pair in [("arthur", "Артур"), ("eleanor", "Елеонор"), ("lettie", "Летті"), ("amir", "Амір"), ("aoi", "Аоі"), ("quincy", "Квінсі")]:
-                    $ _ckey = _char_pair[0]
-                    $ _cname = _char_pair[1]
-                    $ _char_facts = [i for i in insights_log if i["type"] == "fact" and _ckey in i["id"]]
+        # ──── КОЛОНКА 3: Емоції / стан ────
+        frame:
+            background "#ffffff05"
+            padding (16, 16, 16, 16)
+            xminimum 380
+            xmaximum 380
+            yminimum 700
 
-                    if _char_facts:
-                        frame:
-                            background "#a855f708"
-                            padding (16, 10, 16, 10)
-                            xfill True
+            vbox:
+                spacing 8
 
-                            vbox:
-                                spacing 6
-                                text "[_cname]" size 16 color "#d8b4fe" bold True
+                text "СТАН" size 14 color "#ffffff50" bold True
+                null height 4
 
-                                for _fact in _char_facts:
-                                    $ _fact_text = _fact.get("text", "")
-                                    hbox:
-                                        spacing 8
-                                        text ">" size 14 color "#a855f7"
-                                        text "[_fact_text]" size 14 color "#ffffffaa"
-
-                # Зв'язки (осмислені)
-                $ _connections = [i for i in insights_log if i["type"] == "connection"]
-                if _connections:
-                    null height 10
-                    text "ОСМИСЛЕНІ ЗВ'ЯЗКИ" size 16 color "#22d3ee" bold True
-
-                    for _conn in _connections:
-                        $ _conn_text = _conn.get("text", "")
-                        frame:
-                            background "#22d3ee10"
-                            padding (16, 10, 16, 10)
-                            xfill True
-                            hbox:
-                                spacing 8
-                                text "~" size 14 color "#22d3ee"
-                                text "[_conn_text]" size 14 color "#a5f3fccc"
-
-            elif not raw_thoughts:
-                text "Поки порожньо. Спілкуйся з людьми." size 16 color "#ffffff30"
+                if _cabinet_selected is not None and _cabinet_selected != "general":
+                    # Поки текстовий placeholder
+                    text "Дані про емоційний стан" size 14 color "#ffffff20"
+                    text "поки не зібрані." size 14 color "#ffffff20"
+                else:
+                    text "" size 14
 
     # Закрити
     button:
         xpos 0.96
-        ypos 0.06
+        ypos 0.03
         xanchor 1.0
         action Return()
         text "Закрити" size 16 color "#fca5a5"
