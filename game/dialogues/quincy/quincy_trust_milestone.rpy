@@ -54,7 +54,7 @@ label quincy_trust_milestone:
     qu "Тож — no more trolling. З тобою. З рештою... well, Амір сам напрошується."
     $ advance_time(5)
 
-    $ chemistry["Квінсі"] += 5
+    $ add_chemistry("Квінсі", 5)
 
     $ store.seen_dialogues.add("quincy_trust_milestone")
     $ set_flag("quincy_trust_milestone_done")

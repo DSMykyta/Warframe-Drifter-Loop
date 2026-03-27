@@ -51,7 +51,7 @@ label eleanor_control_issues:
             $ advance_time(5)
             el "Ніхто раніше не пропонував. Усі просто казали «відпусти» або «навчись жити з цим». Ніби я не намагаюсь щодня."
             $ advance_time(5)
-            $ chemistry["Елеонор"] += 3
+            $ add_chemistry("Елеонор", 2)
             $ set_flag("eleanor_wall_supported")
 
         "Може, проблема не в контролі, а в тому, що ти несеш це сама?":

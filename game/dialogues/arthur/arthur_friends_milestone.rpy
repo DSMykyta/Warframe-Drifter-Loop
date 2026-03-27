@@ -58,7 +58,7 @@ label arthur_friends_milestone:
     ar "Дякую. За все."
     $ advance_time(5)
 
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 8)
     $ store.decay_paused_until = store.day + 2
     $ store.seen_dialogues.add("arthur_friends_milestone")
     $ set_flag("arthur_friends_milestone_done")

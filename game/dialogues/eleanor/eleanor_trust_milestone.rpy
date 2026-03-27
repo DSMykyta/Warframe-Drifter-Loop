@@ -44,7 +44,7 @@ label eleanor_trust_milestone:
     el "Це... складно. Як затуляти вуха під час концерту. Але я хочу спробувати. Для тебе."
     $ advance_time(5)
 
-    $ chemistry["Елеонор"] += 5
+    $ add_chemistry("Елеонор", 5)
 
     $ store.seen_dialogues.add("eleanor_trust_milestone")
     $ set_flag("eleanor_trust_milestone_done")

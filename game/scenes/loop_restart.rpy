@@ -193,7 +193,7 @@ label ng_quincy_arthur_icr:
             $ advance_time(5)
             qu "Ну добре. Тоді розкажи мені."
             $ advance_time(5)
-            $ chemistry["Квінсі"] += 3
+            $ add_chemistry("Квінсі", 2)
             $ set_flag("ng_shared_arthur_info")
 
         "Нічого не знаю.":
@@ -221,7 +221,7 @@ label ng_lettie_eleanor_techrot:
             $ advance_time(5)
             le "Ну, медичний погляд мені все одно потрібен. Розкажи."
             $ advance_time(5)
-            $ chemistry["Летті"] += 3
+            $ add_chemistry("Летті", 2)
 
         "Не зовсім.":
             $ advance_time(5)
@@ -246,7 +246,7 @@ label ng_amir_lettie_patient:
             $ advance_time(5)
             am "...Першого? Вау. Вона довіряє тобі більше ніж мені."
             $ advance_time(5)
-            $ chemistry["Амір"] += 2
+            $ add_chemistry("Амір", 2)
 
         "Вона закрита людина.":
             $ advance_time(5)
@@ -273,7 +273,7 @@ label ng_arthur_aoi_past:
             $ advance_time(5)
             ar "Значить, ти для неї — особливий."
             $ advance_time(5)
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Я теж мало знаю.":
             $ advance_time(5)
@@ -300,7 +300,7 @@ label ng_aoi_amir_nightmares:
             $ advance_time(5)
             ao "Бережи його. Він не такий міцний, як здається."
             $ advance_time(5)
-            $ chemistry["Аоі"] += 2
+            $ add_chemistry("Аоі", 2)
 
         "Ні. Не знав.":
             $ advance_time(5)
@@ -327,7 +327,7 @@ label ng_eleanor_quincy_film:
             $ advance_time(5)
             el "Камери стали прицілами. Яка метафора."
             $ advance_time(5)
-            $ chemistry["Елеонор"] += 3
+            $ add_chemistry("Елеонор", 2)
 
         "Щось помітив, але не впевнений.":
             $ advance_time(5)

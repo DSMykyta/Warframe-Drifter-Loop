@@ -63,8 +63,8 @@ label arcade_tournament:
             am "ОБОВ'ЯЗКОВО."
             $ advance_time(5)
 
-            $ chemistry["Амір"] += 3
-            $ chemistry["Аоі"] += 3
+            $ add_chemistry("Амір", 2)
+            $ add_chemistry("Аоі", 2)
 
         "Просто подивитись":
             $ advance_time(5)
@@ -82,8 +82,8 @@ label arcade_tournament:
             am "Вона жахлива. В хорошому сенсі."
             $ advance_time(5)
 
-            $ chemistry["Амір"] += 1
-            $ chemistry["Аоі"] += 1
+            $ add_chemistry("Амір", 2)
+            $ add_chemistry("Аоі", 2)
 
     $ store.seen_dialogues.add("arcade_tournament")
     $ set_flag("group_arcade_tournament_done")

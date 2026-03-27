@@ -60,7 +60,7 @@ label arthur_leadership_burden:
 
             ar "...Це вже більше, ніж я звик отримувати."
             $ advance_time(5)
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Може, варто передати лідерство комусь іншому?":
             $ advance_time(5)
@@ -71,7 +71,7 @@ label arthur_leadership_burden:
 
             ar "Елеонор могла б. Але вона не хоче. І я не маю права її змушувати."
             $ advance_time(5)
-            $ chemistry["Артур"] += 2
+            $ add_chemistry("Артур", 2)
 
         "Ти робиш це добре. Повір мені":
             $ advance_time(5)
@@ -82,7 +82,7 @@ label arthur_leadership_burden:
 
             ar "Дякую. Мені... рідко таке кажуть."
             $ advance_time(5)
-            $ chemistry["Артур"] += 4
+            $ add_chemistry("Артур", 4)
 
     ar "Вибач. Не хотів вивалювати це все на тебе."
     $ advance_time(5)

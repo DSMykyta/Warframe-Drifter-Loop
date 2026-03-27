@@ -41,7 +41,7 @@ label aoi_bubbletea_promise:
             $ advance_time(5)
 
             $ create_promise("Аоі", "food_court", 900, 1020, store.day + 1, "aoi_bubbletea_meeting")
-            $ chemistry["Аоі"] += 3
+            $ add_chemistry("Аоі", 2)
 
         "Може, не завтра":
             $ advance_time(5)
@@ -84,7 +84,7 @@ label aoi_bubbletea_meeting:
     ao "Я цінує тих, хто не боїться мовчати поруч."
     $ advance_time(5)
 
-    $ chemistry["Аоі"] += 5
+    $ add_chemistry("Аоі", 4)
     $ set_flag("aoi_bubbletea_meeting_done")
     $ add_insight("aoi_silence", "Аоі цінує спільну тишу. Для неї це знак довіри.")
     $ fulfill_promise(store.promises[-1] if store.promises else None)

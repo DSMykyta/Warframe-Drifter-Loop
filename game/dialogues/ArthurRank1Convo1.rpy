@@ -148,7 +148,7 @@ label node_565:
         "[ArthurRomance['Choice_ArthurRank1Convo1_1854']]":  # "Мені шкода."
             $ advance_time(5)
             mc "[ArthurRomance['Choice_ArthurRank1Convo1_1854']]"
-            $ chemistry["Артур"] += 10
+            $ add_chemistry("Артур", 4)
             jump node_567
 
 # Node 566: PlayerChoiceDialogueNode
@@ -171,7 +171,7 @@ label node_569:
 
 # Node 570: ChemistryDialogueNode
 label node_570:
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 4)
     jump node_560
 
 # Node 571: PlayerChoiceDialogueNode
@@ -245,7 +245,7 @@ label node_576:
 
 # Node 577: PlayerChoiceDialogueNode
 label node_577:
-    $ chemistry["Артур"] += 20
+    $ add_chemistry("Артур", 4)
     jump node_579
 
 # Node 578: PlayerChoiceDialogueNode
@@ -365,7 +365,7 @@ label node_594:
 
 # Node 595: PlayerChoiceDialogueNode
 label node_595:
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 4)
     jump node_601
 
 # Node 599: DialogueNode
@@ -465,7 +465,7 @@ label node_612:
 
 # Node 614: ChemistryDialogueNode
 label node_614:
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 4)
     jump node_616
 
 # Node 615: SetBooleanDialogueNode
@@ -553,7 +553,7 @@ label node_628:
 
 # Node 629: PlayerChoiceDialogueNode
 label node_629:
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 4)
     jump node_637
 
 # Node 631: DialogueNode
@@ -702,7 +702,7 @@ label node_651:
 
 # Node 652: PlayerChoiceDialogueNode
 label node_652:
-    $ chemistry["Артур"] += 10
+    $ add_chemistry("Артур", 4)
     jump node_655
 
 # Node 653: PlayerChoiceDialogueNode

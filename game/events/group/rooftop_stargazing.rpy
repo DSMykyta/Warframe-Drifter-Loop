@@ -66,8 +66,8 @@ label rooftop_stargazing:
             ao "Тому і дивлюсь."
             $ advance_time(5)
 
-            $ chemistry["Аоі"] += 3
-            $ chemistry["Елеонор"] += 3
+            $ add_chemistry("Аоі", 2)
+            $ add_chemistry("Елеонор", 2)
 
         "Запитати про сузір'я":
             $ advance_time(5)
@@ -85,8 +85,8 @@ label rooftop_stargazing:
             el "...Гарна думка. Запишу."
             $ advance_time(5)
 
-            $ chemistry["Аоі"] += 2
-            $ chemistry["Елеонор"] += 2
+            $ add_chemistry("Аоі", 2)
+            $ add_chemistry("Елеонор", 2)
 
     $ store.seen_dialogues.add("rooftop_stargazing")
     $ set_flag("group_rooftop_stargazing_done")

@@ -69,7 +69,7 @@ label aoi_friends_milestone:
     ao "Ти — тисячний журавлик, якого я не очікувала."
     $ advance_time(5)
 
-    $ chemistry["Аоі"] += 10
+    $ add_chemistry("Аоі", 8)
 
     $ store.seen_dialogues.add("aoi_friends_milestone")
     $ set_flag("aoi_friends_milestone_done")

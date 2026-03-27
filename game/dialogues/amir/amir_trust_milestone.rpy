@@ -56,7 +56,7 @@ label amir_trust_milestone:
     am "А тепер давай зіграємо. Удвох. Як нормальні люди."
     $ advance_time(5)
 
-    $ chemistry["Амір"] += 5
+    $ add_chemistry("Амір", 5)
 
     $ store.seen_dialogues.add("amir_trust_milestone")
     $ set_flag("amir_trust_milestone_done")
