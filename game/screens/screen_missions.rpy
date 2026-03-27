@@ -98,7 +98,7 @@ screen missions_menu():
                             spacing 8
                             text "[m['partner']]" size 14 color "#ffffff60"
                             if _chem_available:
-                                text "+10" size 12 color "#22d3ee"
+                                text "+6" size 12 color "#22d3ee"
                             else:
                                 text "зв'язок вичерпано" size 11 color "#ffffff30"
 
