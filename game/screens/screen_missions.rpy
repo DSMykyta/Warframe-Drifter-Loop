@@ -53,7 +53,7 @@ screen missions_menu():
 
         for i in range(len(missions)):
             $ m = missions[i]
-            $ dur_mins = max(1, m["level"]) * 60
+            $ dur_mins = max(1, m["level"]) * 45
             $ dur_hours = dur_mins // 60
             $ _is_redemption = m.get("is_redemption", False)
             $ _is_synergy = m.get("partner_count", 1) >= 2

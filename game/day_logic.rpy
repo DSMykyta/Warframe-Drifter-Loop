@@ -23,6 +23,9 @@ init python:
         store.mission_chem_today = set()
         store.tags_used_today = {}
         store.missions_today_with = {}
+        # Скинути daily chemistry cap
+        for _n in CAST:
+            store.chemistry_gained_today[_n] = 0
 
         # 4. Лічильник днів без місій
         store.days_without_mission += 1

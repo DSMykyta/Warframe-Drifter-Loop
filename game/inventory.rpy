@@ -81,52 +81,53 @@ init -5 python:
     # ═══════════════════════════════════════════════
 
     # Хто що любить: {item_id: {character: chemistry_bonus}}
+    # Баланс v2: loved=+12, liked=+7, small=+3
     GIFT_REACTIONS = {
         # Артур — кухня
-        "toaster":        {"Артур": 20},
-        "toaster_oven":   {"Артур": 20},
-        "microwave":      {"Артур": 20},
-        "announce":       {"Артур": 20},
-        "propane_tank":   {"Артур": 10},
-        "keychains":      {"Артур": 5},
+        "toaster":        {"Артур": 12},
+        "toaster_oven":   {"Артур": 12},
+        "microwave":      {"Артур": 12},
+        "announce":       {"Артур": 12},
+        "propane_tank":   {"Артур": 7},
+        "keychains":      {"Артур": 3},
 
         # Аоі — музика, транспорт
-        "onlyne_album":       {"Аоі": 20},
-        "wireless_headphones": {"Аоі": 20, "Амір": 20},
-        "speaker_system":     {"Аоі": 20},
-        "scooticle":          {"Аоі": 20},
-        "gas_can":            {"Аоі": 5},
-        "roadsigns":          {"Аоі": 5},
+        "onlyne_album":       {"Аоі": 12},
+        "wireless_headphones": {"Аоі": 12, "Амір": 12},
+        "speaker_system":     {"Аоі": 12},
+        "scooticle":          {"Аоі": 12},
+        "gas_can":            {"Аоі": 3},
+        "roadsigns":          {"Аоі": 3},
 
         # Амір — техніка, ігри
-        "hockey_table":  {"Амір": 20},
-        "gpu_256":       {"Амір": 10},
-        "game_system":   {"Амір": 10},
-        "game_monitor":  {"Амір": 10},
-        "tv_840hd":      {"Амір": 10, "Квінсі": 5},
+        "hockey_table":  {"Амір": 12},
+        "gpu_256":       {"Амір": 7},
+        "game_system":   {"Амір": 7},
+        "game_monitor":  {"Амір": 7},
+        "tv_840hd":      {"Амір": 7, "Квінсі": 3},
 
         # Квінсі — електроніка, медіа
-        "video_camera":  {"Квінсі": 20},
-        "av_receiver":   {"Квінсі": 10},
-        "speaker":       {"Квінсі": 10},
-        "cellphone":     {"Квінсі": 5},
-        "poster":        {"Квінсі": 5},
-        "vhs_series":    {"Квінсі": 5},
+        "video_camera":  {"Квінсі": 12},
+        "av_receiver":   {"Квінсі": 7},
+        "speaker":       {"Квінсі": 7},
+        "cellphone":     {"Квінсі": 3},
+        "poster":        {"Квінсі": 3},
+        "vhs_series":    {"Квінсі": 3},
 
         # Летті — кава, побут
-        "coffee_machine": {"Летті": 20},
-        "medical_kit":    {"Летті": 10},
-        "coffee_cups":    {"Летті": 5},
-        "coffee_mug":     {"Летті": 5},
-        "pillows":        {"Летті": 5, "Елеонор": 5},
-        "cardboard_box":  {"Летті": 5},
+        "coffee_machine": {"Летті": 12},
+        "medical_kit":    {"Летті": 7},
+        "coffee_cups":    {"Летті": 3},
+        "coffee_mug":     {"Летті": 3},
+        "pillows":        {"Летті": 3, "Елеонор": 3},
+        "cardboard_box":  {"Летті": 3},
 
         # Елеонор — природа, канцелярія
-        "hanging_planter": {"Елеонор": 20},
-        "notepad":         {"Елеонор": 10},
-        "binder":          {"Елеонор": 5},
-        "pens":            {"Елеонор": 5},
-        "pencils":         {"Елеонор": 5},
+        "hanging_planter": {"Елеонор": 12},
+        "notepad":         {"Елеонор": 7},
+        "binder":          {"Елеонор": 3},
+        "pens":            {"Елеонор": 3},
+        "pencils":         {"Елеонор": 3},
     }
 
     # Образливі подарунки: {item_prefix_or_id: {character: (penalty, reaction_text)}}

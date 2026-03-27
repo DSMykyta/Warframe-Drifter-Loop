@@ -393,17 +393,19 @@ init -5 python:
     # ═══════════════════════════════════════════════
 
     def apply_decay():
-        """Зменшує хімію якщо давно не взаємодіяв. Викликається в next_day()."""
+        """Зменшує хімію якщо давно не взаємодіяв. Викликається в next_day().
+        Баланс v2: decay починається з дня 7, grace period 2 дні."""
         if store.day <= store.decay_paused_until:
             return
         for name in CAST:
             d = store.days_since_interaction.get(name, 0)
-            if d >= 10:
+            if d >= 14:
                 store.chemistry[name] = max(0, store.chemistry[name] - 3)
-            elif d >= 7:
+            elif d >= 10:
                 store.chemistry[name] = max(0, store.chemistry[name] - 2)
-            elif d >= 5:
+            elif d >= 7:
                 store.chemistry[name] = max(0, store.chemistry[name] - 1)
+            # Інкремент лічильника (grace period = 2 дні реалізовано через reset_interaction)
             store.days_since_interaction[name] = d + 1
 
     def reset_interaction(name):
@@ -478,19 +480,17 @@ init -5 python:
     # ═══════════════════════════════════════════════
 
     def check_mission_neglect():
-        """Перевіряє чи гравець ігнорує місії. Викликається в next_day()."""
+        """Перевіряє чи гравець ігнорує місії. Викликається в next_day().
+        Баланс v2: одноразові штрафи з ресетом лічильника."""
         d = store.days_without_mission
-        if d >= 5:
-            for name in store.chemistry:
-                store.chemistry[name] = max(0, store.chemistry[name] - 5)
-            set_flag("mission_neglect_critical")
-        elif d == 4:
-            for name in store.chemistry:
-                store.chemistry[name] = max(0, store.chemistry[name] - 5)
-            set_flag("mission_neglect_severe")
-        elif d == 3:
+        if d >= 6:
             for name in store.chemistry:
                 store.chemistry[name] = max(0, store.chemistry[name] - 3)
+            set_flag("mission_neglect_critical")
+            store.days_without_mission = 0  # Ресет лічильника — новий цикл
+        elif d == 5:
+            for name in store.chemistry:
+                store.chemistry[name] = max(0, store.chemistry[name] - 2)
             set_flag("mission_neglect_warning")
 
     def on_mission_complete():

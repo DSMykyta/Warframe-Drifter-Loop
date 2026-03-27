@@ -27,8 +27,7 @@ init -5 python:
         # Перевірка на образливий подарунок
         if item_id in OFFENSIVE_GIFTS and character in OFFENSIVE_GIFTS[item_id]:
             penalty, reaction = OFFENSIVE_GIFTS[item_id][character]
-            store.chemistry[character] = max(0, store.chemistry[character] + penalty)
-            # Ставимо флаг
+            add_chemistry(character, penalty)  # penalty < 0, daily cap не обмежує
             flag_name = "bad_gift_{}_{}".format(character.lower(), item_id)
             set_flag(flag_name)
             add_gossip("bad_gift_" + item_id, [character], spread_delay=1)
@@ -37,20 +36,20 @@ init -5 python:
         # Перевірка на улюблений подарунок
         if item_id in GIFT_REACTIONS and character in GIFT_REACTIONS[item_id]:
             bonus = GIFT_REACTIONS[item_id][character]
-            store.chemistry[character] += bonus
+            actual = add_chemistry(character, bonus)
             reset_interaction(character)
-            # Ставимо флаг для спеціальних реакцій на улюблені подарунки
             good_flag = "gifted_{}_{}".format(character.lower(), item_id)
             set_flag(good_flag)
-            if bonus >= 20:
-                return (bonus, "...Це саме те, що мені потрібно. Дякую.", False)
-            elif bonus >= 10:
-                return (bonus, "О, непогано. Дякую.", False)
+            if bonus >= 12:
+                return (actual, "...Це саме те, що мені потрібно. Дякую.", False)
+            elif bonus >= 7:
+                return (actual, "О, непогано. Дякую.", False)
             else:
-                return (bonus, "Дякую, приємно.", False)
+                return (actual, "Дякую, приємно.", False)
 
-        # Нейтральний подарунок — +0
-        return (0, "Дякую... мабуть.", False)
+        # Нейтральний подарунок — +1 (баланс v2)
+        actual = add_chemistry(character, 1)
+        return (actual, "Дякую... мабуть.", False)
 
 
     # add_gossip() визначена в dispatcher.rpy — єдина версія

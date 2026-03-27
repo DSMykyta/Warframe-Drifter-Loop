@@ -38,13 +38,13 @@ label intro:
             qu "Ха."
             $ advance_time(5)
             $ set_flag("intro_dark_humor")
-            $ chemistry["Квінсі"] += 2
+            $ add_chemistry("Квінсі", 2)
 
         "Я не прошу вірити. Перевірте.":
             ar "Перевіримо."
             $ advance_time(5)
             $ set_flag("intro_asked_to_verify")
-            $ chemistry["Артур"] += 2
+            $ add_chemistry("Артур", 2)
 
         "[[Нічого не сказати.]":
             am "Він... не буде відповідати?"
@@ -54,8 +54,8 @@ label intro:
             am "Все, мовчу."
             $ advance_time(5)
             $ set_flag("intro_stayed_silent")
-            $ chemistry["Артур"] += 1
-            $ chemistry["Квінсі"] += 1
+            $ add_chemistry("Артур", 1)
+            $ add_chemistry("Квінсі", 1)
 
     ar "Добре, Марті. Ти нам, може, і потрібний."
     $ advance_time(5)
@@ -77,7 +77,7 @@ label intro:
             ar "Хоч щось."
             $ advance_time(5)
             $ set_flag("intro_military_response")
-            $ chemistry["Артур"] += 2
+            $ add_chemistry("Артур", 2)
 
         "Поки мене не прив'язують до стільців — так.":
             qu "Ха."
@@ -87,13 +87,13 @@ label intro:
             ar "Тобі всі подобаються, Амір."
             $ advance_time(5)
             $ set_flag("intro_sarcastic_response")
-            $ chemistry["Квінсі"] += 2
-            $ chemistry["Амір"] += 1
+            $ add_chemistry("Квінсі", 2)
+            $ add_chemistry("Амір", 1)
 
         "Обіцяю.":
             pause 0.5
             $ set_flag("intro_promised")
-            $ chemistry["Елеонор"] += 2
+            $ add_chemistry("Елеонор", 2)
 
     # Розв'язали
 
@@ -107,7 +107,7 @@ label intro:
     $ advance_time(5)
 
     $ set_flag("lettie_bandaged_hand")
-    $ chemistry["Летті"] += 1
+    $ add_chemistry("Летті", 1)
 
     ao "Я Аоі."
     $ advance_time(5)
@@ -116,18 +116,18 @@ label intro:
         "Дріфтер. Відносно приємно.":
             ao "Відносно. В наших умовах — майже комплімент."
             $ advance_time(5)
-            $ chemistry["Аоі"] += 2
+            $ add_chemistry("Аоі", 2)
 
         "[[Потиснути руку.]":
             ao "Небалакучий тип."
             $ advance_time(5)
-            $ chemistry["Аоі"] += 1
-            $ chemistry["Артур"] += 1
+            $ add_chemistry("Аоі", 1)
+            $ add_chemistry("Артур", 1)
 
         "Вибач за голову. Не було іншого способу.":
             ao "Не мені вибачати. Але дякую що сказав."
             $ advance_time(5)
-            $ chemistry["Аоі"] += 1
+            $ add_chemistry("Аоі", 1)
 
     am "Амір! Технічна частина. І аркади."
     $ advance_time(5)
@@ -141,7 +141,7 @@ label intro:
     am "Тихо. Так."
     $ advance_time(5)
 
-    $ chemistry["Амір"] += 1
+    $ add_chemistry("Амір", 1)
 
     qu "Квінсі. Тир. Без стуку не заходь."
     $ advance_time(5)

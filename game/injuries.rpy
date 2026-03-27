@@ -258,7 +258,7 @@ label lettie_heal_player:
 
     $ remove_injury_stack("player")
     $ set_flag("lettie_healed_today")
-    $ chemistry["Летті"] += 3
+    $ add_chemistry("Летті", 2)  # Баланс v2: було +3
     $ add_journal_entry("Летті залатала травму. Як завжди — мовчки і ефективно.", "event")
 
     hide lettie

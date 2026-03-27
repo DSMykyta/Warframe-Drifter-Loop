@@ -20,7 +20,7 @@ init -5 python:
             return False
         store.dating = None
         set_flag("breakup_" + name.lower())
-        store.chemistry[name] = max(0, store.chemistry[name] - 30)
+        add_chemistry(name, -30)
         add_journal_entry("Розрив з {}. Я не думав що буде так боляче.".format(name), "romance")
         return True
 
@@ -37,7 +37,7 @@ init -5 python:
             for char in get_chars_at(store.current_location):
                 if char == partner:
                     # Партнер бачить — одразу конфлікт
-                    store.chemistry[partner] -= 5
+                    add_chemistry(partner, -5)
                     set_flag("flirt_caught_by_" + partner.lower())
                     return "caught"
         # Приватний — шанс через плітки
@@ -99,7 +99,7 @@ label romance_confession_артур:
             $ advance_time(5)
             ar "Зрозумів. Дякую за чесність."
             $ advance_time(5)
-            $ chemistry["Артур"] -= 5
+            $ add_chemistry("Артур", -5)
 
     $ store.seen_dialogues.add("romance_confession_артур")
     $ set_flag("romance_confession_артур_done")
@@ -132,7 +132,7 @@ label romance_confession_елеонор:
             $ advance_time(5)
             el "Зрозуміло. Я запишу це. Десь."
             $ advance_time(5)
-            $ chemistry["Елеонор"] -= 5
+            $ add_chemistry("Елеонор", -5)
 
     $ store.seen_dialogues.add("romance_confession_елеонор")
     $ set_flag("romance_confession_елеонор_done")
@@ -170,7 +170,7 @@ label romance_confession_летті:
             $ advance_time(5)
             le "Правильна відповідь. Медично обґрунтована. Дякую."
             $ advance_time(5)
-            $ chemistry["Летті"] -= 5
+            $ add_chemistry("Летті", -5)
 
     $ store.seen_dialogues.add("romance_confession_летті")
     $ set_flag("romance_confession_летті_done")
@@ -203,7 +203,7 @@ label romance_confession_амір:
             $ advance_time(5)
             am "...Game Over. Але дякую за гру."
             $ advance_time(5)
-            $ chemistry["Амір"] -= 5
+            $ add_chemistry("Амір", -5)
 
     $ store.seen_dialogues.add("romance_confession_амір")
     $ set_flag("romance_confession_амір_done")
@@ -239,7 +239,7 @@ label romance_confession_аоі:
             $ advance_time(5)
             ao "Зрозуміло. Журавлик номер тисяча один — інше бажання."
             $ advance_time(5)
-            $ chemistry["Аоі"] -= 5
+            $ add_chemistry("Аоі", -5)
 
     $ store.seen_dialogues.add("romance_confession_аоі")
     $ set_flag("romance_confession_аоі_done")
@@ -275,7 +275,7 @@ label romance_confession_квінсі:
             $ advance_time(5)
             qu "Ага. Друг. Класика жанру. Ладно."
             $ advance_time(5)
-            $ chemistry["Квінсі"] -= 5
+            $ add_chemistry("Квінсі", -5)
 
     $ store.seen_dialogues.add("romance_confession_квінсі")
     $ set_flag("romance_confession_квінсі_done")
