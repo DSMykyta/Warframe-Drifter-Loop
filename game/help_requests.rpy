@@ -126,17 +126,17 @@ init python:
         return None
 
     def execute_help_request(entry):
-        """Виконує запит допомоги. +60 хв, +100 крон, +2 хімія."""
+        """Виконує запит допомоги. Баланс v2: 45 хв, +100 крон, +4 хімія."""
         who = entry["who"]
         loc = entry.get("location", "mall")
 
         # Переміщення
         store.current_location = loc
-        advance_time(60)
+        advance_time(45)
 
         # Нагороди
         store.money += 100
-        store.chemistry[who] = store.chemistry.get(who, 0) + 2
+        add_chemistry(who, 4)
         reset_interaction(who)
 
         # Флаги

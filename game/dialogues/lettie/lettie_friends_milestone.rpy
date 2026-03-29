@@ -60,7 +60,7 @@ label lettie_friends_milestone:
     le "А тепер сиди тихо. Канела хоче спати в тебе на колінах. Це привілей, не право."
     $ advance_time(5)
 
-    $ chemistry["Летті"] += 10
+    $ add_chemistry("Летті", 8)
 
     $ store.seen_dialogues.add("lettie_friends_milestone")
     $ set_flag("lettie_friends_milestone_done")

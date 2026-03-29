@@ -61,7 +61,7 @@ label arthur_future:
             ar "Може, цього достатньо. Хотіти."
             $ advance_time(5)
             $ set_flag("arthur_wants_peace")
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Ми могли б відкрити його разом":
             $ advance_time(5)
@@ -76,7 +76,7 @@ label arthur_future:
             ar "Артур і Дрифтер. Кафе «Скана». Звучить жахливо. Мені подобається."
             $ advance_time(5)
             $ set_flag("arthur_cafe_plan")
-            $ chemistry["Артур"] += 5
+            $ add_chemistry("Артур", 4)
 
         "Спочатку давай виживемо":
             $ advance_time(5)
@@ -88,7 +88,7 @@ label arthur_future:
             ar "Але мрії — це не слабкість. Це паливо. Без них ти просто машина, яка воює, поки не зламається."
             $ advance_time(5)
             $ set_flag("arthur_pragmatic_future")
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
     ar "Дякую за цю розмову. Серйозно. Я рідко дозволяю собі думати про «потім»."
     $ advance_time(5)

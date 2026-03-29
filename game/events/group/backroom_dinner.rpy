@@ -52,7 +52,7 @@ label backroom_dinner:
             ar "...Добре. Приходь о сьомій. І не спізнюйся."
             $ advance_time(5)
 
-            $ chemistry["Артур"] += 5
+            $ add_chemistry("Артур", 4)
             $ set_flag("group_cooking_together_offered")
 
         "Просто подякувати":
@@ -62,7 +62,7 @@ label backroom_dinner:
             ar "Знаю. Тому і роблю."
             $ advance_time(5)
 
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
     $ store.seen_dialogues.add("backroom_dinner")
     $ set_flag("group_backroom_dinner_done")

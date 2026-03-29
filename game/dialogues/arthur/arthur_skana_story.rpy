@@ -80,7 +80,7 @@ label arthur_skana_story:
             ar "Заслуговував. Як і більшість тих, кого ми втратили."
             $ advance_time(5)
 
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Ти тримаєш цей клинок як пам'ять?":
             $ advance_time(5)
@@ -89,7 +89,7 @@ label arthur_skana_story:
             ar "Як нагадування. Пам'ять — це м'яко. Нагадування — це те, що не дає повторити помилку."
             $ advance_time(5)
 
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Важко з цим жити?":
             $ advance_time(5)
@@ -98,7 +98,7 @@ label arthur_skana_story:
             ar "Щодня. Але не жити з цим — ще важче."
             $ advance_time(5)
 
-            $ chemistry["Артур"] += 4
+            $ add_chemistry("Артур", 4)
 
     ar "Дякую, що вислухав. Я рідко кому це розповідаю."
     $ advance_time(5)

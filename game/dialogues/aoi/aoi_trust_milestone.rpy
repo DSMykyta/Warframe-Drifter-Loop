@@ -57,7 +57,7 @@ label aoi_trust_milestone:
     ao "Дякую. Що не намагаєшся заповнити кожну секунду словами. Це... рідкість."
     $ advance_time(5)
 
-    $ chemistry["Аоі"] += 5
+    $ add_chemistry("Аоі", 5)
 
     $ store.seen_dialogues.add("aoi_trust_milestone")
     $ set_flag("aoi_trust_milestone_done")

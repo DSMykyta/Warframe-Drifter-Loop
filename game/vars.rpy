@@ -107,8 +107,18 @@ default persistent.all_friends = False
 default persistent.insights_log = []
 default persistent.previous_journal = []
 
-# -------------- deprecated (для сумісності) --------------
-default convo_idx = {}
+# -------------- місійний трекер --------------
+default missions_today_with = {}     # {"Артур": 2, ...} — місій з ким сьогодні
+
+# -------------- daily chemistry cap трекер --------------
+default chemistry_gained_today = {
+    "Артур":   0,
+    "Елеонор": 0,
+    "Летті":   0,
+    "Амір":    0,
+    "Аоі":     0,
+    "Квінсі":  0,
+}
 
 
 # ═══════════════════════════════════════════════════
@@ -147,11 +157,65 @@ init python:
         if pts >= 15:  return "Привітно"
         return "Нейтрально"
 
+    # ═══ БАЛАНС: КОНСТАНТИ ═══
+    RANK_THRESHOLDS = {2: 50, 3: 150, 4: 300, 5: 500, 6: 750}
+
+    # Milestone rep бонуси при досягненні порогів хімії
+    CHEM_MILESTONE_REP = {30: 5, 60: 10, 90: 15, 120: 20}
+
+    # Daily cap хімії per NPC
+    DAILY_CHEMISTRY_CAP = 15
+
+    # Mission chem gate: потрібна розмова за останні N днів
+    MISSION_CHEM_TALK_GATE = 3
+
     def can_rank_up():
         """Перевіряє чи можна підвищити ранг Гексу."""
-        thresholds = {2: 100, 3: 300, 4: 600, 5: 1000, 6: 1500}
         nxt = store.syndicate_rank + 1
-        return nxt <= 6 and store.hex_rep >= thresholds.get(nxt, 99999)
+        return nxt <= 6 and store.hex_rep >= RANK_THRESHOLDS.get(nxt, 99999)
+
+    def add_chemistry(name, amount):
+        """Додає хімію з daily cap та milestone rep. Єдина функція для зміни хімії."""
+        if amount <= 0:
+            # Штрафи не обмежуються daily cap
+            store.chemistry[name] = max(0, store.chemistry.get(name, 0) + amount)
+            return amount
+
+        old = store.chemistry.get(name, 0)
+        gained_today = store.chemistry_gained_today.get(name, 0)
+        remaining_cap = max(0, DAILY_CHEMISTRY_CAP - gained_today)
+        actual = min(amount, remaining_cap)
+        if actual <= 0:
+            return 0
+
+        store.chemistry[name] = old + actual
+        store.chemistry_gained_today[name] = gained_today + actual
+        new = store.chemistry[name]
+
+        # Перевірка milestone rep
+        for threshold, rep_bonus in CHEM_MILESTONE_REP.items():
+            if old < threshold <= new:
+                milestone_flag = "milestone_{}_{}_rep".format(name.lower(), threshold)
+                if not store.flags.get(milestone_flag):
+                    store.hex_rep += rep_bonus
+                    set_flag(milestone_flag)
+                    try_rank_up()
+
+        return actual
+
+    def can_get_mission_chem(name):
+        """Перевіряє чи NPC може отримати mission chemistry (gate: розмова за 3 дні)."""
+        return store.days_since_interaction.get(name, 0) <= MISSION_CHEM_TALK_GATE
+
+    def try_rank_up():
+        """Підвищує ранг якщо можливо. Повертає True якщо підвищив."""
+        if can_rank_up():
+            store.syndicate_rank += 1
+            set_flag("rank_" + str(store.syndicate_rank))
+            add_journal_entry("Ранг Гексу підвищено до {}.".format(store.syndicate_rank), "event")
+            build_daily_deck()  # Нові діалоги можуть стати доступними
+            return True
+        return False
 
 
 # ═══════════════════════════════════════════════════

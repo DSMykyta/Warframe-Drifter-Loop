@@ -38,7 +38,7 @@ label arthur_drinks_invite:
             $ advance_time(5)
 
             $ create_promise("Артур", "bar_skana", 1200, 1320, store.day + 1, "arthur_bar_meeting")
-            $ chemistry["Артур"] += 3
+            $ add_chemistry("Артур", 2)
 
         "Не впевнений, що зможу":
             $ advance_time(5)
@@ -47,7 +47,7 @@ label arthur_drinks_invite:
             ar "Зрозуміло. Може, іншим разом."
             $ advance_time(5)
 
-            $ chemistry["Артур"] -= 1
+            $ add_chemistry("Артур", -1)
 
     $ store.seen_dialogues.add("arthur_drinks_invite")
     $ set_flag("arthur_drinks_invite_done")
@@ -80,7 +80,7 @@ label arthur_bar_meeting:
     ar "Зараз я думаю, що без довіри ми не протримаємось довго."
     $ advance_time(5)
 
-    $ chemistry["Артур"] += 5
+    $ add_chemistry("Артур", 4)
     $ set_flag("arthur_bar_meeting_done")
     $ add_insight("arthur_trust", "Артур рідко довіряє. Але починає. Це для нього велике.")
     $ fulfill_promise(store.promises[-1] if store.promises else None)

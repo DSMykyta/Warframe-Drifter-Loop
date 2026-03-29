@@ -63,7 +63,7 @@ label amir_friends_milestone:
     am "А тепер — давай поб'ємо мій рекорд. Разом. Бо удвох — ми нестримні."
     $ advance_time(5)
 
-    $ chemistry["Амір"] += 10
+    $ add_chemistry("Амір", 8)
 
     $ store.seen_dialogues.add("amir_friends_milestone")
     $ set_flag("amir_friends_milestone_done")

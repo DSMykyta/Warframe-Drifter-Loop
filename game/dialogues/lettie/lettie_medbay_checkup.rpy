@@ -38,7 +38,7 @@ label lettie_medbay_checkup:
             $ advance_time(5)
 
             $ create_promise("Летті", "medbay", 600, 720, store.day + 1, "lettie_checkup_meeting")
-            $ chemistry["Летті"] += 2
+            $ add_chemistry("Летті", 2)
 
         "Я здоровий, не треба":
             $ advance_time(5)
@@ -84,7 +84,7 @@ label lettie_checkup_meeting:
     le "...Не дякуй. Це моя робота."
     $ advance_time(5)
 
-    $ chemistry["Летті"] += 4
+    $ add_chemistry("Летті", 4)
     $ set_flag("lettie_checkup_meeting_done")
     $ add_insight("lettie_cares", "Летті ховає турботу за професіоналізмом. Але вона дбає.")
     $ fulfill_promise(store.promises[-1] if store.promises else None)

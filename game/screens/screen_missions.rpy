@@ -53,11 +53,11 @@ screen missions_menu():
 
         for i in range(len(missions)):
             $ m = missions[i]
-            $ dur_mins = max(1, m["level"]) * 60
+            $ dur_mins = max(1, m["level"]) * 45
             $ dur_hours = dur_mins // 60
             $ _is_redemption = m.get("is_redemption", False)
             $ _is_synergy = m.get("partner_count", 1) >= 2
-            $ _chem_available = m["partner"] not in mission_chem_today
+            $ _chem_available = m["partner"] is not None and m["partner"] not in mission_chem_today
 
             button:
                 xsize 380
@@ -93,18 +93,21 @@ screen missions_menu():
                         text "Без нагороди" size 14 color "#ffffff30"
 
                     # Напарник + статус хімії
-                    hbox:
-                        spacing 8
-                        text "[m['partner']]" size 14 color "#ffffff60"
-                        if _chem_available:
-                            text "+10" size 12 color "#22d3ee"
-                        else:
-                            text "зв'язок вичерпано" size 11 color "#ffffff30"
+                    if m['partner']:
+                        hbox:
+                            spacing 8
+                            text "[m['partner']]" size 14 color "#ffffff60"
+                            if _chem_available:
+                                text "+6" size 12 color "#22d3ee"
+                            else:
+                                text "зв'язок вичерпано" size 11 color "#ffffff30"
 
-                    # Другий напарник (synergy raid)
-                    if _is_synergy:
-                        $ _p2 = m.get("partner2", "?")
-                        text "+ [_p2]" size 14 color "#f0abfc"
+                        # Другий напарник (synergy raid)
+                        if _is_synergy:
+                            $ _p2 = m.get("partner2", "?")
+                            text "+ [_p2]" size 14 color "#f0abfc"
+                    else:
+                        text "Соло місія" size 14 color "#ffffff30"
 
     # ── Назад ──
     button:

@@ -65,8 +65,8 @@ label bar_night:
     le "Ось тому я п'ю каву. Замість торта."
     $ advance_time(5)
 
-    $ chemistry["Артур"] += 3
-    $ chemistry["Летті"] += 3
+    $ add_chemistry("Артур", 2)
+    $ add_chemistry("Летті", 2)
 
     $ store.seen_dialogues.add("bar_night")
     $ set_flag("group_bar_night_done")

@@ -55,6 +55,7 @@ label generic_day:
 label location_loop:
     # Показати фон поточної локації
     $ show_location_bg()
+
     # Показати HUD
     show screen hud
 
@@ -166,7 +167,7 @@ label missions_ui:
 
 label execute_mission:
     $ m = missions[selected_mission]
-    $ dur_mins = max(1, m['level']) * 60
+    $ dur_mins = max(1, m['level']) * 45  # Баланс v2: було ×60
 
     # Встановити напарника для condition-based місійних діалогів
     $ store.current_mission_partner = m['partner']
@@ -203,7 +204,7 @@ label execute_mission:
         # Евакуація: час коротший (50%), нагород нема, +хімія за допомогу
         $ store.minutes -= dur_mins // 2
         $ store.hour = store.minutes // 60
-        $ chemistry[m['partner']] += 5
+        $ add_chemistry(m['partner'], 5)
         $ on_mission_complete()
         if m['partner'] is not None:
             $ reset_interaction(m['partner'])
@@ -215,10 +216,12 @@ label execute_mission:
     # Нагороди
     $ money += m['reward']
     $ hex_rep += m['rep']
+    $ try_rank_up()
 
-    # Хімія напарника (раз на день на персонажа)
+    # Хімія напарника (раз на день на персонажа, +6, gate: розмова за 3 дні)
     if m['partner'] is not None and m['partner'] not in mission_chem_today:
-        $ chemistry[m['partner']] += 10
+        if can_get_mission_chem(m['partner']):
+            $ add_chemistry(m['partner'], 6)
         $ mission_chem_today.add(m['partner'])
 
     # Скинути лічильник neglect

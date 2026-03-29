@@ -50,7 +50,7 @@ label eleanor_friends_milestone:
     el "Ти перша людина, якій я це даю. Навіть Артур не бачив усього."
     $ advance_time(5)
 
-    $ chemistry["Елеонор"] += 10
+    $ add_chemistry("Елеонор", 8)
 
     $ store.seen_dialogues.add("eleanor_friends_milestone")
     $ set_flag("eleanor_friends_milestone_done")

@@ -19,6 +19,16 @@ init python:
         "Перехоплення даних",
     ]
 
+    # Баланс v2: нові нагороди за рівнем
+    MISSION_REWARDS = {
+        1: {"reward": 120, "rep": 2},
+        2: {"reward": 200, "rep": 3},
+        3: {"reward": 300, "rep": 5},
+        4: {"reward": 420, "rep": 7},
+        5: {"reward": 550, "rep": 9},
+        6: {"reward": 700, "rep": 12},
+    }
+
     def generate_missions():
         """Генерує 6 місій на день. 15% шанс на парну (synergy raid).
         NPC з 2+ стаками травм не потрапляють в пул напарників.
@@ -33,8 +43,9 @@ init python:
 
         for i in range(6):
             level = i + 1
-            reward = 100 * level
-            rep = level
+            mr = MISSION_REWARDS.get(level, {"reward": 100 * level, "rep": level})
+            reward = mr["reward"]
+            rep = mr["rep"]
             name = names[i % len(names)]
 
             # Напарник або None якщо нікого немає

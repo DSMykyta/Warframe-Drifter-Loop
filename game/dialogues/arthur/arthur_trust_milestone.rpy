@@ -43,7 +43,7 @@ label arthur_trust_milestone:
     ar "Не дякуй. Просто... не змушуй мене шкодувати."
     $ advance_time(5)
 
-    $ chemistry["Артур"] += 5
+    $ add_chemistry("Артур", 5)
     $ store.decay_paused_until = store.day + 2
     $ store.seen_dialogues.add("arthur_trust_milestone")
     $ set_flag("arthur_trust_milestone_done")

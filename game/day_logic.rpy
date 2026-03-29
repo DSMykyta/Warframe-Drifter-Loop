@@ -23,6 +23,9 @@ init python:
         store.mission_chem_today = set()
         store.tags_used_today = {}
         store.missions_today_with = {}
+        # Скинути daily chemistry cap
+        for _n in CAST:
+            store.chemistry_gained_today[_n] = 0
 
         # 4. Лічильник днів без місій
         store.days_without_mission += 1
@@ -49,14 +52,17 @@ init python:
         # 8. Генерація місій
         generate_missions()
 
-        # 9. Побудувати колоду eligible діалогів на день
+        # 9. Перевірка rank-up
+        try_rank_up()
+
+        # 10. Побудувати колоду eligible діалогів на день
         build_daily_deck()
 
-        # 10. Обробити протухлі івенти
+        # 11. Обробити протухлі івенти
         check_expired_events()
 
-        # 11. Поширити плітки
+        # 12. Поширити плітки
         spread_gossip()
 
-        # 12. Переміщення в бекрум (прокинувся)
+        # 13. Переміщення в бекрум (прокинувся)
         store.current_location = "backroom"

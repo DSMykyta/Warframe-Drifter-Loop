@@ -72,7 +72,7 @@ label quincy_friends_milestone:
             qu "Maybe. Але з касетою — напевно."
             $ advance_time(5)
 
-    $ chemistry["Квінсі"] += 10
+    $ add_chemistry("Квінсі", 8)
 
     $ store.seen_dialogues.add("quincy_friends_milestone")
     $ set_flag("quincy_friends_milestone_done")

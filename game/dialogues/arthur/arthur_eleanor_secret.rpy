@@ -69,7 +69,7 @@ label arthur_eleanor_secret:
 
             ar "Але... так. Мені легше, коли вона поруч. Навіть якщо це ніколи не скажу їй в обличчя."
             $ advance_time(5)
-            $ chemistry["Артур"] += 4
+            $ add_chemistry("Артур", 4)
 
         "Може, вона теж тебе потребує?":
             $ advance_time(5)
@@ -80,7 +80,7 @@ label arthur_eleanor_secret:
 
             ar "Я не знаю, чи це означає, що вона мене потребує. Але мені хочеться так думати."
             $ advance_time(5)
-            $ chemistry["Артур"] += 5
+            $ add_chemistry("Артур", 4)
 
         "Ти не мусиш з нею змагатися":
             $ advance_time(5)
@@ -91,7 +91,7 @@ label arthur_eleanor_secret:
 
             ar "Можливо, вже час перестати бігти."
             $ advance_time(5)
-            $ chemistry["Артур"] += 4
+            $ add_chemistry("Артур", 4)
 
     ar "Не розповідай їй, що я це казав. Вона і так все знає, але... нехай вдає, що ні."
     $ advance_time(5)

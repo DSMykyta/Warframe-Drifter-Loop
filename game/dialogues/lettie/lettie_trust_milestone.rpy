@@ -59,7 +59,7 @@ label lettie_trust_milestone:
     le "...Але дякую. Що приходиш."
     $ advance_time(5)
 
-    $ chemistry["Летті"] += 5
+    $ add_chemistry("Летті", 5)
 
     $ store.seen_dialogues.add("lettie_trust_milestone")
     $ set_flag("lettie_trust_milestone_done")
