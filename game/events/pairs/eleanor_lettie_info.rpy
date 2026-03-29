@@ -4,7 +4,7 @@
 init python:
     BANTER_ENTRIES.append({
         "id": "eleanor_lettie_info",
-        "location": "info_room",
+        "location": "info_counter",
         "chars": ["Елеонор", "Летті"],
         "conditions": {
             "flag_true": ["eleanor_intro_done", "lettie_intro_done"],

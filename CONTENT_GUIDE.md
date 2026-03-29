@@ -384,8 +384,8 @@ show lettie at right          # Двоє — правий
 | ID | Назва | Суміжні |
 |----|-------|---------|
 | `mall` | Мол Гьольванії | Всі точки |
-| `info_desk` | Інфостійка | mall, info_room |
-| `info_room` | Кімната за стійкою | info_desk |
+| `info_desk` | Інфо-острівець | mall, info_counter |
+| `info_counter` | Інфостійка | info_desk |
 | `arcade` | Аркади | mall |
 | `music_shop` | Музичний магазин | mall |
 | `furniture` | Магазин меблів | mall |
