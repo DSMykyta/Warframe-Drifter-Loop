@@ -110,6 +110,9 @@ default persistent.previous_journal = []
 # -------------- місійний трекер --------------
 default missions_today_with = {}     # {"Артур": 2, ...} — місій з ким сьогодні
 
+# -------------- діалоговий лічильник реплік --------------
+default dialogue_line_count = 0        # скільки реплік сказано в поточному діалозі
+
 # -------------- daily chemistry cap трекер --------------
 default chemistry_gained_today = {
     "Артур":   0,
@@ -131,6 +134,35 @@ init python:
         """Просуває час на mins хвилин. Оновлює hour."""
         store.minutes += mins
         store.hour = store.minutes // 60
+
+    # ═══ ДІАЛОГОВА ОБГОРТКА ═══
+
+    DIALOGUE_TIME_PER_LINE = 3  # хвилин за репліку
+
+    def dialogue_begin():
+        """Викликати на початку кожного діалогу.
+        Ховає HUD/пейджер, скидає лічильник реплік."""
+        store.dialogue_line_count = 0
+        renpy.hide_screen("hud")
+        renpy.hide_screen("pager_hud")
+        renpy.hide_screen("pager")
+
+    def dialogue_end():
+        """Викликати в кінці кожного діалогу.
+        Списує час (count × 3 хв), повертає HUD."""
+        mins = store.dialogue_line_count * DIALOGUE_TIME_PER_LINE
+        if mins > 0:
+            advance_time(mins)
+        store.dialogue_line_count = 0
+        renpy.show_screen("hud")
+        renpy.show_screen("pager_hud")
+
+    def _count_dialogue_line(event, interact=True, **kwargs):
+        """Глобальний callback: рахує кожну репліку."""
+        if interact and event == "begin":
+            store.dialogue_line_count += 1
+
+    config.all_character_callbacks.append(_count_dialogue_line)
 
     def has_time_for(mins):
         """Завжди True — час не блокує дії, але після 24:00 порожньо."""
