@@ -6,9 +6,8 @@ init python:
         "id": "lettie_rank1_convo3",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done", "lettie_rank1_convo2_done"],
             "flag_false": ["lettie_rank1_convo3_done"],
-            "rank_min": 1,
+            "chemistry_min": ("Летті", 10),
         },
         "priority": 45,
         "chance": 100,

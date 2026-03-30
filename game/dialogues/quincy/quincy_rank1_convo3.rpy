@@ -6,9 +6,8 @@ init python:
         "id": "quincy_rank1_convo3",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done", "quincy_rank1_convo2_done"],
             "flag_false": ["quincy_rank1_convo3_done"],
-            "rank_min": 1,
+            "chemistry_min": ("Квінсі", 10),
         },
         "priority": 45,
         "chance": 100,

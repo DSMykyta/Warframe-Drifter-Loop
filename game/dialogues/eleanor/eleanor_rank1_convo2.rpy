@@ -6,9 +6,8 @@ init python:
         "id": "eleanor_rank1_convo2",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["eleanor_intro_done", "eleanor_rank1_convo1_done"],
             "flag_false": ["eleanor_rank1_convo2_done"],
-            "rank_min": 1,
+            "chemistry_min": ("Елеонор", 4),
         },
         "priority": 45,
         "chance": 100,
