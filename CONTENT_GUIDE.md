@@ -8,187 +8,107 @@
 
 | Тип | Реєстрація | Папка | Приклад файлу |
 |-----|-----------|-------|---------------|
-| Діалог з персонажем | `DIALOGUE_ENTRIES` | `game/dialogues/{char}/` | `arthur_about_team.rpy` |
+| Діалог з персонажем | `DIALOGUE_ENTRIES` | `game/dialogues/{char}/` | `arthur_rank1_convo1.rpy` |
 | Milestone (хімія 60/120) | `DIALOGUE_ENTRIES` | `game/dialogues/{char}/` | `arthur_trust_milestone.rpy` |
 | Групова сцена | `DIALOGUE_ENTRIES` | `game/events/group/` | `bar_night.rpy` |
 | Парний banter | `BANTER_ENTRIES` | `game/events/pairs/` | `amir_aoi_arcade.rpy` |
-| Місійний міні-діалог | `MISSION_DIALOGUE_ENTRIES` | `game/events/missions/` | `arthur_mission_1.rpy` |
+| Місійний діалог | `MISSION_DIALOGUE_ENTRIES` | `game/events/missions/` | `arthur_mission_1.rpy` |
+| Місійний івент | `MISSION_DIALOGUE_ENTRIES` | `game/events/missions/` | `metro_jacket_event.rpy` |
 | Awareness (патерни) | `DIALOGUE_ENTRIES` | `game/events/awareness/` | `spending_time_arthur.rpy` |
 | Gift reaction | `DIALOGUE_ENTRIES` | `game/events/gifts/` | `arthur_gift_reactions.rpy` |
 | Обіцянка | `DIALOGUE_ENTRIES` | `game/dialogues/{char}/` | `arthur_drinks_invite.rpy` |
 | Stub (заглушка) | Автоматично через `STUB_TOPICS` | `game/stubs/` | `arthur_stubs.rpy` |
+| **Динамічна опція** | `BONUS_OPTIONS` | `game/events/` або `game/dialogues/` | `arthur_metro_jacket_react.rpy` |
 
 ---
 
-## 2. ШАБЛОН: ЗВИЧАЙНИЙ ДІАЛОГ
+## 2. ШАБЛОН: ЗВИЧАЙНИЙ ДІАЛОГ (BALANCE V2)
 
 ```renpy
 # game/dialogues/{char}/{char}_{topic}.rpy
 
 init python:
     DIALOGUE_ENTRIES.append({
-        "id": "{char}_{topic}",            # Унікальний ID
-        "who": "Артур",                     # Кирилицею, як в CAST
-        "conditions": {                     # Коли доступний (див. секцію 5)
-            "flag_true": ["arthur_intro_done"],
+        "id": "{char}_{topic}",
+        "who": "Артур",
+        "conditions": {
             "flag_false": ["{char}_{topic}_done"],
-            "chemistry_min": ("Артур", 30),
+            "chemistry_min": ("Артур", 10),         # з'являється при хімії 10+
         },
-        "priority": 50,                    # Чим вище — тим раніше спрацює (див. секцію 6)
-        "chance": 100,                      # % шанс що спрацює
+        "priority": 50,
+        "chance": 100,
         "label": "{char}_{topic}",
     })
 
 label {char}_{topic}:
     show arthur at char_center
     $ store.talked_today.add("Артур")
+    $ dialogue_begin()                              # ПОЧАТОК: скидає лічильник, ховає HUD
 
     ar "Репліка NPC."
-    $ advance_time(5)
 
     mc "Відповідь гравця."
-    $ advance_time(5)
 
     menu:
         "Варіант 1":
-            $ advance_time(5)
             ar "Реакція на варіант 1."
-            $ advance_time(5)
-            $ chemistry["Артур"] += 3       # Якщо є вплив
-            $ set_flag("якийсь_флаг")       # Якщо відкриває щось
+            $ add_chemistry("Артур", 2)             # +2 за добрий вибір
+            $ set_flag("якийсь_флаг")
 
         "Варіант 2":
-            $ advance_time(5)
             ar "Реакція на варіант 2."
-            $ advance_time(5)
+            $ add_chemistry("Артур", 4)             # +4 за відмінний вибір (рідко!)
 
-    # ОБОВ'ЯЗКОВИЙ БЛОК ЗАКРИТТЯ:
+        "Варіант 3 (бонус)" if store.flags.get("special_flag"):
+            ar "Особлива реакція."                  # Динамічна опція через if
+            $ add_chemistry("Артур", 4)
+
+    $ dialogue_end()                                # КІНЕЦЬ: списує час, показує HUD
     $ store.seen_dialogues.add("{char}_{topic}")
     $ set_flag("{char}_{topic}_done")
-    $ add_insight("insight_id", "Текст факту для шафи думок.")  # опціонально
-    $ add_journal_entry("Запис в щоденник.", "conversation")     # опціонально
 
     hide arthur
     return
 ```
 
----
+### КЛЮЧОВІ ВІДМІННОСТІ ВІД СТАРОГО ФОРМАТУ:
 
-## 3. ШАБЛОН: ГРУПОВА СЦЕНА
+| Було (старе) | Стало (Balance v2) |
+|---|---|
+| `$ advance_time(5)` після кожної репліки | `$ dialogue_begin()` / `$ dialogue_end()` — час рахується автоматично |
+| `$ chemistry["Артур"] += 3` | `$ add_chemistry("Артур", 2)` — через daily cap |
+| `"flag_true": ["arthur_intro_done"]` | **Не потрібно** — інтро гарантоване системою |
+| `"flag_true": ["prev_convo_done"]` | `"chemistry_min": ("Артур", N)` — плоска система |
+| `"rank_min": 1` | **Не потрібно** — ранг починається з 1 |
 
-```renpy
-# game/events/group/{scene_name}.rpy
+### ПРАВИЛА:
 
-init python:
-    DIALOGUE_ENTRIES.append({
-        "id": "{scene_name}",
-        "who": "Артур",                     # Хто ініціює (для daily_deck)
-        "conditions": {
-            "flag_true": ["arthur_intro_done", "lettie_intro_done"],
-            "flag_false": ["{scene_name}_done"],
-            "chars_at_location": ["Артур", "Летті"],  # Обидва мають бути тут
-            "time_from": 1140,              # Після 19:00 (опціонально)
-        },
-        "priority": 70,
-        "chance": 50,
-        "label": "{scene_name}",
-    })
-
-label {scene_name}:
-    $ store.talked_today.add("Артур")
-    $ store.talked_today.add("Летті")
-
-    show arthur at left
-    show lettie at right
-
-    ar "Репліка."
-    $ advance_time(5)
-    le "Репліка."
-    $ advance_time(5)
-
-    # ... діалог ...
-
-    $ chemistry["Артур"] += 3
-    $ chemistry["Летті"] += 3
-    $ store.seen_dialogues.add("{scene_name}")
-    $ set_flag("{scene_name}_done")
-
-    hide arthur
-    hide lettie
-    return
-```
+1. **НЕ** використовуй `advance_time()` в діалогах — система `dialogue_begin/end` рахує автоматично (3 хв за репліку)
+2. **НЕ** використовуй `chemistry["Артур"] +=` напряму — тільки через `add_chemistry()` (daily cap + milestone rep)
+3. **НЕ** створюй ланцюжки через `flag_true: ["prev_convo_done"]` — використовуй `chemistry_min`
+4. **НЕ** перевіряй `_intro_done` — інтро гарантоване `script.rpy`
+5. Кожна розмова — **незалежна**, з'являється на основі стану світу
 
 ---
 
-## 4. ШАБЛОН: ПАРНИЙ BANTER
+## 3. УМОВИ (CONDITIONS) — ПЛОСКА СИСТЕМА
 
-Banter = фонова сценка при вході в локацію. Не вибирається гравцем — просто відбувається.
+Діалоги з'являються на основі **стану світу**, не послідовності:
 
-```renpy
-# game/events/pairs/{pair_name}.rpy
-
-init python:
-    BANTER_ENTRIES.append({
-        "id": "{pair_name}",
-        "location": "comp_club",            # Де відбувається (None = будь-де)
-        "chars": ["Аоі", "Амір"],           # Обидва мають бути в локації
-        "conditions": {
-            "flag_true": ["aoi_intro_done", "amir_intro_done"],
-            "flag_false": ["{pair_name}_seen"],
-        },
-        "label": "{pair_name}",
-    })
-
-label {pair_name}:
-    show aoi at left
-    show amir at right
-
-    am "Репліка."
-    $ advance_time(5)
-    ao "Репліка."
-    $ advance_time(5)
-
-    $ set_flag("{pair_name}_seen")
-    $ store.seen_dialogues.add("{pair_name}")
-
-    hide aoi
-    hide amir
-    return
-```
-
-**Одиночний banter** (текстовий, без label):
-
-```python
-BANTER_ENTRIES.append({
-    "id": "quincy_troll_comment",
-    "who": "Квінсі",                        # Одиночний — "who" замість "chars"
-    "conditions": {
-        "flag_true": ["quincy_intro_done"],
-        "flag_false": ["quincy_troll_seen"],
-    },
-    "location": None,                        # Будь-де
-    "text": "nice moves m8",                 # Текст без label
-})
-```
-
----
-
-## 5. УМОВИ (CONDITIONS)
-
-### Стабільні (перевіряються раз на день при build_daily_deck):
+### Стабільні (перевіряються раз на день):
 
 | Ключ | Формат | Опис |
 |------|--------|------|
-| `chemistry_min` | `("Артур", 60)` | Хімія >= значення |
+| `chemistry_min` | `("Артур", 10)` | Хімія >= значення |
 | `chemistry_max` | `("Артур", 90)` | Хімія < значення |
 | `flag_true` | `["flag1", "flag2"]` | Всі флаги True |
-| `flag_false` | `["flag1"]` | Всі флаги False (ще не ставились) |
+| `flag_false` | `["flag1"]` | Всі флаги False |
 | `rank_min` | `2` | Ранг Гексу >= |
 | `rank_max` | `4` | Ранг Гексу < |
 | `day_min` | `10` | День >= |
 | `day_max` | `25` | День < |
 | `dating` | `None` або `"Артур"` | Поточний партнер |
-| `persistent` | `"loop_count"` | Persistent змінна > 0 (для NG+) |
+| `persistent` | `"loop_count"` | Persistent > 0 (для NG+) |
 
 ### Динамічні (перевіряються при кожному get_dialogue):
 
@@ -197,22 +117,196 @@ BANTER_ENTRIES.append({
 | `time_from` | `1140` | Хвилини >= (19:00 = 1140) |
 | `time_to` | `1320` | Хвилини < (22:00 = 1320) |
 | `location` | `"bar"` | Гравець в цій локації |
-| `chars_at_location` | `["Артур", "Летті"]` | Ці NPC в поточній локації гравця |
+| `chars_at_location` | `["Артур", "Летті"]` | Ці NPC в поточній локації |
 | `mission_partner` | `"Квінсі"` | Тільки під час місії з цим NPC |
 
-### Додаткові (для спец. контенту):
+### Приклад: як діалоги відкриваються природно
 
-| Ключ | Формат | Опис |
-|------|--------|------|
-| `expires_in_days` | `3` | Діалог доступний N днів після появи в deck (потім зникає) |
-| `on_expire` | `"label_name"` | Label що викликається коли діалог протух (опціонально) |
-| `tag` | `"heavy_lore"` | Cooldown-тег: діалоги з однаковим тегом не повторюються в один день |
+```python
+# Rank 1 convos (хімія 0-18):
+convo1: chemistry_min 0    # одразу після інтро (інтро має priority 90, тому йде першим)
+convo2: chemistry_min 5    # після 1-2 взаємодій
+convo3: chemistry_min 10   # після кількох розмов/подарунків
+convo4: chemistry_min 18   # потрібна цілеспрямована увага
 
-**Примітка:** Диспетчер також розуміє `time_min`/`time_max` — це синоніми `time_from`/`time_to`. Для нового контенту використовуй `time_from`/`time_to`.
+# Rank 2 convos (хімія 20-45):
+convo1: chemistry_min 20, rank_min 2
+convo2: chemistry_min 28, rank_min 2
+...
+```
 
 ---
 
-## 6. ПРІОРИТЕТИ
+## 4. ХІМІЯ — BALANCE V2 ЗНАЧЕННЯ
+
+### Скільки давати:
+
+| Тип вибору | add_chemistry | Коли |
+|---|---|---|
+| Стандартний добрий | `+2` | Більшість правильних виборів |
+| Відмінний/рідкісний | `+4` | Ключові моменти, глибоке розуміння персонажа |
+| Поганий/образливий | `-2` | Невдалий жарт, нечутливість |
+| Негативний | `-5` | Порушення довіри, зрада |
+
+### Пороги хімії:
+
+| Очки | Ранг | Що відкриває |
+|------|------|-------------|
+| 0-14 | Нейтрально | Rank 1 convos |
+| 15-34 | Привітно | Якорні діалоги |
+| 35-59 | Подобається | Глибші теми |
+| 60-89 | Довіра | Trust milestone |
+| 90-119 | Близько | Особисті теми |
+| 120-159 | Друзі | Friends milestone, фінал |
+| 160+ | Кохання | Romance confession |
+
+---
+
+## 5. ШАБЛОН: МІСІЙНИЙ ІВЕНТ
+
+Відбувається під час місії. Реєструється в `MISSION_DIALOGUE_ENTRIES`.
+Час рахується місією, тому `dialogue_begin/end` **не потрібні**.
+
+```renpy
+# game/events/missions/{event_name}.rpy
+
+init python:
+    MISSION_DIALOGUE_ENTRIES.append({
+        "id": "{event_name}",
+        "who": "Артур",                          # Хто напарник
+        "conditions": {
+            "flag_false": ["{event_name}_done"],
+            "chemistry_min": ("Артур", 30),
+            "chemistry_min": ("Аоі", 30),        # Якщо потрібні 2 NPC
+        },
+        "priority": 50,
+        "chance": 75,                             # 75% шанс тригера
+        "label": "{event_name}",
+    })
+
+label {event_name}:
+    # Місійний діалог — БЕЗ dialogue_begin/end, БЕЗ advance_time
+    ar "Репліка під час місії."
+    mc "Відповідь."
+
+    menu:
+        "Варіант 1":
+            $ add_chemistry("Артур", 2)
+        "Варіант 2":
+            $ set_flag("some_flag")
+
+    $ store.seen_dialogues.add("{event_name}")
+    $ set_flag("{event_name}_done")
+    return
+```
+
+---
+
+## 6. ДИНАМІЧНІ ОПЦІЇ (BONUS_OPTIONS)
+
+**Це найважливіша нова система.** Будь-який діалог може отримати додаткову опцію
+в меню на основі стану світу — без зміни основного файлу діалогу.
+
+### Як це працює:
+
+1. Окремий файл реєструє `BONUS_OPTIONS.append(...)` з умовами
+2. В будь-якому діалозі з цим NPC, якщо умова виконана — опція з'являється
+3. Опція може залежати від: флагів, хімії, поточного одягу NPC, інвентарю
+
+### Спосіб 1: Через `if` в menu (найпростіший)
+
+```renpy
+menu:
+    "Звичайна опція 1":
+        jump branch_1
+    "Звичайна опція 2":
+        jump branch_2
+    "О! Це та куртка з метро!" if store.flags.get("arthur_has_metro_jacket") and store.current_outfits.get("Артур") == "metro_jacket":
+        call arthur_metro_jacket_react
+```
+
+**Коли використовувати:** Коли бонусна опція потрібна в конкретному діалозі.
+
+### Спосіб 2: Через BONUS_OPTIONS реєстр (для cross-file опцій)
+
+```renpy
+# game/events/missions/metro_jacket_react.rpy
+
+init python:
+    BONUS_OPTIONS.append({
+        "id": "arthur_metro_jacket_comment",
+        "who": "Артур",
+        "text": "О! Зачекай, це що та куртка з метро?",
+        "label": "arthur_metro_jacket_react",
+        "conditions": {
+            "flag_true": ["arthur_has_metro_jacket"],
+        },
+        "outfit_check": ("Артур", "metro_jacket"),  # тільки коли одягнений
+        "once": True,                                 # зникає після використання
+    })
+
+label arthur_metro_jacket_react:
+    # Ця гілка викликається через call — повертається назад
+    ar "Що, бачиш щось знайоме?"
+    mc "Це ж та куртка! З тієї станції метро."
+    ar "...Може."
+
+    menu:
+        "Тобі йде.":
+            ar "Дякую."
+            $ add_chemistry("Артур", 4)
+        "Вона ж була в смітті!":
+            ar "Вона була на ЛАВЦІ. Це різні речі."
+            $ add_chemistry("Артур", 2)
+
+    $ mark_bonus_used("arthur_metro_jacket_comment")
+    return
+```
+
+**Коли використовувати:** Коли опція має з'являтися в БУДЬ-ЯКОМУ діалозі з NPC,
+а не в конкретному. Наприклад: NPC одягнув нову річ — гравець може прокоментувати
+при будь-якій наступній розмові.
+
+### Як вбудувати BONUS_OPTIONS в діалоги:
+
+```renpy
+label some_dialogue:
+    show arthur at char_center
+    $ dialogue_begin()
+
+    ar "Привіт."
+
+    # Основне меню
+    $ _bonus = get_bonus_options("Артур")
+
+    menu:
+        "Звичайна опція 1":
+            jump branch_1
+        "Звичайна опція 2":
+            jump branch_2
+
+    # Якщо є бонусні опції — друге меню після основного
+    if _bonus:
+        menu:
+            "Ще дещо..." if True:
+                pass
+        # Або показати кожну бонусну опцію
+        for _opt in _bonus:
+            # В Ren'Py немає dynamic menu items в for loop,
+            # тому використовуй if-перевірки (див. Спосіб 1)
+            pass
+
+    $ dialogue_end()
+    ...
+```
+
+**На практиці Спосіб 1 (`if` в menu) — найнадійніший і найчистіший.**
+Спосіб 2 корисний для трекінгу і аналітики, але показ в меню все одно
+через `if` в конкретних діалогах.
+
+---
+
+## 7. ПРІОРИТЕТИ
 
 | Діапазон | Тип контенту |
 |----------|-------------|
@@ -220,145 +314,13 @@ BANTER_ENTRIES.append({
 | 80-89 | Trauma, confession, healing |
 | 70-79 | Групові сцени, важливі ланцюжки |
 | 60-69 | Глибокі діалоги, обіцянки |
-| 50-59 | Якорні діалоги (стандартні) |
-| 40-49 | NG+ гілки |
+| 50-59 | Якорні діалоги (перша розмова кожного рангу) |
+| 40-49 | NG+ гілки, другорядні |
 | 1-10 | Awareness, патерни |
 
-Якщо пріоритет однаковий — випадковий вибір з найвищих.
-
 ---
 
-## 7. ШАБЛОН: МІСІЙНИЙ ДІАЛОГ
-
-Відбувається під час місії. Без `advance_time()`. Реєструється в **MISSION_DIALOGUE_ENTRIES** (не DIALOGUE_ENTRIES).
-
-```renpy
-# game/events/missions/{char}_mission_{N}.rpy
-
-init python:
-    MISSION_DIALOGUE_ENTRIES.append({
-        "id": "{char}_mission_{N}",
-        "who": "Артур",
-        "conditions": {
-            "flag_true": ["arthur_intro_done"],
-        },
-        "priority": 50,
-        "label": "{char}_mission_{N}",
-    })
-
-label {char}_mission_{N}:
-    ar "Репліка під час місії."
-    mc "Відповідь."
-    ar "Ще репліка."
-    return
-```
-
----
-
-## 8. ШАБЛОН: ОБІЦЯНКА
-
-Діалог створює обіцянку → наступного дня NPC чекає → гравець приходить або ні.
-
-```renpy
-# В діалозі-запрошенні:
-$ create_promise("Артур", "bar", 1200, 1320, store.day + 1, "arthur_bar_meeting")
-# Хто, де, з якої хвилини, до якої, якого дня, label зустрічі
-
-# Label зустрічі (в тому ж файлі):
-label arthur_bar_meeting:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-
-    ar "Прийшов. Добре."
-    $ advance_time(5)
-    # ... діалог зустрічі ...
-
-    $ chemistry["Артур"] += 5
-    $ set_flag("arthur_bar_meeting_done")
-    $ fulfill_promise(store.promises[-1] if store.promises else None)
-
-    hide arthur
-    return
-```
-
-Якщо гравець не прийде — `check_broken_promises()` в next_day дає -5 хімії.
-
----
-
-## 9. ШАБЛОН: STUB (ЗАГЛУШКА)
-
-Коли нема eligible діалогів — диспетчер дає stub. Не потребує реєстрації в DIALOGUE_ENTRIES.
-Теми визначені в `STUB_TOPICS` (dispatcher.rpy). Label = `stub_{Ім'я}_{тема}`.
-
-```renpy
-# game/stubs/{char}_stubs.rpy
-
-label stub_Артур_cooking:
-    show arthur at char_center
-    ar "Сьогодні готую рагу. Якщо знайду картоплю."
-    $ advance_time(5)
-    ar "Якщо ні — знову консерви."
-    $ advance_time(5)
-    hide arthur
-    return
-```
-
----
-
-## 10. ІМЕНУВАННЯ І РЕЄСТР ФЛАГІВ
-
-### Іменування
-
-Повні правила — `NAMING_CONVENTIONS.md`. Коротко:
-
-- Флаг: `{хто}_{що}_{стан}` — `arthur_cooking_done`, `intro_stayed_silent`, `pair_arthur_quincy_seen`
-- Файл: `{char}_{тема}.rpy` — збігається з label і ID
-- Label = ID = ім'я файлу: `arthur_cooking` всюди
-
-### Реєстр
-
-Кожен `set_flag()` **обов'язково** додається в `FLAGS_REGISTRY.md`.
-
-Для кожного флагу вказати:
-- **Флаг** — назва
-- **Файл** — де ставиться (`set_flag()`)
-- **Контекст** — що сталося в грі
-- **Використовується** — де цей флаг є в `flag_true`/`flag_false` як тригер. Якщо поки ніде — `—`
-
-Перед створенням нового діалогу — перевір реєстр. Якщо потрібен флаг з іншого діалогу, знайди його в реєстрі щоб дізнатися точну назву і контекст.
-
----
-
-## 11. ДОСТУПНІ ФУНКЦІЇ
-
-### Обов'язкові в кожному діалозі:
-```python
-$ store.talked_today.add("Артур")          # На початку
-$ advance_time(5)                           # Після кожної репліки (5 хв)
-$ store.seen_dialogues.add("dialogue_id")   # В кінці
-$ set_flag("dialogue_id_done")             # В кінці
-```
-
-### Опціональні:
-```python
-$ chemistry["Артур"] += 5                   # Змінити хімію
-$ chemistry["Артур"] -= 3                   # Зменшити хімію
-$ set_flag("якийсь_флаг")                  # Поставити флаг (для умов інших діалогів)
-$ add_insight("id", "Текст факту")         # Факт в шафу думок
-$ add_journal_entry("Текст.", "тип")       # Запис в щоденник
-$ add_gossip("Артур", "flirt", "Аоі")     # Додати плітку
-$ create_promise("Хто", "де", from, to, day, "label")  # Обіцянка
-$ start_dating("Артур")                    # Почати романс (chemistry >= 160)
-$ add_injury_stack("player")               # Травма гравцю
-$ add_injury_stack("Артур")                # Травма NPC
-```
-
-### Типи journal_entry:
-`"conversation"`, `"mission"`, `"promise"`, `"insight"`, `"romance"`, `"milestone"`, `"event"`, `"lore"`
-
----
-
-## 12. ПЕРСОНАЖІ
+## 8. ПЕРСОНАЖІ
 
 | Ім'я (кирилиця) | Тег діалогу | show ім'я | Домашня локація |
 |-----------------|-------------|-----------|-----------------|
@@ -370,225 +332,83 @@ $ add_injury_stack("Артур")                # Травма NPC
 | Квінсі | `qu` | `quince` | `range` |
 | Дріфтер (MC) | `mc` | — | `backroom` |
 
-### Позиції на екрані:
-```renpy
-show arthur at char_center    # Один персонаж — по центру
-show arthur at left           # Двоє — лівий
-show lettie at right          # Двоє — правий
-```
+---
+
+## 9. ЛОКАЦІЇ
+
+| ID | Назва |
+|----|-------|
+| `mall` | Мол Гьольванії |
+| `info_desk` | Інфо-острівець |
+| `info_counter` | Інфостійка |
+| `arcade` | Аркади |
+| `music_shop` | Музичний магазин |
+| `furniture` | Магазин меблів |
+| `range` | Тир |
+| `medbay` | Медвідділ |
+| `bar` | Бар |
+| `foodcourt` | Футкорт |
+| `comp_club` | Комп'ютерний клуб |
+| `garage` | Гараж |
+| `backroom` | Бекрум |
+| `rooftop` | Дах |
+| `balcony` | Балкон 2-го поверху |
+| `cafe` | Кав'ярня |
+| `cafe_balcony` | Біля кав'ярні (2 поверх) |
+| `utility` | Підсобка |
+| `warehouse` | Склад |
 
 ---
 
-## 13. ЛОКАЦІЇ
+## 10. ДОСТУПНІ ФУНКЦІЇ
 
-| ID | Назва | Суміжні |
-|----|-------|---------|
-| `mall` | Мол Гьольванії | Всі точки |
-| `info_desk` | Інфо-острівець | mall, info_counter |
-| `info_counter` | Інфостійка | info_desk |
-| `arcade` | Аркади | mall |
-| `music_shop` | Музичний магазин | mall |
-| `furniture` | Магазин меблів | mall |
-| `range` | Тир | mall |
-| `medbay` | Медвідділ | mall |
-| `bar` | Бар | mall |
-| `foodcourt` | Футкорт | mall |
-| `comp_club` | Комп'ютерний клуб | mall, garage |
-| `garage` | Гараж | comp_club |
-| `backroom` | Бекрум | mall |
-| `rooftop` | Дах | mall |
-
-Переміщення: сусідні = 5 хв, через мол = 10 хв.
-
----
-
-## 14. ХІМІЯ (ТІРИ)
-
-| Очки | Ранг | Що відкриває |
-|------|------|-------------|
-| 0-14 | Нейтрально | Інтро |
-| 15-34 | Привітно | Якорні |
-| 35-59 | Подобається | Більше якорних |
-| 60-89 | Довіра | Trust milestone, глибокі |
-| 90-119 | Близько | Ланцюжки |
-| 120-159 | Друзі | Friends milestone, фінал |
-| 160+ | Кохання | Romance confession |
-
----
-
-## 15. ЧАС
-
-- Гравець прокидається о **08:00** (480 хв)
-- Після **24:00** (1440 хв) — ніч, NPC зникають
-- Кожна репліка = `advance_time(5)` (5 хв)
-- Місія = рівень × 60 хв
-- Подарунок = 10 хв
-- Переміщення = 5 або 10 хв
-
-**Конвертація:** 19:00 = 1140, 20:00 = 1200, 21:00 = 1260, 22:00 = 1320
-
----
-
-## 16. ЛАНЦЮЖКИ ЧЕРЕЗ ФЛАГИ
-
-Діалог A ставить флаг → Діалог B вимагає цей флаг:
-
-```
-arthur_intro → flag: arthur_intro_done
-  → arthur_about_team (flag_true: arthur_intro_done) → flag: arthur_about_team_done
-    → arthur_cooking (flag_true: arthur_about_team_done) → flag: arthur_cooking_done
-      → arthur_drinks_invite (flag_true: arthur_cooking_done, chemistry_min: 30)
-```
-
-Кожен наступний діалог вимагає `flag_true` від попереднього + можливо `chemistry_min`.
-
----
-
-## 17. ШАБЛОН: ТРАВМА/INJURY КОНТЕНТ
-
-Травми — важлива ігрова механіка. Стаки (1-3) додаються через місії або сюжетно. Діалоги можуть реагувати на стан травм.
-
-### Діалог-реакція на травму NPC:
-
-```renpy
-# game/dialogues/{char}/{char}_injured_reaction.rpy
-
-init python:
-    DIALOGUE_ENTRIES.append({
-        "id": "{char}_injured_reaction",
-        "who": "Летті",                         # Хто говорить
-        "conditions": {
-            "flag_true": ["lettie_intro_done"],
-            "flag_false": ["{char}_injured_reaction_done"],
-        },
-        "priority": 80,                          # Високий — травма важлива
-        "chance": 100,
-        "label": "{char}_injured_reaction",
-    })
-
-label {char}_injured_reaction:
-    show lettie at char_center
-    $ store.talked_today.add("Летті")
-
-    le "Як ти? Бачила, що місія пішла не за планом."
-    $ advance_time(5)
-
-    # Перевірка стану гравця:
-    if get_injury_stacks("player") >= 2:
-        le "Ти маєш відпочити. Серйозно."
-        $ advance_time(5)
-    elif get_injury_stacks("player") >= 1:
-        le "Нічого страшного, але обережніше."
-        $ advance_time(5)
-
-    $ store.seen_dialogues.add("{char}_injured_reaction")
-    $ set_flag("{char}_injured_reaction_done")
-    hide lettie
-    return
-```
-
-### Banter при травмі:
-
+### В кожному діалозі:
 ```python
-BANTER_ENTRIES.append({
-    "id": "amir_sees_injured_player",
-    "who": "Амір",
-    "location": None,
-    "conditions": {
-        "flag_true": ["amir_intro_done"],
-    },
-    # У коді get_banter() перевірить get_injury_stacks("player") >= 1
-    "text": "Ого, ти виглядаєш потрепано. Все ок?",
-})
+$ store.talked_today.add("Артур")          # На початку
+$ dialogue_begin()                          # Скидає лічильник, ховає HUD
+$ dialogue_end()                            # Списує час, показує HUD
+$ store.seen_dialogues.add("dialogue_id")   # В кінці
+$ set_flag("dialogue_id_done")             # В кінці
 ```
 
-### Доступні функції для травм:
-
+### Хімія (тільки через add_chemistry!):
 ```python
-$ add_injury_stack("player")               # Додати стак гравцю
-$ add_injury_stack("Артур")                # Додати стак NPC
-$ get_injury_stacks("player")              # Поточні стаки (0-3)
-$ get_injury_stacks("Артур")               # Стаки NPC
-$ is_npc_absent("Артур")                   # True якщо 3 стаки (NPC відсутній)
-$ is_npc_mission_eligible("Артур")         # True якщо < 2 стаків
+$ add_chemistry("Артур", 2)                # Добрий вибір (+2)
+$ add_chemistry("Артур", 4)                # Відмінний вибір (+4)
+$ add_chemistry("Артур", -2)               # Поганий вибір (штрафи без cap)
 ```
 
-### Правила травм:
-
-- **1 стак:** NPC ходить, але +10% шанс нової травми при місії
-- **2 стаки:** NPC не доступний як напарник для місій
-- **3 стаки:** NPC повністю відсутній (переміщується в medbay)
-- **Зцілення:** Стак зникає через 1 повний день без нових травм (день 12 отримав → день 13 ще є → день 14 зник)
-- **Летті як напарник:** Шанс травм = 0%
-- **Повторна місія:** +10% шанс за кожну повторну місію з тим самим напарником за день
-
----
-
-## 18. ПРОТУХАЮЧІ ІВЕНТИ
-
-Деякі діалоги мають дедлайн — вікно можливості:
-
+### Флаги, інсайти, записи:
 ```python
-DIALOGUE_ENTRIES.append({
-    "id": "arthur_limited_offer",
-    "who": "Артур",
-    "conditions": {
-        "flag_true": ["arthur_cooking_done"],
-        "flag_false": ["arthur_limited_offer_done"],
-        "day_min": 10,
-    },
-    "priority": 60,
-    "expires_in_days": 3,                    # Зникає через 3 дні після появи в deck
-    "on_expire": "arthur_limited_expired",   # Опціонально: label при протуханні
-    "label": "arthur_limited_offer",
-})
+$ set_flag("якийсь_флаг")
+$ add_insight("id", "Текст факту")
+$ add_journal_entry("Текст.", "conversation")
+$ add_gossip("fact_name", ["Артур"], spread_delay=2)
+$ create_promise("Артур", "bar", 1200, 1320, store.day + 1, "label")
 ```
 
-Якщо є `on_expire` — label викликається автоматично в `next_day()`. Використовуй для наслідків пропущеного діалогу (NPC розчарований, плітки, зміна хімії).
-
----
-
-## 19. COOLDOWN ТЕГИ
-
-Для контролю щільності контенту. Діалоги з однаковим `tag` не обираються більше 1 разу/день:
-
+### Одяг (clothing.rpy):
 ```python
-DIALOGUE_ENTRIES.append({
-    "id": "arthur_deep_lore_1",
-    "who": "Артур",
-    "conditions": { ... },
-    "priority": 60,
-    "tag": "heavy_lore",                     # Один heavy_lore на день
-    "label": "arthur_deep_lore_1",
-})
+$ set_outfit("Артур", "shirtless")         # Примусово змінити одяг
+$ pick_outfit("Артур")                     # Рандомний з пулу
+$ refresh_all_outfits()                    # Перевибрати одяг всім NPC
 ```
 
-Теги відстежуються в `tags_used_today` (скидається кожен день). Корисні теги:
-- `heavy_lore` — глибока лор-інформація
-- `emotional` — емоційно тяжкі сцени
-- `flirt` — флірт-опції
+### Бонусні опції (bonus_options.rpy):
+```python
+$ get_bonus_options("Артур")               # Отримати eligible опції
+$ mark_bonus_used("option_id")             # Позначити як використану
+```
 
 ---
 
-## 20. ПРИКЛАД: ПОВНИЙ ОПИС → ФАЙЛ
+## 11. ЧЕКЛИСТ ПЕРЕД КОМІТОМ
 
-**Опис:** "Амір після місії рівня 4+ скаржиться на болі в руках, Летті пропонує допомогу, гравець вибирає — підтримати Аміра чи пожартувати."
-
-**Що робити:**
-
-1. Файл: `game/dialogues/amir/amir_hand_pain.rpy`
-2. Реєстрація в `DIALOGUE_ENTRIES`
-3. Conditions: `flag_true: [amir_intro_done, lettie_intro_done]`, `flag_false: [amir_hand_pain_done]`, `chemistry_min: (Амір, 35)`, `chars_at_location: [Летті]`
-4. Label з діалогом, menu, закриттям
-
----
-
-## 21. РОЗБІЖНОСТІ З ARCHITECTURE.md
-
-ARCHITECTURE.md — дизайн-документ (ідея). Цей CONTENT_GUIDE відображає **реальний код**.
-
-| Тема | Architecture каже | Код/Guide каже | Правий |
-|------|------------------|---------------|--------|
-| Час у conditions | `time_min`/`time_max` | `time_from`/`time_to` (диспетчер розуміє обидва) | Код — обидва працюють, для нового контенту `time_from`/`time_to` |
-| Місійні діалоги | `DIALOGUE_ENTRIES` з `mission_partner` | Окремий `MISSION_DIALOGUE_ENTRIES` | Код — окремий пул логічніший |
-| Show name Квінсі | Не уточнює | `quince` (show), `quincy` (flags/files) | Код — два різних імені для різних контекстів |
+- [ ] Файл має `init python:` з `DIALOGUE_ENTRIES.append()`
+- [ ] Conditions: `flag_false` для цього діалогу + `chemistry_min`
+- [ ] **НЕ** використовується `advance_time()` — є `dialogue_begin()`/`dialogue_end()`
+- [ ] **НЕ** використовується `chemistry[...] +=` — тільки `add_chemistry()`
+- [ ] **НЕ** перевіряється `_intro_done` в conditions
+- [ ] **НЕ** створено ланцюжок через `flag_true: ["prev_done"]`
+- [ ] `store.seen_dialogues.add()` і `set_flag("_done")` в кінці
+- [ ] Новий флаг додано в `FLAGS_REGISTRY.md`
