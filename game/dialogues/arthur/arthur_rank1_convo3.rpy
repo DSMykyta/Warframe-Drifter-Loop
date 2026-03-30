@@ -12,10 +12,10 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "ArthurRank1Convo3",
+        "label": "arthur_rank1_convo3",
     })
 
-label ArthurRank1Convo3:
+label arthur_rank1_convo3:
     show arthur at char_center
     $ store.talked_today.add("Артур")
 
