@@ -11,27 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "lettie_rank1_convo4",
+        "titles": [
+            ("Є хвилинка? Хотів спитати.", "lettie_r1c4_hell_of_a_way"),
+            ("Летті, все гаразд?", "lettie_r1c4_back_up"),
+            ("Слухай, можу питання?", "lettie_r1c4_no_gods"),
+        ],
     })
 
-label lettie_rank1_convo4:
-    show lettie at char_center
-    $ store.talked_today.add("Летті")
-    $ dialogue_begin()
-
-    le "Боги ще існують? Чи ви всіх забули?"
-
-    menu:
-        "У тебе чудовий спосіб починати розмову, знаєш?":
-            jump lettie_r1c4_hell_of_a_way
-
-        "Стоп, що?":
-            jump lettie_r1c4_back_up
-
-        "Ми не мали богів. Орокін не рахуються.":
-            jump lettie_r1c4_no_gods
-
 label lettie_r1c4_hell_of_a_way:
+    show lettie at char_center
     mc "У тебе чудовий спосіб починати розмову, знаєш?"
 
     le "Хе, знаю. Звикнеш. Або ні."
@@ -41,6 +29,8 @@ label lettie_r1c4_hell_of_a_way:
     jump lettie_r1c4_gods_question
 
 label lettie_r1c4_back_up:
+    show lettie at char_center
+
     mc "Зачекай, що? Які боги?"
 
     le "Серйозно, бабас? Боги — Сол і Луна. Їх пам'ятають?"
@@ -140,6 +130,8 @@ label lettie_r1c4_duviri:
     jump lettie_r1c4_end
 
 label lettie_r1c4_no_gods:
+    show lettie at char_center
+
     mc "Ми не мали богів. Були Орокін — купка виродків, які вважали себе вищими за всіх."
 
     le "Не перший раз люди одягали корони і вважали себе божествами."

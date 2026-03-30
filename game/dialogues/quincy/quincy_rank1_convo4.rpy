@@ -11,27 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "quincy_rank1_convo4",
+        "titles": [
+            ("Ой, вибач, пізніше!", "quincy_r1c4_end_short"),
+            ("Що як, Q?", "quincy_r1c4_main"),
+        ],
     })
 
-label quincy_rank1_convo4:
-    show quince at char_center
-    $ store.talked_today.add("Квінсі")
-    $ dialogue_begin()
-
-    qu "Йо. Ти тут?"
-
-    menu:
-        "О, дивись, Артур щось хоче...":
-            mc "Ой, здається мене кличуть. Вибач!"
-            qu "Lol, бувай."
-            jump quincy_r1c4_end_short
-
-        "Що як, Q?":
-            mc "Йо, Q. Що нового?"
-            jump quincy_r1c4_main
-
     label quincy_r1c4_main:
+    show quince at char_center
+
     qu "Бачу як ти нюхаєш навколо екіпажу, намагаєшся зрозуміти де ти серед нас всіх стоїш."
     qu "Тож я вирішив полегшити тобі задачу і розпочати першим, ок?"
     qu "Давай серйозну тему. Розкажи мені щось жорстке про себе — і я розкажу щось про себе."
@@ -172,6 +160,7 @@ label quincy_rank1_convo4:
     return
 
     label quincy_r1c4_end_short:
+    show quince at char_center
 
     $ dialogue_end()
     $ store.seen_dialogues.add("quincy_rank1_convo4")

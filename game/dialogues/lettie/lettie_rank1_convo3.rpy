@@ -11,40 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "lettie_rank1_convo3",
+        "titles": [
+            ("Привіт. Потрібна допомога?", "lettie_r1c3_anita"),
+            ("Летті, як справи?", "lettie_r1c3_anita"),
+            ("Чим допомогти?", "lettie_r1c3_grab_some"),
+        ],
     })
 
-label lettie_rank1_convo3:
-    show lettie at char_center
-    $ store.talked_today.add("Летті")
-    $ dialogue_begin()
-
-    le "Бабас. Слухай сюди."
-
-    menu:
-        "Це таке привітання?":
-            mc "Це таке привітання?"
-
-            le "Так, привіт, добрий ранок — чи що там зараз."
-
-        "Слухаю.":
-            mc "Слухаю."
-
-    le "Мені потрібна марля. Запаси закінчуються."
-
-    le "Аніта дісталася до коробки і прогризла частину."
-
-    menu:
-        "Хто така Аніта?":
-            jump lettie_r1c3_anita
-
-        "Я поняття не маю, хто це, Летті.":
-            jump lettie_r1c3_anita
-
-        "Якщо побачу марлю — візьму.":
-            jump lettie_r1c3_grab_some
-
 label lettie_r1c3_anita:
+    show lettie at char_center
     mc "Аніта — це хто?"
 
     le "Мій новий щуреня. Ще вчиться поводитись."
@@ -111,6 +86,8 @@ label lettie_r1c3_rats_story:
     jump lettie_r1c3_end
 
 label lettie_r1c3_grab_some:
+    show lettie at char_center
+
     mc "Якщо побачу марлю — візьму."
 
     le "Дякую. Буду боржна. Трохи."
