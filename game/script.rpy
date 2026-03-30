@@ -120,6 +120,11 @@ label location_loop:
                 call expression _dlg_label
             jump location_loop
 
+        if _choice[0] == "gift":
+            $ _gift_target = _choice[1]
+            call gift_submenu(_gift_target)
+            jump location_loop
+
     jump location_loop
 
 
@@ -143,8 +148,21 @@ label do_wait:
     if _interrupted:
         # Перемотати половину часу, потім переривання
         $ advance_time(_wait_mins // 2)
+        $ _help = check_help_requests()
+        if _help is not None:
+            $ _help_who = _help["who"]
+            $ _help_msg = _help["message"]
+            "Пейджер: [_help_who] — [_help_msg]"
+            menu:
+                "Допомогти":
+                    $ execute_help_request(_help)
+                    $ show_location_bg()
+                    "Допоміг [_help_who]. Отримано 100 крон."
+                "Ігнорувати":
+                    "Пропускаєш запит."
+            jump location_loop
+        # Якщо немає help request — простий banter
         "Поки чекаєш, хтось підходить..."
-        # TODO: NPC banter або help request
         jump location_loop
 
     # Повне очікування

@@ -258,15 +258,19 @@ screen location_ui():
             text "Присутні:" size 14 color "#ffffff40" xalign 0.5
 
             for _ch in _chars_here:
-                button:
-                    style "hex_btn"
+                hbox:
                     xalign 0.5
-                    xminimum 280
-                    action Return(("talk", _ch))
-                    hbox:
-                        spacing 8
-                        xalign 0.5
+                    spacing 8
+                    button:
+                        style "hex_btn"
+                        xminimum 200
+                        action Return(("talk", _ch))
                         text "Поговорити з [_ch]" size 18 color "#d8b4fe"
+                    if _ch not in gifted_today and len(inventory) > 0:
+                        button:
+                            style "hex_btn"
+                            action Return(("gift", _ch))
+                            text "Подарувати" size 16 color "#22d3ee"
         else:
             if is_night():
                 text "Порожньо. Всі пішли." size 16 color "#ffffff30" xalign 0.5

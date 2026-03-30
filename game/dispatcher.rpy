@@ -272,6 +272,9 @@ init -5 python:
         top = [e for e in eligible if e.get("priority", 1) == max_pri]
         winner = renpy.random.choice(top)
         store.seen_dialogues.add(winner["id"])
+        # Встановити flag_false флаги щоб banter не повторювався сьогодні
+        for f in winner.get("conditions", {}).get("flag_false", []):
+            set_flag(f)
         return winner
 
 

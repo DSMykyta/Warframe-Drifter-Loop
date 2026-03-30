@@ -55,11 +55,11 @@ init python:
         # 9. Перевірка rank-up
         try_rank_up()
 
-        # 10. Побудувати колоду eligible діалогів на день
-        build_daily_deck()
-
-        # 11. Обробити протухлі івенти
+        # 10. Обробити протухлі івенти (перед deck — ставить флаги)
         check_expired_events()
+
+        # 11. Побудувати колоду eligible діалогів на день
+        build_daily_deck()
 
         # 12. Поширити плітки
         spread_gossip()
