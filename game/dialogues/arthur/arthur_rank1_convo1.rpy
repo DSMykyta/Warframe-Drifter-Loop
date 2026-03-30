@@ -12,9 +12,9 @@ init python:
         "priority": 50,
         "chance": 100,
         "titles": [
-            ("Розкажи про свій бойовий досвід", "arthur_r1c1_soldiering"),
-            ("Ви з Елеонор давно знайомі?", "arthur_r1c1_eleanor"),
-            ("Просто розкажи про себе. Як людину.", "arthur_r1c1_personal"),
+            ("Ти давно в цій справі?", "arthur_r1c1_soldiering"),
+            ("Ви з Елеонор здається давні друзі?", "arthur_r1c1_eleanor"),
+            ("Просто хочу поговорити.", "arthur_r1c1_personal"),
         ],
     })
 

@@ -11,35 +11,15 @@ init python:
         },
         "priority": 50,
         "chance": 100,
-        "label": "aoi_rank1_convo1",
+        "titles": [
+            ("Йо! Чим зайнята?", "aoi_r1c1_coffee"),
+            ("Нудьгуєш?", "aoi_r1c1_tea"),
+            ("Слухай, а бабл-ті тут десь є?", "aoi_r1c1_bubbletea"),
+        ],
     })
 
-label aoi_rank1_convo1:
-    show aoi at char_center
-    $ store.talked_today.add("Аоі")
-    $ dialogue_begin()
-
-    ao "Дрифтер! Стій-стій-стій. У мене дуже важливе питання."
-
-    mc "Що сталось?"
-
-    ao "Кава чи чай?"
-
-    mc "...Це було «дуже важливе питання»?"
-
-    ao "Найважливіше! За цим стоїть ціла філософія. Кавові люди — це одне. Чайні — зовсім інше."
-
-    menu:
-        "Кава. Чорна, без цукру.":
-            jump aoi_r1c1_coffee
-
-        "Чай. Зелений, якщо є.":
-            jump aoi_r1c1_tea
-
-        "А де варіант «бабл-ті»?":
-            jump aoi_r1c1_bubbletea
-
 label aoi_r1c1_coffee:
+    show aoi at char_center
     mc "Кава. Міцна, чорна, без компромісів."
 
     ao "О-о-о. Серйозна людина. Така, знаєш, вставай-о-шостій-ранку енергія."
@@ -53,6 +33,8 @@ label aoi_r1c1_coffee:
     jump aoi_r1c1_boredom
 
 label aoi_r1c1_tea:
+    show aoi at char_center
+
     mc "Чай. Зелений, якщо є. Або будь-який, чесно кажучи."
 
     ao "Чайна людина! Ми вже друзі. Це вирішено. Офіційно."
@@ -66,6 +48,8 @@ label aoi_r1c1_tea:
     jump aoi_r1c1_boredom
 
 label aoi_r1c1_bubbletea:
+    show aoi at char_center
+
     mc "Зачекай, а де варіант «бабл-ті»? Я ж знаю, що ти його обожнюєш."
 
     ao "Ти... ти запам'ятав?"
