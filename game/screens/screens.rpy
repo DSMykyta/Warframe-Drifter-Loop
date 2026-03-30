@@ -105,11 +105,12 @@ screen hud():
 define audio.pager_beep = "<to 2.1>audio/pager_beep.mp3"
 define audio.pager_click = "audio/pager_click.mp3"
 
-# ── ПЕЙДЖЕР — лівий нижній кут ──
+# ── ПЕЙДЖЕР — лівий нижній кут (тільки після отримання від Аміра) ──
 screen pager_hud():
     zorder 50
 
-    fixed:
+    if store.flags.get("has_pager"):
+        fixed:
         xpos 1900
         ypos 1060
         xanchor 1.0
