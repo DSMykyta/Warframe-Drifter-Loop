@@ -6,7 +6,6 @@ init python:
         "id": "arthur_trust_milestone",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done"],
             "flag_false": ["arthur_trust_milestone_done"],
             "chemistry_min": ("Артур", 60),
         },

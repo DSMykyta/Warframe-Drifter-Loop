@@ -6,7 +6,6 @@ init python:
         "id": "eleanor_notices_aoi_time",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["eleanor_intro_done", "aoi_intro_done"],
             "flag_false": ["eleanor_noticed_aoi_time"],
             "chemistry_min": ("Аоі", 50),
         },
@@ -19,7 +18,6 @@ init python:
         "id": "amir_notices_aoi_time",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["amir_intro_done", "aoi_intro_done"],
             "flag_false": ["amir_noticed_aoi_time"],
             "chemistry_min": ("Аоі", 60),
         },

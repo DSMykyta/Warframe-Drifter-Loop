@@ -6,7 +6,6 @@ init python:
         "id": "lettie_notices_arthur_time",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done", "arthur_intro_done"],
             "flag_false": ["lettie_noticed_arthur_time"],
             "chemistry_min": ("Артур", 50),
         },
@@ -19,7 +18,6 @@ init python:
         "id": "quincy_notices_arthur_time",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done", "arthur_intro_done"],
             "flag_false": ["quincy_noticed_arthur_time"],
             "chemistry_min": ("Артур", 60),
         },

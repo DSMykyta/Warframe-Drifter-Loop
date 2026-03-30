@@ -6,9 +6,8 @@ init python:
         "id": "amir_rank1_convo4",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["amir_intro_done", "amir_rank1_convo3_done"],
             "flag_false": ["amir_rank1_convo4_done"],
-            "rank_min": 1,
+            "chemistry_min": ("Амір", 18),
         },
         "priority": 45,
         "chance": 100,

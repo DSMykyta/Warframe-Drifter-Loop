@@ -6,7 +6,6 @@ init python:
         "id": "bar_night",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done", "lettie_intro_done", "quincy_intro_done"],
             "flag_false": ["group_bar_night_done"],
             "location": "bar_skana",
             "chars_at_location": ["Артур", "Летті"],

@@ -6,9 +6,8 @@ init python:
         "id": "aoi_rank1_convo1",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done"],
             "flag_false": ["aoi_rank1_convo1_done"],
-            "rank_min": 1,
+            "chemistry_min": ("Аоі", 0),
         },
         "priority": 50,
         "chance": 100,

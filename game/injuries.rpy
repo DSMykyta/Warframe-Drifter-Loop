@@ -215,7 +215,7 @@ init python:
         "id": "lettie_heal_player",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["player_injured", "lettie_intro_done"],
+            "flag_true": ["player_injured"],
             "flag_false": ["lettie_healed_today"],
         },
         "priority": 80,
@@ -274,7 +274,7 @@ init python:
         "id": "amir_sees_bruises",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["player_injured", "amir_intro_done"],
+            "flag_true": ["player_injured"],
             "flag_false": ["amir_saw_bruises"],
         },
         "location": None,
@@ -285,7 +285,7 @@ init python:
         "id": "aoi_worried_injury",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["player_injured", "aoi_intro_done"],
+            "flag_true": ["player_injured"],
             "flag_false": ["aoi_saw_injury"],
         },
         "location": None,
@@ -296,7 +296,7 @@ init python:
         "id": "arthur_injury_comment",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["player_injured", "arthur_intro_done"],
+            "flag_true": ["player_injured"],
             "flag_false": ["arthur_saw_injury"],
         },
         "location": None,
@@ -307,7 +307,7 @@ init python:
         "id": "quincy_injury_troll",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["player_injured", "quincy_intro_done"],
+            "flag_true": ["player_injured"],
             "flag_false": ["quincy_saw_injury"],
         },
         "location": None,

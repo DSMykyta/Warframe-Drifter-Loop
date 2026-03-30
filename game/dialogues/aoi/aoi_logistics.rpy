@@ -5,7 +5,6 @@ init python:
         "id": "aoi_logistics",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done"],
             "flag_false": ["aoi_logistics_done"],
             "rank_min": 1,
         },

@@ -5,7 +5,6 @@ init python:
         "id": "amir_mission_3",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["amir_intro_done"],
         },
         "priority": 50,
         "label": "amir_mission_3",

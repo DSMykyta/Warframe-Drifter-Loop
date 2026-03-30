@@ -5,7 +5,6 @@ init python:
         "id": "quincy_sarcasm",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done"],
             "flag_false": ["quincy_sarcasm_done"],
             "rank_min": 1,
         },

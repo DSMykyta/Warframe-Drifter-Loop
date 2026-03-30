@@ -5,7 +5,6 @@ init python:
         "id": "eleanor_observations",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["eleanor_intro_done"],
             "flag_false": ["eleanor_observations_done"],
             "rank_min": 1,
         },

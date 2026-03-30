@@ -6,7 +6,6 @@ init python:
         "id": "arcade_tournament",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["amir_intro_done", "aoi_intro_done", "quincy_intro_done"],
             "flag_false": ["group_arcade_tournament_done"],
             "location": "comp_club",
             "chars_at_location": ["Амір", "Аоі"],

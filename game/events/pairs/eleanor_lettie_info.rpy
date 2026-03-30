@@ -7,7 +7,6 @@ init python:
         "location": "info_counter",
         "chars": ["Елеонор", "Летті"],
         "conditions": {
-            "flag_true": ["eleanor_intro_done", "lettie_intro_done"],
             "flag_false": ["pair_eleanor_lettie_info_seen"],
         },
         "label": "eleanor_lettie_info",

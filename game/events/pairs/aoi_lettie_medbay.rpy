@@ -7,7 +7,6 @@ init python:
         "location": "medbay",
         "chars": ["Аоі", "Летті"],
         "conditions": {
-            "flag_true": ["aoi_intro_done", "lettie_intro_done"],
             "flag_false": ["pair_aoi_lettie_medbay_seen"],
         },
         "label": "aoi_lettie_medbay",

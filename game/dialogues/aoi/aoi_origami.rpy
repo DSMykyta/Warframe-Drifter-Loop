@@ -5,7 +5,6 @@ init python:
         "id": "aoi_origami",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done"],
             "flag_false": ["aoi_origami_done"],
             "rank_min": 1,
         },

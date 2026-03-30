@@ -6,7 +6,7 @@ init python:
         "id": "aoi_icr_past",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done", "aoi_origami_done"],
+            "flag_true": ["aoi_origami_done"],
             "flag_false": ["aoi_icr_past_done"],
             "rank_min": 2,
             "chemistry_min": ("Аоі", 40),

@@ -5,7 +5,6 @@ init python:
         "id": "eleanor_mission_4",
         "who": "Елеонора",
         "conditions": {
-            "flag_true": ["eleanor_intro_done"],
         },
         "priority": 50,
         "label": "eleanor_mission_4",

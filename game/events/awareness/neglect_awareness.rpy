@@ -6,7 +6,6 @@ init python:
         "id": "arthur_notices_neglect",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done"],
             "flag_false": ["arthur_neglect_warned"],
             "chemistry_min": ("Артур", 20),
         },
@@ -19,7 +18,6 @@ init python:
         "id": "lettie_notices_no_missions",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done"],
             "flag_false": ["lettie_mission_warned"],
         },
         "priority": 3,

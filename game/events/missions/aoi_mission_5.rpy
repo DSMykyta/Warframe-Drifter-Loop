@@ -5,7 +5,6 @@ init python:
         "id": "aoi_mission_5",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done"],
         },
         "priority": 50,
         "label": "aoi_mission_5",
