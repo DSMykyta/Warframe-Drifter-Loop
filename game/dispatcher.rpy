@@ -242,6 +242,23 @@ init -5 python:
 
         return renpy.random.choice(passed)
 
+    def check_forced_dialogue(location):
+        """Перевіряє чи є forced діалог від NPC в цій локації.
+        Forced = NPC ініціює розмову сам при вході гравця.
+        Повертає entry dict або None."""
+        chars_here = get_chars_at(location)
+        for name in chars_here:
+            deck = store.daily_deck.get(name, [])
+            for entry in deck:
+                if not entry.get("forced"):
+                    continue
+                if entry["id"] in store.seen_dialogues:
+                    continue
+                if not check_dynamic_conditions(entry.get("conditions", {})):
+                    continue
+                return entry
+        return None
+
     def get_dialogue(name):
         """Головна функція: шукає в Daily Deck, повертає label або None."""
         deck = store.daily_deck.get(name, [])

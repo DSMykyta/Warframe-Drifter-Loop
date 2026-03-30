@@ -57,6 +57,21 @@ label location_loop:
         if _banter_text:
             "[_banter_who]: [_banter_text]"
 
+    # Перевірити forced діалоги (NPC ініціює розмову)
+    $ _forced = check_forced_dialogue(current_location)
+    if _forced is not None:
+        $ _forced_name = _forced["who"]
+        $ _forced_label = _forced["label"]
+        $ _forced_id = _forced["id"]
+        $ store.talked_today.add(_forced_name)
+        $ reset_interaction(_forced_name)
+        $ dialogue_begin()
+        call expression _forced_label
+        $ dialogue_end()
+        $ store.seen_dialogues.add(_forced_id)
+        $ set_flag(_forced_id + "_done")
+        jump location_loop
+
     # Показати екран взаємодії з локацією
     call screen location_ui
 
@@ -143,6 +158,14 @@ label interact_with_npc:
     # Є діалог з titles → показати меню
     $ _titles = _active_dlg["titles"]
     $ _dlg_id = _active_dlg["id"]
+
+    # Бонусні опції: якщо вони ПОКАЗАЛИСЬ в меню — вже зіграні
+    # (незалежно чи гравець обрав їх чи ні)
+    python:
+        for _b in _bonus:
+            if _b.get("once"):
+                mark_bonus_used(_b["id"])
+
     call screen npc_interact_menu(_interact_target, _titles, _bonus, _can_gift)
     $ _interact_choice = _return
 

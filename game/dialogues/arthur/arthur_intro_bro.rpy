@@ -59,7 +59,7 @@ label arthur_intro_bro:
             ar "Мовчання — теж відповідь. Прийнятна."
 
     $ set_flag("arthur_bro_incident")
-    $ mark_bonus_used("arthur_bro_greeting")
+    # mark_bonus_used — автоматично в location_loop при показі меню
     $ add_insight("quincy_prank_bro", "Квінсі підставив мене з Артуром. Артур НЕ любить «бро». Запам'ятати.")
 
     ar "А тепер до справи."
