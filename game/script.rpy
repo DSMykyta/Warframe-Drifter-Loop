@@ -7,25 +7,12 @@ label start:
     # Відновити інсайти з минулої петлі
     if persistent.insights_log:
         $ store.insights_log = list(persistent.insights_log)
-    # Інтро (якщо ще не пройдено)
-    # if not store.flags.get("intro_done"):
-    #     call intro
-    # DEBUG: пропустити інтро, додати тестові дані
-    $ set_flag("intro_done")
-    $ set_flag("met_arthur")
-    $ set_flag("met_aoi")
-    $ set_flag("met_amir")
-    $ set_flag("met_quincy")
-    $ set_flag("met_lettie")
-    $ set_flag("met_eleanor")
-    $ add_insight("hex_exists", "Шестеро в молі. Гекс.")
-    $ add_insight("arthur_leads", "Артур — лідер.")
-    $ add_insight("amir_tech", "Амір — технік.")
-    $ add_insight("aoi_logistics", "Аоі — логістика.")
-    $ add_insight("quincy_marksman", "Квінсі. Тир.")
-    $ add_insight("lettie_medic", "Летті — медик.")
-    # DEBUG: тестова сцена
-    call arthur_kitchen_demo
+    # Інтро — допит на футкорті
+    if not store.flags.get("intro_done"):
+        call intro
+    # Сцена 2 — дослідження молу, знахідка карти
+    if not store.flags.get("has_map"):
+        call explore_mall
     # Побудувати першу колоду діалогів
     $ build_daily_deck()
     jump generic_day

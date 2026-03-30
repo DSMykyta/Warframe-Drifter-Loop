@@ -273,11 +273,12 @@ screen location_ui():
         align (0.5, 0.75)
         spacing 16
 
-        # Карта
-        button:
-            style "hex_btn"
-            action Return("map")
-            text "Карта" size 18 color "#d8b4fe"
+        # Карта (тільки після знахідки)
+        if store.flags.get("has_map"):
+            button:
+                style "hex_btn"
+                action Return("map")
+                text "Карта" size 18 color "#d8b4fe"
 
         # Місії (тільки в гаражі)
         if current_location == "garage":
