@@ -11,33 +11,15 @@ init python:
         },
         "priority": 50,
         "chance": 100,
-        "label": "amir_rank1_convo1",
+        "titles": [
+            ("Привіт! Що нового?", "amir_r1c1_pick_topic"),
+            ("Чо такий збуджений?", "amir_r1c1_complicated"),
+            ("Вибач, зараз зайнятий.", "amir_r1c1_end"),
+        ],
     })
 
-label amir_rank1_convo1:
-    show amir at char_center
-    $ store.talked_today.add("Амір")
-    $ dialogue_begin()
-
-    am "Дрифтер! Стій! Блицопитування!"
-
-    mc "Що?"
-
-    am "Майбутнє! Розкажи мені про нього! Я вмираю від цікавості!"
-
-    menu:
-        "Ого, з чого почати... Обирай тему.":
-            jump amir_r1c1_pick_topic
-
-        "Це... складна історія.":
-            jump amir_r1c1_complicated
-
-        "Зараз не найкращий час, вибач.":
-            am "Ну ладно... Але я запам'ятаю! Ти мені винен відповіді!"
-
-            jump amir_r1c1_end
-
 label amir_r1c1_complicated:
+    show amir at char_center
     am "Обожнюю складні історії!"
 
     am "Я колись вивчив усі правила настільної гри на вісімдесят сторінок за одну ніч."
@@ -61,6 +43,8 @@ label amir_r1c1_complicated:
     jump amir_r1c1_encyclopedia
 
 label amir_r1c1_pick_topic:
+    show amir at char_center
+
     am "Е-е-е..."
 
     am "Блін, не роби так! Я не можу обрати!"
