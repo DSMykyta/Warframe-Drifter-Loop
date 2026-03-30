@@ -109,6 +109,7 @@ label amir_r1c1_encyclopedia:
     jump amir_r1c1_end
 
 label amir_r1c1_end:
+    show amir at char_center
 
     $ dialogue_end()
     $ store.seen_dialogues.add("amir_rank1_convo1")

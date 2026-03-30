@@ -11,22 +11,14 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "lettie_rank1_convo2",
+        "titles": [
+            ("Як ти сьогодні?", "lettie_r1c2_family"),
+            ("Летті, а це... щур?", "lettie_r1c2_rats"),
+        ],
     })
 
-label lettie_rank1_convo2:
-    show lettie at char_center
-    $ store.talked_today.add("Летті")
-    $ dialogue_begin()
-
-    menu:
-        "Хтось вдома за тобою сумує?":
-            jump lettie_r1c2_family
-
-        "Чому ти тримаєш щурів як домашніх тварин?":
-            jump lettie_r1c2_rats
-
 label lettie_r1c2_family:
+    show lettie at char_center
     mc "Летті... хтось вдома за тобою сумує?"
 
     le "Яка різниця. Не можу покинути цю нору."
@@ -110,6 +102,8 @@ label lettie_r1c2_deaths:
             jump lettie_r1c2_end
 
 label lettie_r1c2_rats:
+    show lettie at char_center
+
     mc "Летті, а чому саме щурі? Як домашні тварини?"
 
     le "А ти скажи."

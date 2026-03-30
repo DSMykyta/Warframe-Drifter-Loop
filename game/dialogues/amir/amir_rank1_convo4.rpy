@@ -11,26 +11,14 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "amir_rank1_convo4",
+        "titles": [
+            ("Можна питання? Таке, особисте.", "amir_r1c4_quincy"),
+            ("Як ти? Розкажи щось.", "amir_r1c4_about"),
+        ],
     })
 
-label amir_rank1_convo4:
-    show amir at char_center
-    $ store.talked_today.add("Амір")
-    $ dialogue_begin()
-
-    mc "Амір, можна тебе дещо запитати?"
-
-    am "Ого, звучить серйозно! Давай!"
-
-    menu:
-        "Що між тобою і Квінсі?":
-            jump amir_r1c4_quincy
-
-        "Розкажи щось про себе.":
-            jump amir_r1c4_about
-
 label amir_r1c4_quincy:
+    show amir at char_center
     am "Він — зануда і зловредник. Іноді."
 
     am "А іноді — найкращий чувак на світі."
@@ -80,6 +68,8 @@ label amir_r1c4_quincy:
     jump amir_r1c4_end
 
 label amir_r1c4_about:
+    show amir at char_center
+
     am "Ой, справді? Про мене?"
 
     am "Ну... Не знаю з чого почати. У мене виконавча дисфункція спрацьовує саме в такі моменти."
