@@ -193,18 +193,14 @@ init -5 python:
     # ДИСПЕТЧЕР ДІАЛОГІВ
     # ═══════════════════════════════════════════════
 
-    def get_available_topics(name):
-        """Збирає ВСІ вхідні репліки з УСІХ eligible діалогів для меню.
+    def get_active_dialogue(name):
+        """Обирає ОДИН eligible діалог для NPC (за пріоритетом/шансом).
+        Повертає entry dict з "titles" або None.
 
-        Кожен діалог має "titles" — список кортежів:
-            [("Текст репліки Дрифтера", "label_гілки"), ...]
-
-        Один діалог може мати 1-3+ реплік-входів.
-        Всі розгортаються в плоский список для одного спільного меню.
-
-        Результат: [{"text": "...", "label": "...", "id": "...", "priority": N}, ...]"""
+        Диспетчер обирає один діалог — його titles розгортаються в меню.
+        Бонусні опції та подарунок додаються окремо в location_loop."""
         deck = store.daily_deck.get(name, [])
-        result = []
+        eligible = []
         for entry in deck:
             if not entry.get("titles"):
                 continue
@@ -216,18 +212,35 @@ init -5 python:
                 used = store.tags_used_today.get(name, set())
                 if entry["cooldown_tag"] in used:
                     continue
-            ch = entry.get("chance", 100)
-            if ch < 100 and renpy.random.randint(1, 100) > ch:
-                continue
-            for text, label in entry["titles"]:
-                result.append({
-                    "text": text,
-                    "label": label,
-                    "id": entry["id"],
-                    "priority": entry.get("priority", 50),
-                })
-        result.sort(key=lambda e: -e["priority"])
-        return result
+            eligible.append(entry)
+
+        if not eligible:
+            return None
+
+        # Найвищий пріоритет
+        max_pri = max(e["priority"] for e in eligible)
+        top = [e for e in eligible if e["priority"] == max_pri]
+
+        # Chance
+        passed = []
+        for e in top:
+            ch = e.get("chance", 100)
+            if ch >= 100 or renpy.random.randint(1, 100) <= ch:
+                passed.append(e)
+
+        if not passed:
+            remaining = [e for e in eligible if e["priority"] < max_pri]
+            if remaining:
+                next_pri = max(e["priority"] for e in remaining)
+                for e in [x for x in remaining if x["priority"] == next_pri]:
+                    ch = e.get("chance", 100)
+                    if ch >= 100 or renpy.random.randint(1, 100) <= ch:
+                        passed.append(e)
+
+        if not passed:
+            return None
+
+        return renpy.random.choice(passed)
 
     def get_dialogue(name):
         """Головна функція: шукає в Daily Deck, повертає label або None."""

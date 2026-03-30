@@ -136,15 +136,15 @@ label location_loop:
 # ═══════════════════════════════════════════════════
 
 label interact_with_npc:
-    # Зібрати всі доступні репліки-входи
-    $ _topics = get_available_topics(_interact_target)
-    # Зібрати бонусні опції (динамічні)
+    # Обрати ОДИН eligible діалог (за пріоритетом)
+    $ _active_dlg = get_active_dialogue(_interact_target)
+    # Зібрати бонусні опції
     $ _bonus = get_bonus_options(_interact_target)
-    # Перевірити чи є що подарувати
+    # Чи є що подарувати
     $ _can_gift = bool(store.inventory) and _interact_target not in store.gifted_today
 
-    # Якщо нема ні тем, ні бонусів — fallback на старий диспетчер
-    if not _topics and not _bonus:
+    # Якщо нема діалогу з titles — fallback на старий get_dialogue
+    if _active_dlg is None:
         $ _dlg_label = get_dialogue(_interact_target)
         if _dlg_label:
             $ store.talked_today.add(_interact_target)
@@ -153,8 +153,10 @@ label interact_with_npc:
             call expression _dlg_label
         jump location_loop
 
-    # Показати спрайт і меню
-    call screen npc_interact_menu(_interact_target, _topics, _bonus, _can_gift)
+    # Є діалог з titles → показати меню
+    $ _titles = _active_dlg["titles"]
+    $ _dlg_id = _active_dlg["id"]
+    call screen npc_interact_menu(_interact_target, _titles, _bonus, _can_gift)
     $ _interact_choice = _return
 
     if _interact_choice == "dismiss":
@@ -164,23 +166,18 @@ label interact_with_npc:
         call gift_submenu(_interact_target)
         jump location_loop
 
-    # Вибрали конкретну репліку-вхід → запустити діалог
+    # Вибрали гілку діалогу
     if isinstance(_interact_choice, tuple):
         if _interact_choice[0] == "topic":
             $ _topic_label = _interact_choice[1]
-            $ _topic_id = _interact_choice[2]
             $ store.talked_today.add(_interact_target)
             $ reset_interaction(_interact_target)
             $ store.interaction_counts[_interact_target] = store.interaction_counts.get(_interact_target, 0) + 1
-            # show + dialogue_begin відбуваються тут
-            $ _char_img = CHAR_IMAGE_TAG.get(_interact_target, "arthur")
-            show expression _char_img at char_center
             $ dialogue_begin()
             call expression _topic_label
             $ dialogue_end()
-            $ store.seen_dialogues.add(_topic_id)
-            $ set_flag(_topic_id + "_done")
-            hide expression _char_img
+            $ store.seen_dialogues.add(_dlg_id)
+            $ set_flag(_dlg_id + "_done")
             jump location_loop
 
         if _interact_choice[0] == "bonus":
