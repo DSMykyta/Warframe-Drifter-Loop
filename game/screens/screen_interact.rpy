@@ -19,11 +19,17 @@ screen npc_interact_menu(npc_name, titles, bonus_opts, can_gift):
         xmaximum 700
 
         # Гілки діалогу
-        for _text, _label in titles:
-            button:
-                style "interact_btn"
-                action Return(("topic", _label))
-                text "[_text]" style "interact_btn_text"
+        # titles = [("текст", "label"), ...] або [("текст", "label", "flag"), ...]
+        # Якщо є 3-й елемент — показувати тільки якщо store.flags.get(flag) == True
+        for _entry in titles:
+            $ _t_text = _entry[0]
+            $ _t_label = _entry[1]
+            $ _t_flag = _entry[2] if len(_entry) > 2 else None
+            if _t_flag is None or store.flags.get(_t_flag):
+                button:
+                    style "interact_btn" if _t_flag is None else "interact_btn_bonus"
+                    action Return(("topic", _t_label))
+                    text "[_t_text]" style "interact_btn_text" if _t_flag is None else "interact_btn_text_bonus"
 
         # Бонусні опції
         for _bopt in bonus_opts:
