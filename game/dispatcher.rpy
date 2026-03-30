@@ -194,14 +194,19 @@ init -5 python:
     # ═══════════════════════════════════════════════
 
     def get_available_topics(name):
-        """Повертає список eligible діалогів з titles для показу в меню.
-        Кожен елемент: {"title": "...", "label": "...", "id": "...", "priority": N}
-        Тільки діалоги з полем "title" потрапляють сюди.
-        Діалоги без title обробляються через get_dialogue() як раніше."""
+        """Збирає ВСІ вхідні репліки з УСІХ eligible діалогів для меню.
+
+        Кожен діалог має "titles" — список кортежів:
+            [("Текст репліки Дрифтера", "label_гілки"), ...]
+
+        Один діалог може мати 1-3+ реплік-входів.
+        Всі розгортаються в плоский список для одного спільного меню.
+
+        Результат: [{"text": "...", "label": "...", "id": "...", "priority": N}, ...]"""
         deck = store.daily_deck.get(name, [])
-        eligible = []
+        result = []
         for entry in deck:
-            if not entry.get("title"):
+            if not entry.get("titles"):
                 continue
             if entry["id"] in store.seen_dialogues and not entry.get("repeatable"):
                 continue
@@ -211,19 +216,18 @@ init -5 python:
                 used = store.tags_used_today.get(name, set())
                 if entry["cooldown_tag"] in used:
                     continue
-            # Chance check
             ch = entry.get("chance", 100)
             if ch < 100 and renpy.random.randint(1, 100) > ch:
                 continue
-            eligible.append({
-                "title": entry["title"],
-                "label": entry["label"],
-                "id": entry["id"],
-                "priority": entry.get("priority", 50),
-            })
-        # Сортувати за пріоритетом (вищий першим)
-        eligible.sort(key=lambda e: -e["priority"])
-        return eligible
+            for text, label in entry["titles"]:
+                result.append({
+                    "text": text,
+                    "label": label,
+                    "id": entry["id"],
+                    "priority": entry.get("priority", 50),
+                })
+        result.sort(key=lambda e: -e["priority"])
+        return result
 
     def get_dialogue(name):
         """Головна функція: шукає в Daily Deck, повертає label або None."""

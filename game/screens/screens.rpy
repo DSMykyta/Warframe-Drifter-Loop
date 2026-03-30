@@ -251,26 +251,17 @@ screen location_ui():
 
         null height 10
 
-        # Персонажі в локації
+        # Персонажі в локації — клікабельні імена (спрайти показуються через show_location_chars)
         $ _chars_here = get_chars_at(current_location)
 
         if _chars_here:
-            text "Присутні:" size 14 color "#ffffff40" xalign 0.5
-
             for _ch in _chars_here:
-                hbox:
+                button:
+                    style "hex_btn"
                     xalign 0.5
-                    spacing 8
-                    button:
-                        style "hex_btn"
-                        xminimum 200
-                        action Return(("talk", _ch))
-                        text "Поговорити з [_ch]" size 18 color "#d8b4fe"
-                    if _ch not in gifted_today and len(inventory) > 0:
-                        button:
-                            style "hex_btn"
-                            action Return(("gift", _ch))
-                            text "Подарувати" size 16 color "#22d3ee"
+                    xminimum 200
+                    action Return(("interact", _ch))
+                    text "[_ch]" size 20 color "#d8b4fe"
         else:
             if is_night():
                 text "Порожньо. Всі пішли." size 16 color "#ffffff30" xalign 0.5
