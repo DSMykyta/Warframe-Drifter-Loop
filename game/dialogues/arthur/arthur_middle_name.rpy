@@ -6,7 +6,7 @@ init python:
         "id": "arthur_middle_name",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done", "arthur_atomicycle_done"],
+            "flag_true": ["arthur_atomicycle_done"],
             "flag_false": ["arthur_middle_name_done"],
             "chemistry_min": ("Артур", 15),
             "rank_min": 2,

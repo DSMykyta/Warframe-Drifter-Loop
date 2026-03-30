@@ -7,7 +7,6 @@ init python:
         "location": "comp_club",
         "chars": ["Аоі", "Амір"],
         "conditions": {
-            "flag_true": ["aoi_intro_done", "amir_intro_done"],
             "flag_false": ["pair_amir_aoi_arcade_seen"],
         },
         "label": "amir_aoi_arcade",

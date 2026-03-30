@@ -6,7 +6,6 @@ init python:
         "id": "arthur_gossip_warning",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done"],
             "flag_false": ["arthur_gossip_warned"],
         },
         "priority": 3,
@@ -18,7 +17,6 @@ init python:
         "id": "quincy_gossip_tease",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done"],
             "flag_false": ["quincy_gossip_teased"],
         },
         "priority": 2,

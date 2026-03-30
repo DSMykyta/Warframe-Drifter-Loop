@@ -5,7 +5,6 @@ init python:
         "id": "quincy_vhs",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done"],
             "flag_false": ["quincy_vhs_done"],
             "rank_min": 1,
         },

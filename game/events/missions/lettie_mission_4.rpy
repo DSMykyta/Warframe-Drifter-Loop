@@ -5,7 +5,6 @@ init python:
         "id": "lettie_mission_4",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done"],
         },
         "priority": 50,
         "label": "lettie_mission_4",

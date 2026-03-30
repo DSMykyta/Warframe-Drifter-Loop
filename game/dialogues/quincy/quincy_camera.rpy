@@ -5,7 +5,6 @@ init python:
         "id": "quincy_camera",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["quincy_intro_done"],
             "flag_false": ["quincy_camera_done"],
             "rank_min": 1,
         },

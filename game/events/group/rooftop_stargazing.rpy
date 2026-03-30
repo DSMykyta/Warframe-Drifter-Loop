@@ -6,7 +6,6 @@ init python:
         "id": "rooftop_stargazing",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done", "eleanor_intro_done"],
             "flag_false": ["group_rooftop_stargazing_done"],
             "location": "rooftop",
             "chars_at_location": ["Аоі", "Елеонор"],

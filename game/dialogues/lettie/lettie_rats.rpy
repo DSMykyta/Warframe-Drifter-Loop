@@ -5,7 +5,6 @@ init python:
         "id": "lettie_rats",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done"],
             "flag_false": ["lettie_rats_done"],
             "rank_min": 1,
         },

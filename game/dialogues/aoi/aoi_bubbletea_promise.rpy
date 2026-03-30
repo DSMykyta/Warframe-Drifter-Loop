@@ -6,7 +6,6 @@ init python:
         "id": "aoi_bubbletea_promise",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["aoi_intro_done"],
             "flag_false": ["aoi_bubbletea_promise_done"],
             "rank_min": 1,
             "chemistry_min": ("Аоі", 25),

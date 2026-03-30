@@ -6,7 +6,7 @@ init python:
         "id": "lettie_coffee_machine_react",
         "who": "Летті",
         "conditions": {
-            "flag_true": ["lettie_intro_done", "gifted_lettie_coffee_machine"],
+            "flag_true": ["gifted_lettie_coffee_machine"],
             "flag_false": ["gift_lettie_coffee_machine_done"],
             "rank_min": 1,
         },

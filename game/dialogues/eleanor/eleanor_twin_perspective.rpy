@@ -5,7 +5,7 @@ init python:
         "id": "eleanor_twin_perspective",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["eleanor_intro_done", "arthur_eleanor_secret_done"],
+            "flag_true": ["arthur_eleanor_secret_done"],
             "flag_false": ["eleanor_twin_perspective_done"],
             "chemistry_min": ("Елеонор", 40),
             "rank_min": 2,

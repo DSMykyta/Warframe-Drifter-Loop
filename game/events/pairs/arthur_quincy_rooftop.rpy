@@ -7,7 +7,6 @@ init python:
         "location": "rooftop",
         "chars": ["Артур", "Квінсі"],
         "conditions": {
-            "flag_true": ["arthur_intro_done", "quincy_intro_done"],
             "flag_false": ["pair_arthur_quincy_rooftop_seen"],
         },
         "label": "arthur_quincy_rooftop",

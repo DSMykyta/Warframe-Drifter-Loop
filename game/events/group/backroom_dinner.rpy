@@ -6,7 +6,7 @@ init python:
         "id": "backroom_dinner",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["arthur_intro_done", "arthur_cooking_done"],
+            "flag_true": ["arthur_cooking_done"],
             "flag_false": ["group_backroom_dinner_done"],
             "location": "backroom",
             "rank_min": 2,

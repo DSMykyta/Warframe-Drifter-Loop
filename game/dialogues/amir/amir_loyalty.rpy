@@ -5,7 +5,6 @@ init python:
         "id": "amir_loyalty",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["amir_intro_done"],
             "flag_false": ["amir_loyalty_done"],
             "rank_min": 1,
         },
