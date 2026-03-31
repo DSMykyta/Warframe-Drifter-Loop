@@ -194,6 +194,21 @@ init python:
     # Mission chem gate: потрібна розмова за останні N днів
     MISSION_CHEM_TALK_GATE = 3
 
+    # Канонічний маппінг: кирилиця → латинський ID для флагів
+    # ВСІ автогенеровані флаги МАЮТЬ використовувати цей маппінг
+    CHAR_FLAG_ID = {
+        "Артур":   "arthur",
+        "Елеонор": "eleanor",
+        "Летті":   "lettie",
+        "Амір":    "amir",
+        "Аоі":     "aoi",
+        "Квінсі":  "quincy",
+    }
+
+    def char_flag(name):
+        """Повертає латинський ID для флагів. ЗАВЖДИ використовувати замість name.lower()."""
+        return CHAR_FLAG_ID.get(name, name.lower())
+
     def can_rank_up():
         """Перевіряє чи можна підвищити ранг Гексу."""
         nxt = store.syndicate_rank + 1
