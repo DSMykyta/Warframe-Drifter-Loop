@@ -11,14 +11,14 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "arthur_rank1_convo2",
+        "titles": [
+            ("Ти шо, знову On-lyne слухаєш?", "arthur_r1c2_onlyne"),
+            ("Що за музика грає?", "arthur_r1c2_onlyne"),
+            ("Ти чомусь похмурий. Що трапилось?", "arthur_r1c2_onlyne"),
+        ],
     })
 
-label arthur_rank1_convo2:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-    $ dialogue_begin()
-
+label arthur_r1c2_onlyne:
     ar "Слухай, тебе ж дратує On-lyne?"
 
     ar "Ця група грає скрізь. У кожному барі, кожному магазині. Я вже не витримую."

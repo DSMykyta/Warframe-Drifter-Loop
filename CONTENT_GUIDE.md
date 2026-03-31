@@ -22,7 +22,16 @@
 
 ---
 
-## 2. ШАБЛОН: ЗВИЧАЙНИЙ ДІАЛОГ (BALANCE V2)
+## 2. ШАБЛОН: ЗВИЧАЙНИЙ ДІАЛОГ
+
+Кожен діалог починається з **меню** — без вступних реплік NPC.
+Гравець клікає на персонажа і одразу бачить варіанти що сказати.
+
+Диспетчер обирає ОДИН eligible діалог → його `titles` розгортаються
+в меню разом з бонусними опціями, подарунком і "незважай".
+
+`show`, `talked_today`, `dialogue_begin/end` — викликаються автоматично
+в `location_loop`, НЕ в самому діалозі.
 
 ```renpy
 # game/dialogues/{char}/{char}_{topic}.rpy
@@ -33,61 +42,105 @@ init python:
         "who": "Артур",
         "conditions": {
             "flag_false": ["{char}_{topic}_done"],
-            "chemistry_min": ("Артур", 10),         # з'являється при хімії 10+
+            "chemistry_min": ("Артур", 10),
         },
         "priority": 50,
         "chance": 100,
-        "label": "{char}_{topic}",
+        # titles = список кортежів (текст_в_меню, label_гілки)
+        # Кожен кортеж = один пункт меню при взаємодії з NPC
+        "titles": [
+            ("Привіт, як справи?", "{char}_{topic}_casual"),
+            ("Слухай, є питання.", "{char}_{topic}_serious"),
+            ("Чо робиш?", "{char}_{topic}_observe"),
+        ],
     })
 
-label {char}_{topic}:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-    $ dialogue_begin()                              # ПОЧАТОК: скидає лічильник, ховає HUD
+# Кожна гілка — окремий label. Викликається напряму з меню.
+# show/dialogue_begin/talked_today — вже зроблені location_loop.
 
-    ar "Репліка NPC."
+label {char}_{topic}_casual:
+    mc "Привіт, як справи?"
 
-    mc "Відповідь гравця."
+    ar "Нормально. Ти щось хотів?"
 
     menu:
-        "Варіант 1":
-            ar "Реакція на варіант 1."
-            $ add_chemistry("Артур", 2)             # +2 за добрий вибір
-            $ set_flag("якийсь_флаг")
+        "Та просто перепитати.":
+            ar "Хм. Ну добре."
+            $ add_chemistry("Артур", 2)
 
-        "Варіант 2":
-            ar "Реакція на варіант 2."
-            $ add_chemistry("Артур", 4)             # +4 за відмінний вибір (рідко!)
-
-        "Варіант 3 (бонус)" if store.flags.get("special_flag"):
-            ar "Особлива реакція."                  # Динамічна опція через if
+        "Хотів поговорити серйозно.":
+            ar "Серйозно — це як?"
             $ add_chemistry("Артур", 4)
 
-    $ dialogue_end()                                # КІНЕЦЬ: списує час, показує HUD
-    $ store.seen_dialogues.add("{char}_{topic}")
-    $ set_flag("{char}_{topic}_done")
+    # Кінцевий блок — НЕ ПОТРІБЕН в гілках!
+    # seen_dialogues і set_flag — робить location_loop автоматично.
+    return
 
-    hide arthur
+label {char}_{topic}_serious:
+    mc "Слухай, є одне питання."
+    # ... діалог ...
+    return
+
+label {char}_{topic}_observe:
+    mc "Чо робиш?"
+    # ... діалог ...
     return
 ```
 
+### ЩО РОБИТЬ LOCATION_LOOP АВТОМАТИЧНО (не треба писати в діалозі):
+
+```python
+# ДО діалогу:
+$ store.talked_today.add(name)
+$ reset_interaction(name)
+$ dialogue_begin()              # ховає HUD, скидає лічильник
+show {char} at char_center
+
+# ПІСЛЯ return з гілки:
+$ dialogue_end()                # списує час, показує HUD
+$ store.seen_dialogues.add(id)
+$ set_flag(id + "_done")
+hide {char}
+```
+
+### TITLES — ПРАВИЛА НАПИСАННЯ:
+
+**Titles = перші фрази Дрифтера.** Натуральні, як початок реальної розмови.
+
+| Добре | Погано |
+|---|---|
+| "Привіт" | "Розкажи мені про свій бойовий досвід" |
+| "Як справи?" | "Елеонор, як ти стала журналісткою?" |
+| "Слухай, можу питання?" | "Що ти думаєш про філософію смерті?" |
+| "Нудьгуєш?" | "Летті, що привело тебе до Хьольванії?" |
+| "Чо як, старий?" | "Квінсі, яка твоя проблема з Артуром?" |
+
+Кожна гілка починається з `mc "..."` — Дрифтер озвучує те що вибрав гравець,
+потім NPC відповідає. Далі — звичайний діалог з menu всередині.
+
 ### КЛЮЧОВІ ВІДМІННОСТІ ВІД СТАРОГО ФОРМАТУ:
 
-| Було (старе) | Стало (Balance v2) |
+| Було (старе) | Стало |
 |---|---|
-| `$ advance_time(5)` після кожної репліки | `$ dialogue_begin()` / `$ dialogue_end()` — час рахується автоматично |
+| `"label": "arthur_convo1"` | `"titles": [("Привіт", "branch_label"), ...]` — titles замість label |
+| `label` з вступними NPC репліками перед menu | Гілки одразу — menu це ПЕРШЕ що бачить гравець |
+| `show`, `dialogue_begin`, `talked_today` в діалозі | Автоматично в `location_loop` — НЕ писати в діалозі |
+| `seen_dialogues.add()`, `set_flag("_done")` в діалозі | Автоматично в `location_loop` — НЕ писати в діалозі |
+| `$ advance_time(5)` після кожної репліки | Автоматично через `dialogue_begin/end` (3 хв/репліка) |
 | `$ chemistry["Артур"] += 3` | `$ add_chemistry("Артур", 2)` — через daily cap |
 | `"flag_true": ["arthur_intro_done"]` | **Не потрібно** — інтро гарантоване системою |
 | `"flag_true": ["prev_convo_done"]` | `"chemistry_min": ("Артур", N)` — плоска система |
-| `"rank_min": 1` | **Не потрібно** — ранг починається з 1 |
 
 ### ПРАВИЛА:
 
-1. **НЕ** використовуй `advance_time()` в діалогах — система `dialogue_begin/end` рахує автоматично (3 хв за репліку)
-2. **НЕ** використовуй `chemistry["Артур"] +=` напряму — тільки через `add_chemistry()` (daily cap + milestone rep)
-3. **НЕ** створюй ланцюжки через `flag_true: ["prev_convo_done"]` — використовуй `chemistry_min`
-4. **НЕ** перевіряй `_intro_done` — інтро гарантоване `script.rpy`
-5. Кожна розмова — **незалежна**, з'являється на основі стану світу
+1. **НЕ** використовуй `advance_time()` — автолічильник
+2. **НЕ** використовуй `chemistry[...] +=` — тільки `add_chemistry()`
+3. **НЕ** пиши `show`/`hide`/`dialogue_begin`/`dialogue_end` — робить location_loop
+4. **НЕ** пиши `seen_dialogues.add()`/`set_flag("_done")` — робить location_loop
+5. **НЕ** створюй ланцюжки через `flag_true` — використовуй `chemistry_min`
+6. **НЕ** перевіряй `_intro_done` — гарантоване
+7. **НЕ** пиши вступні NPC репліки перед першим menu — menu йде ПЕРШЕ
+8. Гілки закінчуються `return` — все інше автоматичне
 
 ---
 

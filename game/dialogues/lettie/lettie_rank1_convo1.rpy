@@ -11,22 +11,14 @@ init python:
         },
         "priority": 50,
         "chance": 100,
-        "label": "lettie_rank1_convo1",
+        "titles": [
+            ("Привіт. Не заважаю?", "lettie_r1c1_medic"),
+            ("Летті, є хвилинка?", "lettie_r1c1_here"),
+        ],
     })
 
-label lettie_rank1_convo1:
-    show lettie at char_center
-    $ store.talked_today.add("Летті")
-    $ dialogue_begin()
-
-    menu:
-        "Летті, як ти стала медиком?":
-            jump lettie_r1c1_medic
-
-        "Летті, що привело тебе сюди?":
-            jump lettie_r1c1_here
-
 label lettie_r1c1_medic:
+    show lettie at char_center
     mc "Летті, як ти стала медиком?"
 
     le "Це моя робота."
@@ -43,6 +35,8 @@ label lettie_r1c1_medic:
     return
 
 label lettie_r1c1_here:
+    show lettie at char_center
+
     mc "Летті, що привело тебе в Гелльванію?"
 
     le "Хм?"

@@ -61,6 +61,43 @@ init python:
         renpy.scene()
         renpy.show(bg_name)
 
+    # === МАППІНГ: кирилиця → image tag ===
+    CHAR_IMAGE_TAG = {
+        "Артур":   "arthur",
+        "Елеонор": "eleanor",
+        "Летті":   "lettie",
+        "Амір":    "amir",
+        "Аоі":     "aoi",
+        "Квінсі":  "quince",
+    }
+
+    # Позиції для N персонажів в локації
+    CHAR_POSITIONS = {
+        1: [0.5],
+        2: [0.3, 0.7],
+        3: [0.2, 0.5, 0.8],
+        4: [0.15, 0.38, 0.62, 0.85],
+        5: [0.1, 0.3, 0.5, 0.7, 0.9],
+        6: [0.05, 0.25, 0.45, 0.55, 0.75, 0.95],
+    }
+
+    def show_location_chars():
+        """Показує спрайти NPC в поточній локації."""
+        chars = get_chars_at(store.current_location)
+        n = len(chars)
+        if n == 0:
+            return
+        positions = CHAR_POSITIONS.get(n, CHAR_POSITIONS[6][:n])
+        for i, name in enumerate(chars):
+            tag = CHAR_IMAGE_TAG.get(name, "arthur")
+            xpos = positions[i]
+            renpy.show(tag, at_list=[Transform(zoom=char_zoom, xalign=xpos, yalign=1.0)])
+
+    def hide_all_chars():
+        """Ховає всі спрайти NPC."""
+        for tag in CHAR_IMAGE_TAG.values():
+            renpy.hide(tag)
+
 # === ПІДСВІЧУВАННЯ: змінна хто говорить ===
 default _speaking_char = None
 

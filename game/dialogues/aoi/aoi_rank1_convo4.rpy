@@ -11,35 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "aoi_rank1_convo4",
+        "titles": [
+            ("Привіт! Що складаєш?", "aoi_r1c4_sweet"),
+            ("О, орігамі! Покажи!", "aoi_r1c4_animal"),
+            ("Як справи? Усміхнена, як завжди.", "aoi_r1c4_real_hug"),
+        ],
     })
 
-label aoi_rank1_convo4:
-    show aoi at char_center
-    $ store.talked_today.add("Аоі")
-    $ dialogue_begin()
-
-    ao "Дрифтер! Я тут складала орігамі і подумала — тобі ніхто сьогодні не казав нічого приємного, правда?"
-
-    mc "Мені рідко хто каже щось приємне."
-
-    ao "Це неприпустимо. Тримай."
-
-    "Аоі простягає маленьку паперову фігурку. Щось середнє між котом і ведмедем."
-
-    ao "Це віртуальне обійми. Ну, паперове. Але з тим самим ефектом."
-
-    menu:
-        "Дякую. Це мило.":
-            jump aoi_r1c4_sweet
-
-        "Що це за звірятко?":
-            jump aoi_r1c4_animal
-
-        "А справжні обійми не пропонуєш?":
-            jump aoi_r1c4_real_hug
-
 label aoi_r1c4_sweet:
+    show aoi at char_center
     mc "Дякую, Аоі. Справді мило."
 
     ao "Бачиш! Маленькі речі мають силу. Одне орігамі може змінити настрій на весь день."
@@ -49,6 +29,8 @@ label aoi_r1c4_sweet:
     jump aoi_r1c4_animals
 
 label aoi_r1c4_animal:
+    show aoi at char_center
+
     mc "Це... кіт? Чи ведмідь? Чи щось інше?"
 
     ao "Це котоведмідь. Мій власний вид. Я його винайшла."
@@ -63,6 +45,8 @@ label aoi_r1c4_animal:
     jump aoi_r1c4_animals
 
 label aoi_r1c4_real_hug:
+    show aoi at char_center
+
     mc "А якщо я хочу справжні обійми, а не паперові?"
 
     ao "О! Сміливо. Але ні. Справжні обійми — це ранг дружби вище. Ти ще не заслужив."

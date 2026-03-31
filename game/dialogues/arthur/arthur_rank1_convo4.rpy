@@ -11,15 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "arthur_rank1_convo4",
+        "titles": [
+            ("Хотів поговорити. Є хвилинка?", "arthur_r1c4_intro"),
+            ("Ти щось хотів спитати?", "arthur_r1c4_intro"),
+            ("Чо задумливий такий?", "arthur_r1c4_intro"),
+        ],
     })
 
-label arthur_rank1_convo4:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-    $ dialogue_begin()
-
-    ar "Дрифтер. Маю питання, яке давно крутиться в голові."
+label arthur_r1c4_intro:
+    ar "Раз вже прийшов — маю питання, яке давно крутиться в голові."
 
     ar "Ти вмієш битися. Це видно. Але де ти цьому навчився?"
 

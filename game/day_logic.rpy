@@ -42,12 +42,17 @@ init python:
         # 7a. Загоєння травм
         check_injuries_heal()
 
-        # 7b. Скинути одноденні флаги травм
-        if store.flags.get("lettie_healed_today"):
-            store.flags["lettie_healed_today"] = False
-        for _banter_flag in ["amir_saw_bruises", "aoi_saw_injury", "arthur_saw_injury", "quincy_saw_injury"]:
-            if store.flags.get(_banter_flag):
-                store.flags[_banter_flag] = False
+        # 7b. Скинути одноденні флаги
+        _daily_flags = [
+            "lettie_healed_today",
+            "amir_saw_bruises", "aoi_saw_injury", "arthur_saw_injury", "quincy_saw_injury",
+            "helped_someone_today",
+            "helped_летті_today", "helped_амір_today", "helped_артур_today",
+            "helped_аоі_today", "helped_квінсі_today", "helped_елеонор_today",
+        ]
+        for _f in _daily_flags:
+            if store.flags.get(_f):
+                store.flags[_f] = False
 
         # 8. Генерація місій
         generate_missions()
@@ -55,14 +60,17 @@ init python:
         # 9. Перевірка rank-up
         try_rank_up()
 
-        # 10. Побудувати колоду eligible діалогів на день
-        build_daily_deck()
-
-        # 11. Обробити протухлі івенти
+        # 10. Обробити протухлі івенти (перед deck — ставить флаги)
         check_expired_events()
+
+        # 11. Побудувати колоду eligible діалогів на день
+        build_daily_deck()
 
         # 12. Поширити плітки
         spread_gossip()
 
-        # 13. Переміщення в бекрум (прокинувся)
+        # 13. Очистити пейджер від вчорашніх повідомлень
+        clear_pager()
+
+        # 14. Переміщення в бекрум (прокинувся)
         store.current_location = "backroom"

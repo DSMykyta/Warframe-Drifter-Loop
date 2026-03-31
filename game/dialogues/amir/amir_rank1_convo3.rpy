@@ -11,40 +11,14 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "amir_rank1_convo3",
+        "titles": [
+            ("Ти шо, знову на енергетиках?", "amir_r1c3_science"),
+            ("Привіт! Ти чомусь аж підстрибуєш.", "amir_r1c3_fair"),
+        ],
     })
 
-label amir_rank1_convo3:
-    show amir at char_center
-    $ store.talked_today.add("Амір")
-    $ dialogue_begin()
-
-    am "РОБОТИРОБОТИРОБОТИРОБОТИ—"
-
-    mc "Ти в порядку?"
-
-    am "Скажи мені, що в майбутньому є роботи. Благаю."
-
-    am "І не просто страхітливі м'ясні штуки як варфрейми."
-
-    am "А справжні роботи. ЗАЛІЗНІ. БЛИСКУЧІ."
-
-    mc "Боже, менше кави пий."
-
-    am "Летті заборонила мені каву. Сказала, серце може вибухнути."
-
-    am "Думаю, вона просто не хотіла бачити мене ще більш заведеного."
-
-    am "Тож це — стовідсотково чистий Амір!"
-
-    menu:
-        "Не дивуюсь, що Летті так вирішила.":
-            jump amir_r1c3_fair
-
-        "Мені б хотілось побачити тебе на каві... Для науки.":
-            jump amir_r1c3_science
-
 label amir_r1c3_science:
+    show amir at char_center
     am "Ахаха!"
 
     mc "Але це якось іншим разом. Давай до теми."
@@ -52,6 +26,8 @@ label amir_r1c3_science:
     jump amir_r1c3_topic
 
 label amir_r1c3_fair:
+    show amir at char_center
+
     am "Ну так, логічно."
 
     jump amir_r1c3_topic

@@ -24,7 +24,7 @@ init python:
         for p in store.promises:
             if p["day"] < store.day and not p.get("fulfilled"):
                 # Порушена обіцянка
-                store.chemistry[p["who"]] = max(0, store.chemistry[p["who"]] - 5)
+                add_chemistry(p["who"], -5)
                 set_flag("broke_promise_" + p["who"].lower())
                 broken.append(p)
             else:
@@ -37,7 +37,7 @@ init python:
         for p in store.promises:
             if p["who"] == who and p["day"] == store.day and not p["fulfilled"]:
                 p["fulfilled"] = True
-                store.chemistry[who] = store.chemistry.get(who, 0) + 5
+                add_chemistry(who, 5)
                 return True
         return False
 

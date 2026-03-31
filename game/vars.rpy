@@ -164,10 +164,6 @@ init python:
 
     config.all_character_callbacks.append(_count_dialogue_line)
 
-    def has_time_for(mins):
-        """Завжди True — час не блокує дії, але після 24:00 порожньо."""
-        return True
-
     def is_night():
         """Після 24:00 (1440 хв) — ніч, персонажі зникли."""
         return store.minutes >= 1440
@@ -190,10 +186,7 @@ init python:
         return "Нейтрально"
 
     # ═══ БАЛАНС: КОНСТАНТИ ═══
-    RANK_THRESHOLDS = {2: 50, 3: 150, 4: 300, 5: 500, 6: 750}
-
-    # Milestone rep бонуси при досягненні порогів хімії
-    CHEM_MILESTONE_REP = {30: 5, 60: 10, 90: 15, 120: 20}
+    RANK_THRESHOLDS = {2: 30, 3: 80, 4: 150, 5: 230, 6: 300}
 
     # Daily cap хімії per NPC
     DAILY_CHEMISTRY_CAP = 15
@@ -207,9 +200,9 @@ init python:
         return nxt <= 6 and store.hex_rep >= RANK_THRESHOLDS.get(nxt, 99999)
 
     def add_chemistry(name, amount):
-        """Додає хімію з daily cap та milestone rep. Єдина функція для зміни хімії."""
+        """Додає хімію з daily cap. Єдина функція для зміни хімії.
+        Репутація НЕ залежить від хімії — тільки від місій."""
         if amount <= 0:
-            # Штрафи не обмежуються daily cap
             store.chemistry[name] = max(0, store.chemistry.get(name, 0) + amount)
             return amount
 
@@ -222,16 +215,6 @@ init python:
 
         store.chemistry[name] = old + actual
         store.chemistry_gained_today[name] = gained_today + actual
-        new = store.chemistry[name]
-
-        # Перевірка milestone rep
-        for threshold, rep_bonus in CHEM_MILESTONE_REP.items():
-            if old < threshold <= new:
-                milestone_flag = "milestone_{}_{}_rep".format(name.lower(), threshold)
-                if not store.flags.get(milestone_flag):
-                    store.hex_rep += rep_bonus
-                    set_flag(milestone_flag)
-                    try_rank_up()
 
         return actual
 

@@ -105,11 +105,12 @@ screen hud():
 define audio.pager_beep = "<to 2.1>audio/pager_beep.mp3"
 define audio.pager_click = "audio/pager_click.mp3"
 
-# ── ПЕЙДЖЕР — лівий нижній кут ──
+# ── ПЕЙДЖЕР — лівий нижній кут (тільки після отримання від Аміра) ──
 screen pager_hud():
     zorder 50
 
-    fixed:
+    if store.flags.get("has_pager"):
+        fixed:
         xpos 1900
         ypos 1060
         xanchor 1.0
@@ -234,11 +235,8 @@ screen pager_hud():
 # ═══════════════════════════════════
 
 screen location_ui():
-
-    use hud
+    # hud і pager_hud показуються через show screen в script.rpy
     use scanlines
-    use pager
-    use pager_hud
 
     # Назва локації
     $ _loc_name = LOCATION_NAMES.get(current_location, current_location)
@@ -251,22 +249,17 @@ screen location_ui():
 
         null height 10
 
-        # Персонажі в локації
+        # Персонажі в локації — клікабельні імена (спрайти показуються через show_location_chars)
         $ _chars_here = get_chars_at(current_location)
 
         if _chars_here:
-            text "Присутні:" size 14 color "#ffffff40" xalign 0.5
-
             for _ch in _chars_here:
                 button:
                     style "hex_btn"
                     xalign 0.5
-                    xminimum 280
-                    action Return(("talk", _ch))
-                    hbox:
-                        spacing 8
-                        xalign 0.5
-                        text "Поговорити з [_ch]" size 18 color "#d8b4fe"
+                    xminimum 200
+                    action Return(("interact", _ch))
+                    text "[_ch]" size 20 color "#d8b4fe"
         else:
             if is_night():
                 text "Порожньо. Всі пішли." size 16 color "#ffffff30" xalign 0.5
@@ -278,11 +271,12 @@ screen location_ui():
         align (0.5, 0.75)
         spacing 16
 
-        # Карта
-        button:
-            style "hex_btn"
-            action Return("map")
-            text "Карта" size 18 color "#d8b4fe"
+        # Карта (тільки після знахідки)
+        if store.flags.get("has_map"):
+            button:
+                style "hex_btn"
+                action Return("map")
+                text "Карта" size 18 color "#d8b4fe"
 
         # Місії (тільки в гаражі)
         if current_location == "garage":

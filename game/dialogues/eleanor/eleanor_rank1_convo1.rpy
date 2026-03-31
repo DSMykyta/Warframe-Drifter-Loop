@@ -11,37 +11,15 @@ init python:
         },
         "priority": 50,
         "chance": 100,
-        "label": "eleanor_rank1_convo1",
+        "titles": [
+            ("Можна питання? Давно цікавить.", "eleanor_r1c1_journalism"),
+            ("Ти завжди така... зібрана?", "eleanor_r1c1_unedited"),
+            ("Як справи? Чесно.", "eleanor_r1c1_fear"),
+        ],
     })
 
-label eleanor_rank1_convo1:
-    show eleanor at char_center
-    $ store.talked_today.add("Елеонор")
-    $ dialogue_begin()
-
-    el "Ти помічав, що я ніколи не говорю з тобою подумки?"
-
-    mc "Тепер, коли ти це згадала — так. Чому?"
-
-    el "Бо слова — це мистецтво. Телепатія — це зліпок емоцій, брудний пакет відчуттів без структури."
-
-    el "А речення... речення можна скласти. Відшліфувати. Приховати одне, підкреслити інше."
-
-    mc "Тобто ти обираєш текст, бо він дає тобі контроль?"
-
-    el "Контроль — таке потворне слово. Скажімо... редагування. Я редагую себе перед тим, як показати світові."
-
-    menu:
-        "Звучить як журналістська звичка.":
-            jump eleanor_r1c1_journalism
-
-        "А що, якщо хтось хоче побачити нередаговану версію?":
-            jump eleanor_r1c1_unedited
-
-        "Ти боїшся, що люди побачать справжню тебе?":
-            jump eleanor_r1c1_fear
-
 label eleanor_r1c1_journalism:
+    show eleanor at char_center
     mc "Це звучить як професійна деформація. Ти була журналісткою?"
 
     el "О. Хтось зробив домашнє завдання."
@@ -62,6 +40,8 @@ label eleanor_r1c1_journalism:
     jump eleanor_r1c1_sanity
 
 label eleanor_r1c1_unedited:
+    show eleanor at char_center
+
     mc "А якщо хтось хоче побачити чернетку? Без правок?"
 
     el "Тоді цей хтось або дуже сміливий, або дуже нерозумний."
@@ -77,6 +57,8 @@ label eleanor_r1c1_unedited:
     jump eleanor_r1c1_sanity
 
 label eleanor_r1c1_fear:
+    show eleanor at char_center
+
     mc "Ти боїшся, що справжня ти комусь не сподобається?"
 
     el "Яка пряма атака. Без маневрів."

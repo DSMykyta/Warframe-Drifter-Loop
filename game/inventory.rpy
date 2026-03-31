@@ -89,7 +89,7 @@ init -5 python:
         "microwave":      {"Артур": 12},
         "announce":       {"Артур": 12},
         "propane_tank":   {"Артур": 7},
-        "keychains":      {"Артур": 3},
+        # keychains — НЕ liked для Артура (в OFFENSIVE_GIFTS = -3)
 
         # Аоі — музика, транспорт
         "onlyne_album":       {"Аоі": 12},
@@ -119,7 +119,7 @@ init -5 python:
         "medical_kit":    {"Летті": 7},
         "coffee_cups":    {"Летті": 3},
         "coffee_mug":     {"Летті": 3},
-        "pillows":        {"Летті": 3, "Елеонор": 3},
+        "pillows":        {"Елеонор": 3},  # Летті — в OFFENSIVE_GIFTS (-2)
         "cardboard_box":  {"Летті": 3},
 
         # Елеонор — природа, канцелярія

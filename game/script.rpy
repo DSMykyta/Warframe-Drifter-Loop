@@ -7,25 +7,12 @@ label start:
     # Відновити інсайти з минулої петлі
     if persistent.insights_log:
         $ store.insights_log = list(persistent.insights_log)
-    # Інтро (якщо ще не пройдено)
-    # if not store.flags.get("intro_done"):
-    #     call intro
-    # DEBUG: пропустити інтро, додати тестові дані
-    $ set_flag("intro_done")
-    $ set_flag("met_arthur")
-    $ set_flag("met_aoi")
-    $ set_flag("met_amir")
-    $ set_flag("met_quincy")
-    $ set_flag("met_lettie")
-    $ set_flag("met_eleanor")
-    $ add_insight("hex_exists", "Шестеро в молі. Гекс.")
-    $ add_insight("arthur_leads", "Артур — лідер.")
-    $ add_insight("amir_tech", "Амір — технік.")
-    $ add_insight("aoi_logistics", "Аоі — логістика.")
-    $ add_insight("quincy_marksman", "Квінсі. Тир.")
-    $ add_insight("lettie_medic", "Летті — медик.")
-    # DEBUG: тестова сцена
-    call arthur_kitchen_demo
+    # Інтро — допит на футкорті
+    if not store.flags.get("intro_done"):
+        call intro
+    # Сцена 2 — дослідження молу, знахідка карти
+    if not store.flags.get("has_map"):
+        call explore_mall
     # Побудувати першу колоду діалогів
     $ build_daily_deck()
     jump generic_day
@@ -56,6 +43,9 @@ label location_loop:
     # Показати фон поточної локації
     $ show_location_bg()
 
+    # Показати спрайти NPC в локації
+    $ show_location_chars()
+
     # Показати HUD
     show screen hud
 
@@ -66,6 +56,21 @@ label location_loop:
         $ _banter_text = _banter.get("text", "")
         if _banter_text:
             "[_banter_who]: [_banter_text]"
+
+    # Перевірити forced діалоги (NPC ініціює розмову)
+    $ _forced = check_forced_dialogue(current_location)
+    if _forced is not None:
+        $ _forced_name = _forced["who"]
+        $ _forced_label = _forced["label"]
+        $ _forced_id = _forced["id"]
+        $ store.talked_today.add(_forced_name)
+        $ reset_interaction(_forced_name)
+        $ dialogue_begin()
+        call expression _forced_label
+        $ dialogue_end()
+        $ store.seen_dialogues.add(_forced_id)
+        $ set_flag(_forced_id + "_done")
+        jump location_loop
 
     # Показати екран взаємодії з локацією
     call screen location_ui
@@ -110,14 +115,91 @@ label location_loop:
         jump location_loop
 
     if isinstance(_choice, tuple):
+        # Клік на персонажа → показати меню взаємодії
+        if _choice[0] == "interact":
+            $ _interact_target = _choice[1]
+            jump interact_with_npc
+
+        # Fallback для старого формату
         if _choice[0] == "talk":
-            $ _talk_target = _choice[1]
-            $ _dlg_label = get_dialogue(_talk_target)
-            if _dlg_label:
-                $ store.talked_today.add(_talk_target)
-                $ reset_interaction(_talk_target)
-                $ store.interaction_counts[_talk_target] = store.interaction_counts.get(_talk_target, 0) + 1
-                call expression _dlg_label
+            $ _interact_target = _choice[1]
+            jump interact_with_npc
+
+        if _choice[0] == "gift":
+            $ _gift_target = _choice[1]
+            call gift_submenu(_gift_target)
+            jump location_loop
+
+    jump location_loop
+
+
+# ═══════════════════════════════════════════════════
+# ВЗАЄМОДІЯ З NPC — ПІДМЕНЮ
+# ═══════════════════════════════════════════════════
+
+label interact_with_npc:
+    # Обрати ОДИН eligible діалог (за пріоритетом)
+    $ _active_dlg = get_active_dialogue(_interact_target)
+    # Зібрати бонусні опції
+    $ _bonus = get_bonus_options(_interact_target)
+    # Чи є що подарувати
+    $ _can_gift = bool(store.inventory) and _interact_target not in store.gifted_today
+
+    # Якщо нема діалогу з titles — fallback на старий get_dialogue
+    if _active_dlg is None:
+        $ _dlg_label = get_dialogue(_interact_target)
+        if _dlg_label:
+            $ store.talked_today.add(_interact_target)
+            $ reset_interaction(_interact_target)
+            $ store.interaction_counts[_interact_target] = store.interaction_counts.get(_interact_target, 0) + 1
+            call expression _dlg_label
+        jump location_loop
+
+    # Є діалог з titles → показати меню
+    $ _titles = _active_dlg["titles"]
+    $ _dlg_id = _active_dlg["id"]
+
+    # Бонусні опції: якщо вони ПОКАЗАЛИСЬ в меню — вже зіграні
+    # (незалежно чи гравець обрав їх чи ні)
+    python:
+        for _b in _bonus:
+            if _b.get("once"):
+                mark_bonus_used(_b["id"])
+
+    call screen npc_interact_menu(_interact_target, _titles, _bonus, _can_gift)
+    $ _interact_choice = _return
+
+    if _interact_choice == "dismiss":
+        jump location_loop
+
+    if _interact_choice == "gift":
+        call gift_submenu(_interact_target)
+        jump location_loop
+
+    # Вибрали гілку діалогу
+    if isinstance(_interact_choice, tuple):
+        if _interact_choice[0] == "topic":
+            $ _topic_label = _interact_choice[1]
+            $ store.talked_today.add(_interact_target)
+            $ reset_interaction(_interact_target)
+            $ store.interaction_counts[_interact_target] = store.interaction_counts.get(_interact_target, 0) + 1
+            $ dialogue_begin()
+            call expression _topic_label
+            $ dialogue_end()
+            $ store.seen_dialogues.add(_dlg_id)
+            $ set_flag(_dlg_id + "_done")
+            jump location_loop
+
+        if _interact_choice[0] == "bonus":
+            $ _bonus_label = _interact_choice[1]
+            $ store.talked_today.add(_interact_target)
+            $ reset_interaction(_interact_target)
+            $ _char_img = CHAR_IMAGE_TAG.get(_interact_target, "arthur")
+            show expression _char_img at char_center
+            $ dialogue_begin()
+            call expression _bonus_label
+            $ dialogue_end()
+            hide expression _char_img
             jump location_loop
 
     jump location_loop
@@ -143,8 +225,21 @@ label do_wait:
     if _interrupted:
         # Перемотати половину часу, потім переривання
         $ advance_time(_wait_mins // 2)
+        $ _help = check_help_requests()
+        if _help is not None:
+            $ _help_who = _help["who"]
+            $ _help_msg = _help["message"]
+            "Пейджер: [_help_who] — [_help_msg]"
+            menu:
+                "Допомогти":
+                    $ execute_help_request(_help)
+                    $ show_location_bg()
+                    "Допоміг [_help_who]. Отримано 100 крон."
+                "Ігнорувати":
+                    "Пропускаєш запит."
+            jump location_loop
+        # Якщо немає help request — простий banter
         "Поки чекаєш, хтось підходить..."
-        # TODO: NPC banter або help request
         jump location_loop
 
     # Повне очікування

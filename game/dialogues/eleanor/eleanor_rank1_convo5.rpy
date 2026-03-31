@@ -11,37 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "eleanor_rank1_convo5",
+        "titles": [
+            ("Є хвилинка? Хочу поговорити.", "eleanor_r1c5_cephalon"),
+            ("Ти колись думала про... після?", "eleanor_r1c5_orokin"),
+            ("Сідай. Серйозна тема.", "eleanor_r1c5_transference"),
+        ],
     })
 
-label eleanor_rank1_convo5:
-    show eleanor at char_center
-    $ store.talked_today.add("Елеонор")
-    $ dialogue_begin()
-
-    el "Дрифтер. Сядь. Мені потрібна розмова, яку ніхто інший не витримає."
-
-    mc "Звучить обнадійливо."
-
-    el "Що відбувається після смерті?"
-
-    mc "...Ти серйозно?"
-
-    el "Абсолютно. Ти — єдиний у Голлванії, хто знає більше одного варіанту відповіді. Твій всесвіт мав технології, що торкались цього питання."
-
-    el "Мене не цікавить віра. Мене цікавлять факти. Що ти бачив?"
-
-    menu:
-        "Цефалони — розум, записаний у машину.":
-            jump eleanor_r1c5_cephalon
-
-        "Орокін переносили свідомість у нові тіла.":
-            jump eleanor_r1c5_orokin
-
-        "Переміщення Тенно — ти живеш через інших.":
-            jump eleanor_r1c5_transference
-
 label eleanor_r1c5_cephalon:
+    show eleanor at char_center
     mc "Цефалони. Штучний інтелект, створений із людської свідомості. Тебе сканують — і копія живе вічно у цифровому просторі."
 
     el "Копія. Не ти — а копія."
@@ -78,6 +56,8 @@ label eleanor_r1c5_cephalon:
     jump eleanor_r1c5_identity
 
 label eleanor_r1c5_orokin:
+    show eleanor at char_center
+
     mc "Орокін мали Безперервність. Коли тіло старіло — вони переносили свідомість у нове. Зазвичай — у чуже."
 
     el "У чуже? Тобто вони крали тіла?"
@@ -110,6 +90,8 @@ label eleanor_r1c5_orokin:
     jump eleanor_r1c5_identity
 
 label eleanor_r1c5_transference:
+    show eleanor at char_center
+
     mc "Переміщення. Тенно з'єднують свідомість із варфреймом. Ти відчуваєш його тіло як своє. Рухаєшся, б'єшся, вмираєш — але твоє справжнє тіло в безпеці."
 
     el "Ти живеш через маску. Через аватар."

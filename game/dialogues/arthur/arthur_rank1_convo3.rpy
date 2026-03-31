@@ -11,18 +11,14 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "arthur_rank1_convo3",
+        "titles": [
+            ("Слухай, а можна твій Атомоцикл на вечір?", "arthur_r1c3_ask"),
+            ("Класний байк. Де дістав?", "arthur_r1c3_ask"),
+            ("Я бачив твій Атомоцикл...", "arthur_r1c3_ask"),
+        ],
     })
 
-label arthur_rank1_convo3:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-    $ dialogue_begin()
-
-    mc "Артуре, можна питання?"
-
-    ar "Залежить від питання."
-
+label arthur_r1c3_ask:
     mc "Твій Атомоцикл. Можна позичити на вечір?"
 
     ar "Ні."

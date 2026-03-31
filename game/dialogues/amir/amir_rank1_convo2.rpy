@@ -11,31 +11,15 @@ init python:
         },
         "priority": 45,
         "chance": 100,
-        "label": "amir_rank1_convo2",
+        "titles": [
+            ("Чо як? Знову щось вигадав?", "amir_r1c2_prank"),
+            ("Привіт! У тебе зараз які плани?", "amir_r1c2_robots"),
+            ("Слухай, хотів спитати...", "amir_r1c2_favorites"),
+        ],
     })
 
-label amir_rank1_convo2:
-    show amir at char_center
-    $ store.talked_today.add("Амір")
-    $ dialogue_begin()
-
-    am "Дрифтер! Важливе питання! Критичне!"
-
-    mc "Слухаю?"
-
-    am "У майбутньому є ігри?!"
-
-    menu:
-        "Ні. Усі ігри заборонили під час Великої Марсіанської Війни.":
-            jump amir_r1c2_prank
-
-        "Є, звісно. Ми ж не всі роботи.":
-            jump amir_r1c2_robots
-
-        "Є. А що?":
-            jump amir_r1c2_favorites
-
 label amir_r1c2_prank:
+    show amir at char_center
     am "Що?! Серйоз—"
 
     am "Стоп."
@@ -51,6 +35,8 @@ label amir_r1c2_prank:
     jump amir_r1c2_favorites
 
 label amir_r1c2_robots:
+    show amir at char_center
+
     am "Які мої улюблені— Стоп."
 
     am "ЩО?!"
@@ -86,6 +72,8 @@ label amir_r1c2_robots:
     jump amir_r1c2_end
 
 label amir_r1c2_favorites:
+    show amir at char_center
+
     am "Ну, і яке в тебе улюблене? Настілки? Карти? Аркади? Відеоігри?"
 
     menu:

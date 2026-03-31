@@ -355,59 +355,40 @@ default current_poses = {
 # !!! КРОК 4: Видалити старі image arthur = ConditionSwitch(...) з images.rpy
 #
 # ═══════════════════════════════════════════════════════════════
+# АРТУР — ГЛОБАЛЬНИЙ LAYERED IMAGE
+# ═══════════════════════════════════════════════════════════════
 #
-# !!! РОЗКОМЕНТУВАТИ КОЛИ СПРАЙТИ АРТУРА НАРІЗАНІ ПОШАРОВО !!!
-#
-# layeredimage arthur:
-#     # Затемнення коли не говорить
-#     if_not _speaking_char is None or _speaking_char == "arthur":
-#         # Нормальна яскравість
-#         pass
-#     else:
-#         # Затемнення
-#         matrixcolor TintMatrix(Color("#555555"))
-#
-#     # Шар 1: Тіло (base) — завжди є
-#     always:
-#         sprite_path("Артур", "knee", current_poses["Артур"], "base")
-#
-#     # Шар 2: Низ (штани/спортивки)
-#     # Показується тільки якщо outfit має bottom
-#     if get_outfit_layers("Артур")["bottom"] is not None:
-#         sprite_path("Артур", "knee", current_poses["Артур"], get_outfit_layers("Артур")["bottom"])
-#
-#     # Шар 3: Верх (футболка/сорочка/куртка)
-#     if get_outfit_layers("Артур")["top"] is not None:
-#         sprite_path("Артур", "knee", current_poses["Артур"], get_outfit_layers("Артур")["top"])
-#
-#     # Шар 4: Екстра (шарф/рушник/бинти)
-#     if get_outfit_layers("Артур")["extra"] is not None:
-#         sprite_path("Артур", "knee", current_poses["Артур"], get_outfit_layers("Артур")["extra"])
-#
-#     # Шар 5: Обличчя (емоція)
-#     group face:
-#         attribute calm default:
-#             face_path("Артур", "calm")
-#         attribute smile:
-#             face_path("Артур", "smile")
-#         attribute angry:
-#             face_path("Артур", "angry")
-#         attribute angry_teeth:
-#             face_path("Артур", "angry_teeth")
-#         attribute laugh:
-#             face_path("Артур", "laugh")
-#         attribute surprised:
-#             face_path("Артур", "surprised")
-#         attribute tired:
-#             face_path("Артур", "tired")
-#         attribute aggressive:
-#             face_path("Артур", "aggressive")
+# Поки тільки обличчя (емоції). Тіло/одяг — додати коли будуть спрайти.
 #
 # Використання в діалогах:
-#     show arthur calm at char_center       # спокійний, поточний одяг
-#     show arthur angry                     # злий, одяг не змінюється
-#     $ set_outfit("Артур", "shirtless")    # примусово без сорочки
-#     show arthur smile                     # усміхнений, без сорочки
+#     show arthur calm at char_center
+#     show arthur angry
+#     show arthur smile
+
+# !!! ЗАКОМЕНТОВАНО — КОНФЛІКТ З image arthur = ConditionSwitch() в images.rpy
+# !!! РОЗКОМЕНТУВАТИ ТІЛЬКИ КОЛИ ПОШАРОВІ СПРАЙТИ ГОТОВІ І ConditionSwitch ВИДАЛЕНО
+#
+# layeredimage arthur:
+#     group face:
+#         zorder 70
+#         attribute calm default:
+#             "character_sprites/Arthur/face-calm.png"
+#         attribute smile:
+#             "character_sprites/Arthur/face-smile.png"
+#         attribute laugh:
+#             "character_sprites/Arthur/face-laugh.png"
+#         attribute angry:
+#             "character_sprites/Arthur/face-angry.png"
+#         attribute angry_teeth:
+#             "character_sprites/Arthur/face-angry_teeth.png"
+#         attribute aggressive:
+#             "character_sprites/Arthur/face-aggressive.png"
+#         attribute surprised:
+#             "character_sprites/Arthur/face-surprised.png"
+#         attribute very_surprised:
+#             "character_sprites/Arthur/face-very_surprised.png"
+#         attribute tired:
+#             "character_sprites/Arthur/face-tired.png"
 
 
 # ═══════════════════════════════════════════════════════════════

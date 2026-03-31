@@ -11,31 +11,15 @@ init python:
         },
         "priority": 50,
         "chance": 100,
-        "label": "arthur_rank1_convo1",
+        "titles": [
+            ("Ти давно в цій справі?", "arthur_r1c1_soldiering"),
+            ("Ви з Елеонор здається давні друзі?", "arthur_r1c1_eleanor"),
+            ("Просто хочу поговорити.", "arthur_r1c1_personal"),
+        ],
     })
 
-label arthur_rank1_convo1:
-    show arthur at char_center
-    $ store.talked_today.add("Артур")
-    $ dialogue_begin()
-
-    mc "Артуре, маю хвилинку. Хотів би поговорити."
-
-    ar "Поговорити. Про що саме?"
-
-    mc "Ну... ми ж працюємо разом. Хочу краще розуміти, з ким маю справу."
-
-    ar "Ти маєш справу з командиром оперативної групи. Що ще треба знати?"
-
-    menu:
-        "Розкажи про свій бойовий досвід":
-            jump arthur_r1c1_soldiering
-
-        "Ви з Елеонор давно знайомі?":
-            jump arthur_r1c1_eleanor
-
-        "Просто розкажи про себе. Як людину.":
-            jump arthur_r1c1_personal
+# Кожна гілка — окремий label, викликається напряму з меню взаємодії.
+# show/talked_today/dialogue_begin — тепер в location_loop перед викликом.
 
 label arthur_r1c1_soldiering:
     mc "Як давно ти в цій справі? Ну, бойові операції, командування..."

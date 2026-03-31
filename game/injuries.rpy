@@ -202,7 +202,7 @@ init -5 python:
 default injury_stacks = {}           # {"player": 0-3, "Амір": 0-3, ...}
 default injury_day_gained = {}       # {"player": [12, 13], "Амір": [12], ...} — дні отримання кожного стаку
 default npc_absent_until = {}        # {"Амір": 14, ...} — день до якого NPC відсутній
-default missions_today_with = {}     # {"Артур": 2, ...} — місій з ким сьогодні
+# missions_today_with — визначено в vars.rpy
 
 
 # ═══════════════════════════════════════════════════

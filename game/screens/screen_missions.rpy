@@ -23,7 +23,7 @@ screen missions_menu():
             text "[hex_rep]" size 28 color "#facc15" bold True
             # Наступний поріг
             python:
-                _rank_thresholds = {2: 100, 3: 300, 4: 600, 5: 1000, 6: 1500}
+                _rank_thresholds = RANK_THRESHOLDS
                 _next_threshold = _rank_thresholds.get(syndicate_rank + 1, 9999)
             text "/ [_next_threshold]" size 16 color "#ffffff30" yalign 1.0
 
