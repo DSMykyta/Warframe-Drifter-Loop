@@ -17,7 +17,7 @@ init python:
         ],
     })
 
-    label quincy_r1c4_main:
+label quincy_r1c4_main:
     show quince at char_center
 
     qu "Бачу як ти нюхаєш навколо екіпажу, намагаєшся зрозуміти де ти серед нас всіх стоїш."

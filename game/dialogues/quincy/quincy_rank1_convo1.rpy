@@ -18,7 +18,7 @@ init python:
         ],
     })
 
-    label quincy_r1c1_muppet:
+label quincy_r1c1_muppet:
     show quince at char_center
 
     qu "Ти шо, тунель? lol. Ну да, це я перевіряю чи ти живий."

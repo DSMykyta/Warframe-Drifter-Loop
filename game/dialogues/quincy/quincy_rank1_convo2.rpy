@@ -17,7 +17,7 @@ init python:
         ],
     })
 
-    label quincy_r1c2_main:
+label quincy_r1c2_main:
     show quince at char_center
 
     qu "Lmao. Ну ти й тунель, взяв і спитав в лоба."
