@@ -10,7 +10,7 @@ init python:
         "id": "aoi_bad_gift_toaster",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["bad_gift_аоі_toaster"],
+            "flag_true": ["bad_gift_aoi_toaster"],
             "flag_false": ["gift_aoi_toaster_done"],
             "rank_min": 1,
         },
@@ -76,7 +76,7 @@ init python:
         "id": "aoi_bad_gift_toaster_oven",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["bad_gift_аоі_toaster_oven"],
+            "flag_true": ["bad_gift_aoi_toaster_oven"],
             "flag_false": ["gift_aoi_toaster_oven_done"],
             "rank_min": 1,
         },
@@ -130,7 +130,7 @@ init python:
         "id": "aoi_bad_gift_microwave",
         "who": "Аоі",
         "conditions": {
-            "flag_true": ["bad_gift_аоі_microwave"],
+            "flag_true": ["bad_gift_aoi_microwave"],
             "flag_false": ["gift_aoi_microwave_done"],
             "rank_min": 1,
         },

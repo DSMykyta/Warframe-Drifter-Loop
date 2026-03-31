@@ -151,7 +151,7 @@ label finale_victory:
     $ persistent.completed = True
     $ persistent.all_friends = True
     if store.dating:
-        $ _partner_key = "romanced_" + store.dating.lower()
+        $ _partner_key = "romanced_" + char_flag(store.dating)
         $ setattr(persistent, _partner_key, True)
 
     scene black

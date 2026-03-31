@@ -10,7 +10,7 @@ init python:
         "id": "amir_bad_gift_binder",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["bad_gift_амір_binder"],
+            "flag_true": ["bad_gift_amir_binder"],
             "flag_false": ["gift_amir_binder_done"],
             "rank_min": 1,
         },
@@ -70,7 +70,7 @@ init python:
         "id": "amir_bad_gift_notepad",
         "who": "Амір",
         "conditions": {
-            "flag_true": ["bad_gift_амір_notepad"],
+            "flag_true": ["bad_gift_amir_notepad"],
             "flag_false": ["gift_amir_notepad_done"],
             "rank_min": 1,
         },

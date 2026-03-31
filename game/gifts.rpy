@@ -28,7 +28,7 @@ init -5 python:
         if item_id in OFFENSIVE_GIFTS and character in OFFENSIVE_GIFTS[item_id]:
             penalty, reaction = OFFENSIVE_GIFTS[item_id][character]
             add_chemistry(character, penalty)  # penalty < 0, daily cap не обмежує
-            flag_name = "bad_gift_{}_{}".format(character.lower(), item_id)
+            flag_name = "bad_gift_{}_{}".format(char_flag(character), item_id)
             set_flag(flag_name)
             add_gossip("bad_gift_" + item_id, [character], spread_delay=1)
             return (penalty, reaction, True)
@@ -38,7 +38,7 @@ init -5 python:
             bonus = GIFT_REACTIONS[item_id][character]
             actual = add_chemistry(character, bonus)
             reset_interaction(character)
-            good_flag = "gifted_{}_{}".format(character.lower(), item_id)
+            good_flag = "gifted_{}_{}".format(char_flag(character), item_id)
             set_flag(good_flag)
             if bonus >= 12:
                 return (actual, "...Це саме те, що мені потрібно. Дякую.", False)

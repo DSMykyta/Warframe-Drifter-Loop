@@ -162,6 +162,7 @@ label quincy_intro_main:
 
     $ store.seen_dialogues.add("quincy_intro")
     $ set_flag("quincy_intro_done")
+    $ add_insight("quincy_sniper", "Квінсі — снайпер. Тримає на мушці все що рухається. Включаючи союзників.")
     $ add_journal_entry("Квінсі розповів про скальдру, Русалку і Віктора. Базова картина загроз.", "lore")
 
     return

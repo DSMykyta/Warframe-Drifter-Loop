@@ -47,8 +47,8 @@ init python:
             "lettie_healed_today",
             "amir_saw_bruises", "aoi_saw_injury", "arthur_saw_injury", "quincy_saw_injury",
             "helped_someone_today",
-            "helped_летті_today", "helped_амір_today", "helped_артур_today",
-            "helped_аоі_today", "helped_квінсі_today", "helped_елеонор_today",
+            "helped_lettie_today", "helped_amir_today", "helped_arthur_today",
+            "helped_aoi_today", "helped_quincy_today", "helped_eleanor_today",
         ]
         for _f in _daily_flags:
             if store.flags.get(_f):

@@ -539,7 +539,7 @@ init -5 python:
                     if target not in g["knowers"] and target not in new_knowers:
                         new_knowers.append(target)
                         set_flag("gossip_{}_known_by_{}".format(
-                            g["fact"], target.lower()))
+                            g["fact"], char_flag(target)))
                         store.gossip_heat += 2
             g["knowers"].extend(new_knowers)
 

@@ -13,7 +13,7 @@ init -5 python:
 
     def was_romanced(name):
         """Перевіряє чи був романс з цим персонажем у минулому проходженні."""
-        key = "romanced_" + name.lower()
+        key = "romanced_" + char_flag(name)
         return getattr(persistent, key, False)
 
     def get_loop_count():
@@ -156,18 +156,17 @@ label eleanor_dejavu_sense:
 # NG+ гілки — коли гравець знає те що знає романсований персонаж
 init python:
     for _char, _topic, _flag_need, _who_reacts, _reaction_label in [
-        ("Артур", "ICR", "romanced_артур", "Квінсі", "ng_quincy_arthur_icr"),
-        ("Елеонор", "Техрот", "romanced_елеонор", "Летті", "ng_lettie_eleanor_techrot"),
-        ("Летті", "першого пацієнта", "romanced_летті", "Амір", "ng_amir_lettie_patient"),
-        ("Аоі", "ICR досьє", "romanced_аоі", "Артур", "ng_arthur_aoi_past"),
-        ("Амір", "кошмари", "romanced_амір", "Аоі", "ng_aoi_amir_nightmares"),
-        ("Квінсі", "кіно", "romanced_квінсі", "Елеонор", "ng_eleanor_quincy_film"),
+        ("Артур", "ICR", "romanced_arthur", "Квінсі", "ng_quincy_arthur_icr"),
+        ("Елеонор", "Техрот", "romanced_eleanor", "Летті", "ng_lettie_eleanor_techrot"),
+        ("Летті", "першого пацієнта", "romanced_lettie", "Амір", "ng_amir_lettie_patient"),
+        ("Аоі", "ICR досьє", "romanced_aoi", "Артур", "ng_arthur_aoi_past"),
+        ("Амір", "кошмари", "romanced_amir", "Аоі", "ng_aoi_amir_nightmares"),
+        ("Квінсі", "кіно", "romanced_quincy", "Елеонор", "ng_eleanor_quincy_film"),
     ]:
         DIALOGUE_ENTRIES.append({
             "id": _reaction_label,
             "who": _who_reacts,
             "conditions": {
-                "flag_true": [_who_reacts.lower().replace("і", "i") + "_intro_done"] if _who_reacts != "Квінсі" else ["quincy_intro_done"],
                 "flag_false": [_reaction_label + "_done"],
                 "persistent": _flag_need,
                 "chemistry_min": (_who_reacts, 20),

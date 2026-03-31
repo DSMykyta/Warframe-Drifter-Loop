@@ -38,7 +38,7 @@ init -5 python:
 
         # Флаги
         if name != "player":
-            char_key = name.lower()
+            char_key = char_flag(name)
             set_flag(char_key + "_injured")
             if new_val >= 2:
                 set_flag(char_key + "_injured_severe")
@@ -63,7 +63,7 @@ init -5 python:
             store.injury_day_gained[name].pop(0)
 
         if name != "player":
-            char_key = name.lower()
+            char_key = char_flag(name)
             if new_val == 0:
                 store.flags[char_key + "_injured"] = False
             if new_val < 2:
@@ -169,7 +169,7 @@ init -5 python:
         for name, until_day in store.npc_absent_until.items():
             if store.day >= until_day:
                 expired.append(name)
-                char_key = name.lower()
+                char_key = char_flag(name)
                 if store.flags.get(char_key + "_absent"):
                     store.flags[char_key + "_absent"] = False
         for name in expired:

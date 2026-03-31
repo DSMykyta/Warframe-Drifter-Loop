@@ -6,7 +6,7 @@ init python:
         "id": "quincy_bad_gift_medical_kit",
         "who": "Квінсі",
         "conditions": {
-            "flag_true": ["bad_gift_квінсі_medical_kit"],
+            "flag_true": ["bad_gift_quincy_medical_kit"],
             "flag_false": ["gift_quincy_medical_kit_done"],
             "rank_min": 1,
         },

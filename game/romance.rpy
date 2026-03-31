@@ -10,7 +10,7 @@ init -5 python:
         if store.chemistry.get(name, 0) < 160:
             return False
         store.dating = name
-        set_flag("dating_" + name.lower())
+        set_flag("dating_" + char_flag(name))
         add_journal_entry("Ми з {} тепер разом. Це... несподівано. Але правильно.".format(name), "romance")
         return True
 
@@ -19,7 +19,7 @@ init -5 python:
         if store.dating != name:
             return False
         store.dating = None
-        set_flag("breakup_" + name.lower())
+        set_flag("breakup_" + char_flag(name))
         add_chemistry(name, -30)
         add_journal_entry("Розрив з {}. Я не думав що буде так боляче.".format(name), "romance")
         return True
@@ -38,7 +38,7 @@ init -5 python:
                 if char == partner:
                     # Партнер бачить — одразу конфлікт
                     add_chemistry(partner, -5)
-                    set_flag("flirt_caught_by_" + partner.lower())
+                    set_flag("flirt_caught_by_" + char_flag(partner))
                     return "caught"
         # Приватний — шанс через плітки
         add_gossip("flirt_with_" + target_name, [target_name], spread_delay=1)
@@ -54,25 +54,25 @@ init -5 python:
 
 init python:
     for _char in ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"]:
-        _char_lower = _char.lower()
+        _cid = CHAR_FLAG_ID[_char]
         DIALOGUE_ENTRIES.append({
-            "id": "romance_confession_" + _char_lower,
+            "id": "romance_confession_" + _cid,
             "who": _char,
             "conditions": {
                 "chemistry_min": (_char, 160),
-                "flag_true": [_char_lower + "_friends_milestone_done"],
-                "flag_false": ["romance_confession_" + _char_lower + "_done", "dating_" + _char_lower],
-                "dating": None,  # Не зустрічається з ніким
+                "flag_true": [_cid + "_friends_milestone_done"],
+                "flag_false": ["romance_confession_" + _cid + "_done", "dating_" + _cid],
+                "dating": None,
             },
             "priority": 90,
             "chance": 100,
-            "label": "romance_confession_" + _char_lower,
+            "label": "romance_confession_" + _cid,
         })
 
 
 # ═══ Зізнання labels ═══
 
-label romance_confession_артур:
+label romance_confession_arthur:
     show arthur at char_center
     $ store.talked_today.add("Артур")
 
@@ -101,14 +101,14 @@ label romance_confession_артур:
             $ advance_time(5)
             $ add_chemistry("Артур", -5)
 
-    $ store.seen_dialogues.add("romance_confession_артур")
-    $ set_flag("romance_confession_артур_done")
+    $ store.seen_dialogues.add("romance_confession_arthur")
+    $ set_flag("romance_confession_arthur_done")
 
     hide arthur
     return
 
 
-label romance_confession_елеонор:
+label romance_confession_eleanor:
     show eleanor at char_center
     $ store.talked_today.add("Елеонор")
 
@@ -134,14 +134,14 @@ label romance_confession_елеонор:
             $ advance_time(5)
             $ add_chemistry("Елеонор", -5)
 
-    $ store.seen_dialogues.add("romance_confession_елеонор")
-    $ set_flag("romance_confession_елеонор_done")
+    $ store.seen_dialogues.add("romance_confession_eleanor")
+    $ set_flag("romance_confession_eleanor_done")
 
     hide eleanor
     return
 
 
-label romance_confession_летті:
+label romance_confession_lettie:
     show lettie at char_center
     $ store.talked_today.add("Летті")
 
@@ -172,14 +172,14 @@ label romance_confession_летті:
             $ advance_time(5)
             $ add_chemistry("Летті", -5)
 
-    $ store.seen_dialogues.add("romance_confession_летті")
-    $ set_flag("romance_confession_летті_done")
+    $ store.seen_dialogues.add("romance_confession_lettie")
+    $ set_flag("romance_confession_lettie_done")
 
     hide lettie
     return
 
 
-label romance_confession_амір:
+label romance_confession_amir:
     show amir at char_center
     $ store.talked_today.add("Амір")
 
@@ -205,14 +205,14 @@ label romance_confession_амір:
             $ advance_time(5)
             $ add_chemistry("Амір", -5)
 
-    $ store.seen_dialogues.add("romance_confession_амір")
-    $ set_flag("romance_confession_амір_done")
+    $ store.seen_dialogues.add("romance_confession_amir")
+    $ set_flag("romance_confession_amir_done")
 
     hide amir
     return
 
 
-label romance_confession_аоі:
+label romance_confession_aoi:
     show aoi at char_center
     $ store.talked_today.add("Аоі")
 
@@ -241,14 +241,14 @@ label romance_confession_аоі:
             $ advance_time(5)
             $ add_chemistry("Аоі", -5)
 
-    $ store.seen_dialogues.add("romance_confession_аоі")
-    $ set_flag("romance_confession_аоі_done")
+    $ store.seen_dialogues.add("romance_confession_aoi")
+    $ set_flag("romance_confession_aoi_done")
 
     hide aoi
     return
 
 
-label romance_confession_квінсі:
+label romance_confession_quincy:
     show quince at char_center
     $ store.talked_today.add("Квінсі")
 
@@ -277,8 +277,8 @@ label romance_confession_квінсі:
             $ advance_time(5)
             $ add_chemistry("Квінсі", -5)
 
-    $ store.seen_dialogues.add("romance_confession_квінсі")
-    $ set_flag("romance_confession_квінсі_done")
+    $ store.seen_dialogues.add("romance_confession_quincy")
+    $ set_flag("romance_confession_quincy_done")
 
     hide quince
     return

@@ -140,5 +140,5 @@ init python:
         reset_interaction(who)
 
         # Флаги
-        set_flag("helped_{}_today".format(who.lower()))
+        set_flag("helped_{}_today".format(char_flag(who)))
         set_flag("helped_someone_today")

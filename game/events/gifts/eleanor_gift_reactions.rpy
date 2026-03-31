@@ -10,7 +10,7 @@ init python:
         "id": "eleanor_bad_gift_speaker_system",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["bad_gift_елеонор_speaker_system"],
+            "flag_true": ["bad_gift_eleanor_speaker_system"],
             "flag_false": ["gift_eleanor_speaker_system_done"],
             "rank_min": 1,
         },
@@ -67,7 +67,7 @@ init python:
         "id": "eleanor_bad_gift_speaker",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["bad_gift_елеонор_speaker"],
+            "flag_true": ["bad_gift_eleanor_speaker"],
             "flag_false": ["gift_eleanor_speaker_done"],
             "rank_min": 1,
         },
@@ -118,7 +118,7 @@ init python:
         "id": "eleanor_bad_gift_hockey_table",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["bad_gift_елеонор_hockey_table"],
+            "flag_true": ["bad_gift_eleanor_hockey_table"],
             "flag_false": ["gift_eleanor_hockey_table_done"],
             "rank_min": 1,
         },

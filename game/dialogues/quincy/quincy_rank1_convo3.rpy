@@ -18,7 +18,7 @@ init python:
         ],
     })
 
-    label quincy_r1c3_main:
+label quincy_r1c3_main:
     show quince at char_center
 
     qu "А нащо питаєш? Ти б навіть на карті знайшов, якщо б я сказав? lol"

@@ -25,7 +25,7 @@ init python:
             if p["day"] < store.day and not p.get("fulfilled"):
                 # Порушена обіцянка
                 add_chemistry(p["who"], -5)
-                set_flag("broke_promise_" + p["who"].lower())
+                set_flag("broke_promise_" + char_flag(p["who"]))
                 broken.append(p)
             else:
                 kept.append(p)

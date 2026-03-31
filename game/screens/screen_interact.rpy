@@ -26,10 +26,12 @@ screen npc_interact_menu(npc_name, titles, bonus_opts, can_gift):
             $ _t_label = _entry[1]
             $ _t_flag = _entry[2] if len(_entry) > 2 else None
             if _t_flag is None or store.flags.get(_t_flag):
+                $ _t_style = "interact_btn" if _t_flag is None else "interact_btn_bonus"
+                $ _t_text_style = "interact_btn_text" if _t_flag is None else "interact_btn_text_bonus"
                 button:
-                    style "interact_btn" if _t_flag is None else "interact_btn_bonus"
+                    style _t_style
                     action Return(("topic", _t_label))
-                    text "[_t_text]" style "interact_btn_text" if _t_flag is None else "interact_btn_text_bonus"
+                    text "[_t_text]" style _t_text_style
 
         # Бонусні опції
         for _bopt in bonus_opts:
