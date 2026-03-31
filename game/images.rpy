@@ -4,57 +4,52 @@
 define config.screen_width  = 1920
 define config.screen_height = 1080
 
-# === ФОНИ ===
-image bg mall = "backgrounds/Hollvania_Central_Mall.webp"
-image bg_arcade = "backgrounds/bg_arcade.png"
-image bg_backroom = "backgrounds/bg_backroom.png"
-image bg_bar = "backgrounds/bg_bar.png"
-image bg_comp_club = "backgrounds/bg_comp_club.png"
-image bg_foodcourt = "backgrounds/bg_foodcourt.png"
-image bg_furniture = "backgrounds/bg_furniture.png"
-image bg_info_desk = "backgrounds/bg_info_desk.png"
-image bg_medbay = "backgrounds/bg_medbay.png"
-image bg_music_shop = "backgrounds/bg_music_shop.png"
-image bg_range = "backgrounds/bg_range.png"
+# ═══ ФОНИ ЛОКАЦІЙ ═══
+# Стандарт: 1920x1080, PNG, bg_{location_id}.png
+image bg_mall            = "backgrounds/bg-hub-mall.png"
+image bg_info_desk       = "backgrounds/bg_info_desk.png"
+image bg_security_desk   = "backgrounds/bg_security_desk.png"
+image bg_security_room   = "backgrounds/bg_security_room.png"
+image bg_arcade          = "backgrounds/bg_arcade.png"
+image bg_music_shop      = "backgrounds/bg_music_shop.png"
+image bg_furniture       = "backgrounds/bg_furniture.png"
+image bg_range           = "backgrounds/bg_range.png"
+image bg_medbay          = "backgrounds/bg_medbay.png"
+image bg_bar             = "backgrounds/bg_bar.png"
+image bg_foodcourt       = "backgrounds/bg_foodcourt.png"
+image bg_comp_club       = "backgrounds/bg_comp_club.png"
+image bg_garage          = "backgrounds/bg_garage.png"
+image bg_backroom        = "backgrounds/bg_backroom.png"
+image bg_rooftop         = Solid("#0a1a2a")
+image bg_balcony         = "backgrounds/bg_balcony.png"
+image bg_cafe            = "backgrounds/bg_cafe.png"
+image bg_cafe_balcony    = "backgrounds/bg_cafe_balcony.png"
+image bg_utility         = "backgrounds/bg_utility.webp"
+image bg_warehouse       = "backgrounds/bg_warehouse.webp"
+image bg_clothing_shop   = "backgrounds/bg_clothing_shop.png"
 
-# === ФОНИ (раніше були плейсхолдери) ===
-image bg_security_desk = "backgrounds/bg_security_desk.png"
-image bg_security_room = "backgrounds/bg_security_room.png"
-image bg_garage = "backgrounds/bg_garage.png"
-image bg_rooftop = Solid("#0a1a2a")
-image bg_mall = "backgrounds/bg-hub-mall.png"
-image bg_mall_foodcourt = "backgrounds/bg_foodcourt.png"
-
-# === НОВІ ЛОКАЦІЇ ===
-image bg_balcony = "backgrounds/bg_balcony.png"
-image bg_cafe = "backgrounds/bg_cafe.png"
-image bg_cafe_balcony = "backgrounds/bg_cafe_balcony.png"
-image bg_utility = "backgrounds/bg_utility.webp"
-image bg_warehouse = "backgrounds/bg_warehouse.webp"
-image bg_clothing_shop = "backgrounds/bg_clothing_shop.png"
-
-# === МАППІНГ ЛОКАЦІЙ → ФОНІВ ===
+# ═══ МАППІНГ ЛОКАЦІЙ → ФОНІВ ═══
 init python:
     LOCATION_BG = {
-        "mall":       "bg mall",
-        "arcade":     "bg_arcade",
-        "backroom":   "bg_backroom",
-        "bar":        "bg_bar",
-        "comp_club":  "bg_comp_club",
-        "foodcourt":  "bg_foodcourt",
-        "furniture":  "bg_furniture",
-        "info_desk":  "bg_info_desk",
-        "security_desk": "bg_security_desk",
-        "security_room": "bg_security_room",
-        "medbay":     "bg_medbay",
-        "music_shop": "bg_music_shop",
-        "range":      "bg_range",
-        "garage":     "bg_garage",
-        "rooftop":    "bg_rooftop",
-        "balcony":    "bg_balcony",
-        "cafe":       "bg_cafe",
-        "cafe_balcony": "bg_cafe_balcony",
-        "utility":    "bg_utility",
+        "mall":           "bg_mall",
+        "info_desk":      "bg_info_desk",
+        "security_desk":  "bg_security_desk",
+        "security_room":  "bg_security_room",
+        "arcade":         "bg_arcade",
+        "music_shop":     "bg_music_shop",
+        "furniture":      "bg_furniture",
+        "range":          "bg_range",
+        "medbay":         "bg_medbay",
+        "bar":            "bg_bar",
+        "foodcourt":      "bg_foodcourt",
+        "comp_club":      "bg_comp_club",
+        "garage":         "bg_garage",
+        "backroom":       "bg_backroom",
+        "rooftop":        "bg_rooftop",
+        "balcony":        "bg_balcony",
+        "cafe":           "bg_cafe",
+        "cafe_balcony":   "bg_cafe_balcony",
+        "utility":        "bg_utility",
         "warehouse":      "bg_warehouse",
         "clothing_shop":  "bg_clothing_shop",
     }
@@ -62,7 +57,7 @@ init python:
     def show_location_bg(loc=None):
         if loc is None:
             loc = store.current_location
-        bg_name = LOCATION_BG.get(loc, "bg mall")
+        bg_name = LOCATION_BG.get(loc, "bg_mall")
         renpy.scene()
         renpy.show(bg_name)
 
@@ -120,10 +115,9 @@ init -10 python:
                 store._speaking_char = None
         return _cb
 
-# === СПРАЙТИ ===
+# ═══ СПРАЙТИ ═══
 # ConditionSwitch: якщо хтось говорить і це НЕ я → затемнений.
 # Інакше (я говорю АБО ніхто не говорить) → нормальний.
-# Позиції (at far_left, at center тощо) залишаються незмінними!
 
 image arthur = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'arthur'",
@@ -167,7 +161,7 @@ image quince = ConditionSwitch(
     "character_sprites/Quincy.png",
 )
 
-# === ТРАНСФОРМИ ===
+# ═══ ТРАНСФОРМИ ═══
 
 # Соло/дует — персонаж на ~74% висоти екрана
 define char_zoom = 1080.0 / 1456.0        # 0.742

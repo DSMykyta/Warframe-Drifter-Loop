@@ -31,7 +31,7 @@ label generic_day:
     hide text
 
     # Робочий фон
-    scene bg mall
+    scene bg_mall
     jump location_loop
 
 
