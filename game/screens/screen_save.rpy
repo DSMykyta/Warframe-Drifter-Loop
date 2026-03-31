@@ -27,21 +27,18 @@ screen save():
 
             # Ручні слоти
             for i in range(1, 21):
+                $ _slot_bg = "gui/save/save_slot_hover.png" if FileLoadable(i) else "gui/save/save_slot.png"
+                $ _slot_name_color = "#d8b4fe" if FileLoadable(i) else "#d946ef"
+                $ _slot_name_text = FileSaveName(i, empty="") if FileLoadable(i) else "порожній слот"
+                $ _slot_name_font = "fonts/CourierNew-Bold.ttf" if FileLoadable(i) else "fonts/CourierNew-Regular.ttf"
                 button:
-                    if FileLoadable(i):
-                        background "gui/save/save_slot_hover.png"
-                        hover_background "gui/save/save_slot_hover.png"
-                    else:
-                        background "gui/save/save_slot.png"
-                        hover_background "gui/save/save_slot_hover.png"
+                    background _slot_bg
+                    hover_background "gui/save/save_slot_hover.png"
                     xsize 1000 ysize 100
                     action FileSave(i, confirm=FileLoadable(i))
                     text FileTime(i, format="%d.%m.%Y", empty="—") xpos 24 ypos 24 size 24 color "#8888aa" font "fonts/CourierNew-Regular.ttf"
                     text FileTime(i, format="%H:%M", empty="") xpos 24 ypos 58 size 24 color "#8888aa" font "fonts/CourierNew-Regular.ttf"
-                    if FileLoadable(i):
-                        text FileSaveName(i, empty="") xpos 210 ypos 24 size 24 color "#d8b4fe" font "fonts/CourierNew-Bold.ttf"
-                    else:
-                        text "порожній слот" xpos 210 ypos 24 size 24 color "#d946ef" font "fonts/CourierNew-Regular.ttf"
+                    text _slot_name_text xpos 210 ypos 24 size 24 color _slot_name_color font _slot_name_font
 
     add "gui/save/save_side_block.png" xpos 1280 ypos 200
     vbox:
@@ -82,24 +79,19 @@ screen load():
 
             # Ручні слоти
             for i in range(1, 21):
+                $ _slot_bg = "gui/save/save_slot_hover.png" if FileLoadable(i) else "gui/save/save_slot.png"
+                $ _slot_name_color = "#d8b4fe" if FileLoadable(i) else "#d946ef"
+                $ _slot_name_text = FileSaveName(i, empty="") if FileLoadable(i) else "порожній слот"
+                $ _slot_name_font = "fonts/CourierNew-Bold.ttf" if FileLoadable(i) else "fonts/CourierNew-Regular.ttf"
+                $ _slot_action = FileLoad(i, confirm=False) if FileLoadable(i) else NullAction()
                 button:
-                    if FileLoadable(i):
-                        background "gui/save/save_slot_hover.png"
-                        hover_background "gui/save/save_slot_hover.png"
-                    else:
-                        background "gui/save/save_slot.png"
-                        hover_background "gui/save/save_slot_hover.png"
+                    background _slot_bg
+                    hover_background "gui/save/save_slot_hover.png"
                     xsize 1000 ysize 100
-                    if FileLoadable(i):
-                        action FileLoad(i, confirm=False)
-                    else:
-                        action NullAction()
+                    action _slot_action
                     text FileTime(i, format="%d.%m.%Y", empty="—") xpos 24 ypos 24 size 24 color "#8888aa" font "fonts/CourierNew-Regular.ttf"
                     text FileTime(i, format="%H:%M", empty="") xpos 24 ypos 58 size 24 color "#8888aa" font "fonts/CourierNew-Regular.ttf"
-                    if FileLoadable(i):
-                        text FileSaveName(i, empty="") xpos 210 ypos 24 size 24 color "#d8b4fe" font "fonts/CourierNew-Bold.ttf"
-                    else:
-                        text "порожній слот" xpos 210 ypos 24 size 24 color "#d946ef" font "fonts/CourierNew-Regular.ttf"
+                    text _slot_name_text xpos 210 ypos 24 size 24 color _slot_name_color font _slot_name_font
 
     add "gui/save/save_side_block.png" xpos 1280 ypos 200
     vbox:
