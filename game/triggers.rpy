@@ -142,14 +142,14 @@ init -5 python:
         flag = LOCKED_LOCATIONS.get(loc)
         if flag is None:
             return False
-        return not get_flag(flag)
+        return not store.flags.get(flag)
 
     def is_hidden(loc):
         """Перевіряє чи локація прихована (не видно на карті)."""
         flag = HIDDEN_LOCATIONS.get(loc)
         if flag is None:
             return False
-        return not get_flag(flag)
+        return not store.flags.get(flag)
 
     def is_accessible(loc):
         """Перевіряє чи можна увійти в локацію."""
