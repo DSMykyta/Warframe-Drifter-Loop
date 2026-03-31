@@ -235,11 +235,8 @@ screen pager_hud():
 # ═══════════════════════════════════
 
 screen location_ui():
-
-    use hud
+    # hud і pager_hud показуються через show screen в script.rpy
     use scanlines
-    use pager
-    use pager_hud
 
     # Назва локації
     $ _loc_name = LOCATION_NAMES.get(current_location, current_location)

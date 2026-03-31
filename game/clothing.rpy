@@ -365,40 +365,30 @@ default current_poses = {
 #     show arthur angry
 #     show arthur smile
 
-layeredimage arthur:
-
-    # ── Обличчя (емоція) ── zorder 70
-    group face:
-        zorder 70
-        attribute calm default:
-            "character_sprites/Arthur/face-calm.png"
-        attribute smile:
-            "character_sprites/Arthur/face-smile.png"
-        attribute laugh:
-            "character_sprites/Arthur/face-laugh.png"
-        attribute angry:
-            "character_sprites/Arthur/face-angry.png"
-        attribute angry_teeth:
-            "character_sprites/Arthur/face-angry_teeth.png"
-        attribute aggressive:
-            "character_sprites/Arthur/face-aggressive.png"
-        attribute surprised:
-            "character_sprites/Arthur/face-surprised.png"
-        attribute very_surprised:
-            "character_sprites/Arthur/face-very_surprised.png"
-        attribute tired:
-            "character_sprites/Arthur/face-tired.png"
-
-    # ── Тіло/одяг — ДОДАТИ КОЛИ БУДУТЬ ПОШАРОВІ СПРАЙТИ ──
-    # always:
-    #     zorder 10
-    #     sprite_path("Артур", "base", "body", current_poses["Артур"])
-    # group bottom:
-    #     zorder 30
-    #     ...
-    # group top:
-    #     zorder 50
-    #     ...
+# !!! ЗАКОМЕНТОВАНО — КОНФЛІКТ З image arthur = ConditionSwitch() в images.rpy
+# !!! РОЗКОМЕНТУВАТИ ТІЛЬКИ КОЛИ ПОШАРОВІ СПРАЙТИ ГОТОВІ І ConditionSwitch ВИДАЛЕНО
+#
+# layeredimage arthur:
+#     group face:
+#         zorder 70
+#         attribute calm default:
+#             "character_sprites/Arthur/face-calm.png"
+#         attribute smile:
+#             "character_sprites/Arthur/face-smile.png"
+#         attribute laugh:
+#             "character_sprites/Arthur/face-laugh.png"
+#         attribute angry:
+#             "character_sprites/Arthur/face-angry.png"
+#         attribute angry_teeth:
+#             "character_sprites/Arthur/face-angry_teeth.png"
+#         attribute aggressive:
+#             "character_sprites/Arthur/face-aggressive.png"
+#         attribute surprised:
+#             "character_sprites/Arthur/face-surprised.png"
+#         attribute very_surprised:
+#             "character_sprites/Arthur/face-very_surprised.png"
+#         attribute tired:
+#             "character_sprites/Arthur/face-tired.png"
 
 
 # ═══════════════════════════════════════════════════════════════

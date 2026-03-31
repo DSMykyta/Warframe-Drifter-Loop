@@ -164,10 +164,6 @@ init python:
 
     config.all_character_callbacks.append(_count_dialogue_line)
 
-    def has_time_for(mins):
-        """Завжди True — час не блокує дії, але після 24:00 порожньо."""
-        return True
-
     def is_night():
         """Після 24:00 (1440 хв) — ніч, персонажі зникли."""
         return store.minutes >= 1440

@@ -469,11 +469,11 @@ init -5 python:
         for name in CAST:
             d = store.days_since_interaction.get(name, 0)
             if d >= 14:
-                store.chemistry[name] = max(0, store.chemistry[name] - 3)
+                add_chemistry(name, -3)
             elif d >= 10:
-                store.chemistry[name] = max(0, store.chemistry[name] - 2)
+                add_chemistry(name, -2)
             elif d >= 7:
-                store.chemistry[name] = max(0, store.chemistry[name] - 1)
+                add_chemistry(name, -1)
             # Інкремент лічильника (grace period = 2 дні реалізовано через reset_interaction)
             store.days_since_interaction[name] = d + 1
 
@@ -510,7 +510,7 @@ init -5 python:
                 for flag in on_exp.get("flags_set", []):
                     set_flag(flag)
                 for n, delta in on_exp.get("chemistry_change", {}).items():
-                    store.chemistry[n] = max(0, store.chemistry[n] + delta)
+                    add_chemistry(n, delta)
                 store.gossip_heat += on_exp.get("gossip_heat", 0)
                 store.expired_events.add(entry["id"])
 
@@ -553,13 +553,13 @@ init -5 python:
         Баланс v2: одноразові штрафи з ресетом лічильника."""
         d = store.days_without_mission
         if d >= 6:
-            for name in store.chemistry:
-                store.chemistry[name] = max(0, store.chemistry[name] - 3)
+            for name in CAST:
+                add_chemistry(name, -3)
             set_flag("mission_neglect_critical")
             store.days_without_mission = 0  # Ресет лічильника — новий цикл
         elif d == 5:
-            for name in store.chemistry:
-                store.chemistry[name] = max(0, store.chemistry[name] - 2)
+            for name in CAST:
+                add_chemistry(name, -2)
             set_flag("mission_neglect_warning")
 
     def on_mission_complete():

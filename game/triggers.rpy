@@ -45,6 +45,11 @@ init -5 python:
         "garage":     ["comp_club"],
         "backroom":   ["mall"],
         "rooftop":    ["mall"],
+        "balcony":    ["mall"],
+        "cafe":       ["mall"],
+        "cafe_balcony": ["cafe", "balcony"],
+        "utility":    ["mall"],
+        "warehouse":  ["mall"],
     }
 
     # ═══ УКРАЇНСЬКІ НАЗВИ ═══
