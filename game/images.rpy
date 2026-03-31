@@ -21,6 +21,7 @@ image bg_range = "backgrounds/bg_range.png"
 image bg_info_counter = "backgrounds/bg_info_counter.png"
 image bg_garage = "backgrounds/bg_garage.png"
 image bg_rooftop = Solid("#0a1a2a")
+image bg_mall = "backgrounds/bg-hub-mall.jpg"
 image bg_mall_foodcourt = "backgrounds/bg_foodcourt.png"
 
 # === НОВІ ЛОКАЦІЇ ===
