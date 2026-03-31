@@ -22,7 +22,7 @@ image bg_security_desk = "backgrounds/bg_security_desk.png"
 image bg_security_room = "backgrounds/bg_security_room.png"
 image bg_garage = "backgrounds/bg_garage.png"
 image bg_rooftop = Solid("#0a1a2a")
-image bg_mall = "backgrounds/bg-hub-mall.jpg"
+image bg_mall = "backgrounds/bg-hub-mall.png"
 image bg_mall_foodcourt = "backgrounds/bg_foodcourt.png"
 
 # === НОВІ ЛОКАЦІЇ ===
