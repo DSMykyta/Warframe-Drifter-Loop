@@ -18,7 +18,8 @@ image bg_music_shop = "backgrounds/bg_music_shop.png"
 image bg_range = "backgrounds/bg_range.png"
 
 # === ФОНИ (раніше були плейсхолдери) ===
-image bg_info_counter = "backgrounds/bg_info_counter.png"
+image bg_security_desk = "backgrounds/bg_security_desk.png"
+image bg_security_room = "backgrounds/bg_security_room.png"
 image bg_garage = "backgrounds/bg_garage.png"
 image bg_rooftop = Solid("#0a1a2a")
 image bg_mall = "backgrounds/bg-hub-mall.jpg"
@@ -42,7 +43,8 @@ init python:
         "foodcourt":  "bg_foodcourt",
         "furniture":  "bg_furniture",
         "info_desk":  "bg_info_desk",
-        "info_counter": "bg_info_counter",
+        "security_desk": "bg_security_desk",
+        "security_room": "bg_security_room",
         "medbay":     "bg_medbay",
         "music_shop": "bg_music_shop",
         "range":      "bg_range",

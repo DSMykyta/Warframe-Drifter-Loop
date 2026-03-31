@@ -377,7 +377,7 @@ label some_dialogue:
 
 | Ім'я (кирилиця) | Тег діалогу | show ім'я | Домашня локація |
 |-----------------|-------------|-----------|-----------------|
-| Артур | `ar` | `arthur` | `info_desk` |
+| Артур | `ar` | `arthur` | `security_desk` |
 | Елеонор | `el` | `eleanor` | `furniture` |
 | Летті | `le` | `lettie` | `medbay` |
 | Амір | `am` | `amir` | `arcade` |
@@ -393,7 +393,7 @@ label some_dialogue:
 |----|-------|
 | `mall` | Мол Гьольванії |
 | `info_desk` | Інфо-острівець |
-| `info_counter` | Інфостійка |
+| `security_desk` | Стійка охорони |
 | `arcade` | Аркади |
 | `music_shop` | Музичний магазин |
 | `furniture` | Магазин меблів |

@@ -15,7 +15,7 @@ init -5 python:
     # ═══ ДОМАШНІ ЛОКАЦІЇ ═══
 
     HOME_LOCATIONS = {
-        "Артур":   "info_desk",
+        "Артур":   "security_desk",
         "Аоі":     "music_shop",
         "Амір":    "arcade",
         "Квінсі":  "range",
@@ -23,87 +23,176 @@ init -5 python:
         "Елеонор": "furniture",
     }
 
+    # ═══════════════════════════════════════════════════
+    # 5 ТИПІВ ЛОКАЦІЙ
+    # ═══════════════════════════════════════════════════
+    #
+    # 1. ЛОКАЦІЯ (звичайна)
+    #    Окрема точка на карті, з'єднана з молом.
+    #    Мол → локація = 5 хв, локація → інша локація = 10 хв (через мол).
+    #    Приклад: music_shop, arcade, range
+    #
+    # 2. СУМІЖНА ЛОКАЦІЯ
+    #    Доступна ЛИШЕ через батьківську локацію, не з молу напряму.
+    #    Батьківська → суміжна = 5 хв. Мол → суміжна = 10 хв (мол→батьківська→суміжна).
+    #    Приклад: security_room (лише через security_desk)
+    #
+    # 3. ПОЄДНАНІ ЛОКАЦІЇ
+    #    Дві секції одного місця. Перехід між ними = 0 хв (миттєво).
+    #    Обидві доступні з молу окремо.
+    #    Приклад: cafe ↔ cafe_balcony
+    #
+    # 4. ЗАКРИТА ЛОКАЦІЯ
+    #    Видно на карті із замочком, але не можна увійти поки нема прапорця.
+    #    Після відкриття працює як звичайна локація.
+    #    Приклад: backroom (потрібен ключ/дозвіл)
+    #
+    # 5. ПРИХОВАНА ЛОКАЦІЯ
+    #    Не видно на карті взагалі, поки не виконана умова.
+    #    Після відкриття з'являється на карті і працює як звичайна локація.
+    #    Приклад: bar (з'являється на syndicate rank 3)
+    # ═══════════════════════════════════════════════════
+
     # ═══ ГРАФ ЛОКАЦІЙ ═══
-    # Кожна точка → список суміжних. Мол — центр.
 
     LOCATION_GRAPH = {
         "mall":       [
-            "info_desk", "arcade", "music_shop", "furniture",
-            "range", "medbay", "bar", "foodcourt", "comp_club",
-            "backroom", "rooftop",
+            "info_desk", "security_desk", "arcade", "music_shop", "furniture",
+            "range", "medbay", "bar", "foodcourt", "comp_club", "garage",
+            "rooftop", "balcony", "cafe", "cafe_balcony",
+            "utility", "warehouse", "backroom",
         ],
-        "info_desk":  ["mall", "info_counter"],
-        "info_counter":  ["info_desk"],
-        "arcade":     ["mall"],
-        "music_shop": ["mall"],
-        "furniture":  ["mall"],
-        "range":      ["mall"],
-        "medbay":     ["mall"],
-        "bar":        ["mall"],
-        "foodcourt":  ["mall"],
-        "comp_club":  ["mall", "garage"],
-        "garage":     ["comp_club"],
-        "backroom":   ["mall"],
-        "rooftop":    ["mall"],
-        "balcony":    ["mall"],
-        "cafe":       ["mall"],
-        "cafe_balcony": ["cafe", "balcony"],
-        "utility":    ["mall"],
-        "warehouse":  ["mall"],
+        "info_desk":      ["mall"],
+        "security_desk":  ["mall", "security_room"],
+        "security_room":  ["security_desk"],
+        "arcade":         ["mall"],
+        "music_shop":     ["mall"],
+        "furniture":      ["mall"],
+        "range":          ["mall"],
+        "medbay":         ["mall"],
+        "bar":            ["mall"],
+        "foodcourt":      ["mall"],
+        "comp_club":      ["mall"],
+        "garage":         ["mall"],
+        "backroom":       ["mall"],
+        "rooftop":        ["mall"],
+        "balcony":        ["mall"],
+        "cafe":           ["mall", "cafe_balcony"],
+        "cafe_balcony":   ["mall", "cafe"],
+        "utility":        ["mall"],
+        "warehouse":      ["mall"],
     }
 
     # ═══ УКРАЇНСЬКІ НАЗВИ ═══
 
     LOCATION_NAMES = {
-        "mall":       "Мол Гьольванії",
-        "info_desk":  "Інфо-острівець",
-        "info_counter":  "Інфостійка",
-        "arcade":     "Аркади",
-        "music_shop": "Музичний магазин",
-        "furniture":  "Магазин меблів",
-        "range":      "Тир",
-        "medbay":     "Медвідділ",
-        "bar":        "Бар",
-        "foodcourt":  "Футкорт",
-        "comp_club":  "Комп'ютерний клуб",
-        "garage":     "Гараж",
-        "backroom":   "Бекрум",
-        "rooftop":    "Дах",
-        "balcony":    "Балкон 2-го поверху",
-        "cafe":       "Кав'ярня",
-        "cafe_balcony": "Біля кав'ярні (2 поверх)",
-        "utility":    "Підсобка",
-        "warehouse":  "Склад",
+        "mall":           "Мол Гьольванії",
+        "info_desk":      "Інфо-острівець",
+        "security_desk":  "Стійка охорони",
+        "security_room":  "Кімната охорони",
+        "arcade":         "Аркади",
+        "music_shop":     "Музичний магазин",
+        "furniture":      "Магазин меблів",
+        "range":          "Тир",
+        "medbay":         "Медвідділ",
+        "bar":            "Бар",
+        "foodcourt":      "Футкорт",
+        "comp_club":      "Комп'ютерний клуб",
+        "garage":         "Гараж",
+        "backroom":       "Бекрум",
+        "rooftop":        "Дах",
+        "balcony":        "Балкон 2-го поверху",
+        "cafe":           "Кав'ярня",
+        "cafe_balcony":   "Біля кав'ярні (2 поверх)",
+        "utility":        "Підсобка",
+        "warehouse":      "Склад",
     }
 
-    # ═══ СУБ-ЛОКАЦІЇ ═══
-
-    SUB_LOCATIONS = {
-        "info_desk": "info_counter",
-        "info_counter": "info_desk",
-        "comp_club": "garage",
-        "garage":    "comp_club",
+    # ═══ СУМІЖНІ ЛОКАЦІЇ ═══
+    # Дочірня → батьківська. Дочірня доступна ЛИШЕ через батьківську.
+    ADJACENT_LOCATIONS = {
+        "security_room": "security_desk",
     }
 
-    def is_sub(loc_a, loc_b):
-        """Перевіряє чи одна локація є суб-локацією іншої."""
-        return SUB_LOCATIONS.get(loc_a) == loc_b
+    # ═══ ПОЄДНАНІ ЛОКАЦІЇ ═══
+    # Секції одного місця. Перехід = 0 хв.
+    PAIRED_LOCATIONS = {
+        ("cafe", "cafe_balcony"),
+        ("cafe_balcony", "cafe"),
+    }
+
+    # ═══ ЗАКРИТІ ЛОКАЦІЇ ═══
+    # Видно на карті (із замочком), але не можна увійти.
+    # Локація → прапорець для відкриття.
+    LOCKED_LOCATIONS = {
+        # "backroom": "has_backroom_key",
+    }
+
+    # ═══ ПРИХОВАНІ ЛОКАЦІЇ ═══
+    # Не видно на карті взагалі, поки нема прапорця.
+    # Після відкриття — звичайна локація.
+    HIDDEN_LOCATIONS = {
+        "bar": "syndicate_rank_3",
+    }
+
+    def is_locked(loc):
+        """Перевіряє чи локація закрита (замочок на карті)."""
+        flag = LOCKED_LOCATIONS.get(loc)
+        if flag is None:
+            return False
+        return not get_flag(flag)
+
+    def is_hidden(loc):
+        """Перевіряє чи локація прихована (не видно на карті)."""
+        flag = HIDDEN_LOCATIONS.get(loc)
+        if flag is None:
+            return False
+        return not get_flag(flag)
+
+    def is_accessible(loc):
+        """Перевіряє чи можна увійти в локацію."""
+        return not is_locked(loc) and not is_hidden(loc)
+
+    def is_adjacent(loc):
+        """Перевіряє чи локація є суміжною (доступна лише через батьківську)."""
+        return loc in ADJACENT_LOCATIONS
+
+    def get_parent(loc):
+        """Повертає батьківську локацію для суміжної, або None."""
+        return ADJACENT_LOCATIONS.get(loc)
+
+    def is_paired(loc_a, loc_b):
+        """Перевіряє чи дві локації є секціями одного місця."""
+        return (loc_a, loc_b) in PAIRED_LOCATIONS
 
     # ═══ ВАРТІСТЬ ПЕРЕМІЩЕННЯ ═══
 
     def travel_cost(from_loc, to_loc):
         """Повертає вартість переміщення в хвилинах.
-        0 = та сама локація, 5 = сусідні, 10 = через мол."""
+        0 = та сама або поєднані, 5 = сусідні/суміжні, 10 = через мол.
+        -1 = неможливо (закрита або прихована)."""
         if from_loc == to_loc:
             return 0
-        # Сусідні (включаючи мол↔точка і суб-локації)
+        if not is_accessible(to_loc):
+            return -1
+        if (from_loc, to_loc) in PAIRED_LOCATIONS:
+            return 0
+        # Суміжна — лише з батьківської
+        if to_loc in ADJACENT_LOCATIONS:
+            if ADJACENT_LOCATIONS[to_loc] == from_loc:
+                return 5
+            # Не з батьківської — через мол + батьківську
+            return 15
+        # Сусідні (мол↔точка)
         if to_loc in LOCATION_GRAPH.get(from_loc, []):
             return 5
-        # Все інше — через мол (точка↔точка)
+        # Все інше — через мол
         return 10
 
     def travel_to(destination):
         """Переміщує гравця до локації. Витрачає час."""
+        if not is_accessible(destination):
+            return
         cost = travel_cost(store.current_location, destination)
         if cost > 0:
             advance_time(cost)
@@ -114,7 +203,8 @@ init -5 python:
     MAP_POSITIONS = {
         "mall":       (960, 540),
         "info_desk":  (1400, 300),
-        "info_counter":  (1600, 200),
+        "security_desk":  (1600, 200),
+        "security_room":  (1750, 150),
         "arcade":     (400, 400),
         "music_shop": (600, 300),
         "furniture":  (1200, 700),
