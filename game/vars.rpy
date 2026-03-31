@@ -78,10 +78,11 @@ default insights_log = []               # [{id, text, day, type}, ...]
 default raw_thoughts = []               # [{id, text, requires}, ...]
 
 # -------------- пейджер --------------
-default pager_messages = []            # ["Квінсі шукав тебе", ...]
+default pager_messages = []            # [{"who": "Аоі", "text": "..."}, ...]
 default pager_mode = "status"          # "status", "message", "request"
 default pager_msg_index = 0
 default pager_unread = False
+default pager_request_who = ""          # хто надіслав запит
 default pager_request_text = ""
 default pager_request_accept = None    # label або None
 default pager_request_decline = None
@@ -141,10 +142,9 @@ init -3 python:
 
     def dialogue_begin():
         """Викликати на початку кожного діалогу.
-        Ховає HUD/пейджер, скидає лічильник реплік."""
+        Ховає HUD, скидає лічильник реплік. Пейджер лишається видимим."""
         store.dialogue_line_count = 0
         renpy.hide_screen("hud")
-        renpy.hide_screen("pager_hud")
         renpy.hide_screen("pager")
 
     def dialogue_end():
@@ -155,7 +155,6 @@ init -3 python:
             advance_time(mins)
         store.dialogue_line_count = 0
         renpy.show_screen("hud")
-        renpy.show_screen("pager_hud")
 
     def _count_dialogue_line(event, interact=True, **kwargs):
         """Глобальний callback: рахує кожну репліку."""

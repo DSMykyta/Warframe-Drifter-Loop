@@ -573,9 +573,9 @@ init -5 python:
     # "message" — повідомлення (гортається ◄►)
     # "request" — запит з ▲ТАК / ▼НІ
 
-    def add_pager_message(text):
+    def add_pager_message(who, text):
         """Додає повідомлення на пейджер."""
-        store.pager_messages.append(text)
+        store.pager_messages.append({"who": who, "text": text})
         store.pager_mode = "message"
         store.pager_msg_index = len(store.pager_messages) - 1
         store.pager_unread = True
@@ -601,14 +601,21 @@ init -5 python:
         store.pager_msg_index = max(store.pager_msg_index - 1, 0)
 
     def pager_dismiss():
-        """Закрити повідомлення, повернутись до статусу."""
+        """Центральна кнопка — перемикає між статусом і повідомленнями.
+        Не працює в режимі request — треба прийняти або відхилити."""
+        if store.pager_mode == "request":
+            return
         pager_click()
-        store.pager_mode = "status"
-        store.pager_unread = False
+        if store.pager_mode == "status" and store.pager_messages:
+            store.pager_mode = "message"
+        else:
+            store.pager_mode = "status"
+            store.pager_unread = False
 
-    def pager_send_request(text, on_accept_label=None, on_decline_label=None):
+    def pager_send_request(who, text, on_accept_label=None, on_decline_label=None):
         """Надіслати запит з вибором ТАК/НІ."""
         store.pager_mode = "request"
+        store.pager_request_who = who
         store.pager_request_text = text
         store.pager_request_accept = on_accept_label
         store.pager_request_decline = on_decline_label

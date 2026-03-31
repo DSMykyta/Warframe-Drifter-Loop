@@ -127,14 +127,21 @@ init -5 python:
     # Видно на карті (із замочком), але не можна увійти.
     # Локація → прапорець для відкриття.
     LOCKED_LOCATIONS = {
-        # "backroom": "has_backroom_key",
+        "garage": "garage_unlocked",         # поговорити з Артуром
     }
 
     # ═══ ПРИХОВАНІ ЛОКАЦІЇ ═══
     # Не видно на карті взагалі, поки нема прапорця.
     # Після відкриття — звичайна локація.
     HIDDEN_LOCATIONS = {
-        "bar": "syndicate_rank_3",
+        "bar":            "syndicate_rank_3",
+        "rooftop":        "rooftop_unlocked",
+        "security_room":  "security_room_unlocked",
+        "warehouse":      "warehouse_unlocked",
+        "utility":        "utility_unlocked",
+        "cafe":           "cafe_unlocked",
+        "cafe_balcony":   "cafe_balcony_unlocked",
+        "clothing_shop":  "clothing_shop_unlocked",
     }
 
     def is_locked(loc):
@@ -199,6 +206,9 @@ init -5 python:
         if cost > 0:
             advance_time(cost)
         store.current_location = destination
+        # Зміна локації скидає пейджер на статус
+        if store.pager_mode == "message":
+            store.pager_mode = "status"
 
     # ═══ ПОЗИЦІЇ НА КАРТІ (для UI) ═══
 

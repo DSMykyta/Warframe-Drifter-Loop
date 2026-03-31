@@ -41,12 +41,19 @@ screen main_menu():
             color "#555570"
             font "fonts/CourierNew-Regular.ttf"
 
-    ## Центрована кнопка "Почати"
+    ## Центровані кнопки
     vbox:
         xalign 0.5
         yalign 0.72
+        spacing 10
 
-        textbutton _("► ПОЧАТИ"):
+        if renpy.can_load("1-1-LT1.save") or renpy.newest_slot():
+            textbutton _("► ПРОДОВЖИТИ"):
+                xalign 0.5
+                action FileLoad(1, confirm=False, newest=True)
+                style "mm_start_button"
+
+        textbutton _("► ПОЧАТИ НОВУ"):
             xalign 0.5
             action Start()
             style "mm_start_button"

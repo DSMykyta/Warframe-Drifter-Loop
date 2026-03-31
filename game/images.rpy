@@ -16,11 +16,11 @@ image bg_furniture       = "backgrounds/bg_furniture.png"
 image bg_range           = "backgrounds/bg_range.png"
 image bg_medbay          = "backgrounds/bg_medbay.png"
 image bg_bar             = "backgrounds/bg_bar.png"
-image bg_foodcourt       = "backgrounds/bg_foodcourt.png"
+image bg_foodcourt       = "backgrounds/bg_foodcourt.jpg"
 image bg_comp_club       = "backgrounds/bg_comp_club.png"
 image bg_garage          = "backgrounds/bg_garage.png"
 image bg_backroom        = "backgrounds/bg_backroom.png"
-image bg_rooftop         = Solid("#0a1a2a")
+image bg_rooftop         = "backgrounds/bg_rooftop.png"
 image bg_balcony         = "backgrounds/bg_balcony.png"
 image bg_cafe            = "backgrounds/bg_cafe.png"
 image bg_cafe_balcony    = "backgrounds/bg_cafe_balcony.png"
@@ -121,44 +121,44 @@ init -10 python:
 
 image arthur = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'arthur'",
-    Transform("character_sprites/Arthur.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Arthur/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Arthur.png",
+    "character_sprites/Arthur/waist-legacy.png",
 )
 
 image eleanor = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'eleanor'",
-    Transform("character_sprites/Eleanor.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Eleanor/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Eleanor.png",
+    "character_sprites/Eleanor/waist-legacy.png",
 )
 
 image lettie = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'lettie'",
-    Transform("character_sprites/Lettie.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Lettie/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Lettie.png",
+    "character_sprites/Lettie/waist-legacy.png",
 )
 
 image amir = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'amir'",
-    Transform("character_sprites/Amir.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Amir/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Amir.png",
+    "character_sprites/Amir/waist-legacy.png",
 )
 
 image aoi = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'aoi'",
-    Transform("character_sprites/Aoi.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Aoi/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Aoi.png",
+    "character_sprites/Aoi/waist-legacy.png",
 )
 
 image quince = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'quince'",
-    Transform("character_sprites/Quincy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Quincy/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Quincy.png",
+    "character_sprites/Quincy/waist-legacy.png",
 )
 
 # ═══ ТРАНСФОРМИ ═══

@@ -7,12 +7,15 @@ label start:
     # Відновити інсайти з минулої петлі
     if persistent.insights_log:
         $ store.insights_log = list(persistent.insights_log)
-    # Інтро — допит на футкорті
+    # Інтро — допит на футкорті (ранок)
     if not store.flags.get("intro_done"):
+        $ store.minutes = 540           # 09:00 — допит зранку
         call intro
+        $ store.minutes = 660           # 11:00 — після допиту
     # Сцена 2 — дослідження молу, знахідка карти
     if not store.flags.get("has_map"):
         call explore_mall
+        $ store.minutes = 920           # 15:20 — після обходу молу
     # Побудувати першу колоду діалогів
     $ build_daily_deck()
     jump generic_day
@@ -23,15 +26,16 @@ label start:
 # ═══════════════════════════════════════════════════
 
 label generic_day:
-    # Титр на чорному тлі
-    scene black
-    $ _time_str = get_time_display()
-    show text "{size=48}[day] грудня / [_time_str]{/size}" at truecenter
-    pause 2
-    hide text
+    # Титр на чорному тлі (тільки з дня 2+)
+    if day > 1:
+        scene black
+        $ _time_str = get_time_display()
+        show text "{size=48}[day] грудня / [_time_str]{/size}" at truecenter
+        pause 2
+        hide text
 
     # Робочий фон
-    scene bg_mall
+    $ show_location_bg()
     jump location_loop
 
 

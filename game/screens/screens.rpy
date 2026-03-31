@@ -105,7 +105,7 @@ screen hud():
 define audio.pager_beep = "<to 2.1>audio/pager_beep.mp3"
 define audio.pager_click = "audio/pager_click.mp3"
 
-# ── ПЕЙДЖЕР — лівий нижній кут (тільки після отримання від Аміра) ──
+# ── ПЕЙДЖЕР — правий нижній кут (тільки після отримання від Аміра) ──
 screen pager_hud():
     zorder 50
 
@@ -115,119 +115,101 @@ screen pager_hud():
             ypos 1060
             xanchor 1.0
             yanchor 1.0
-            xsize 424
-            ysize 287
+            xsize 400
+            ysize 220
 
-            # Картинка пейджера (1:1)
-            add "gui/pager.png" align (0.0, 0.0)
+            # 1. Фон LCD
+            add Solid("#477220", xsize=285, ysize=86) xpos 54 ypos 43
 
-            # Текстовий блок на LCD екранчику
-            # 265x85, від низу картинки 170px, від ліва 113px
+            # 2. LCD вміст (текст)
             fixed:
-                xpos 66
-                ypos 53
-                xsize 265
-                ysize 84
+                xpos 54
+                ypos 43
+                xsize 285
+                ysize 86
 
-                vbox:
-                    xpos 4
-                    yalign 0.5
-                    spacing 1
+                $ _hud_time = get_time_display()
+                $ _hud_loc = LOCATION_NAMES.get(current_location, current_location)
 
-                    $ _hud_time = get_time_display()
-                    $ _hud_loc = LOCATION_NAMES.get(current_location, current_location)
-
-                    if pager_mode == "request":
-                        # ═══ ЗАПИТ — ▲ТАК / ▼НІ ═══
-                        text "[pager_request_text]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Bold.ttf"
-                        null height 4
-                        hbox:
-                            spacing 20
-                            textbutton "▲ ТАК" action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))] text_size 12 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
-                            textbutton "▼ НІ" action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))] text_size 12 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
-
-                    elif pager_mode == "message" and pager_messages:
-                        # ═══ ПОВІДОМЛЕННЯ ═══
-                        $ _pi = min(pager_msg_index, len(pager_messages) - 1)
-                        $ _pmsg = pager_messages[_pi]
-                        $ _pnum = _pi + 1
-                        $ _ptotal = len(pager_messages)
-                        text "[_pmsg]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Bold.ttf"
-                        hbox:
-                            spacing 8
-                            text "[_pnum]/[_ptotal]" size 10 color "#33ff33aa" font "fonts/JetBrainsMono-Regular.ttf"
-                            textbutton "◄" action Function(pager_prev_msg) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
-                            textbutton "►" action Function(pager_next_msg) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
-                            textbutton "●" action Function(pager_dismiss) text_size 11 text_color "#33ff33" text_hover_color "#66ff66" text_font "fonts/JetBrainsMono-Bold.ttf"
-
-                    else:
-                        # ═══ СТАТУС ═══
-                        text "[_hud_time]  ДЕНЬ [day]" size 13 color "#33ff33" bold True font "fonts/JetBrainsMono-Bold.ttf"
-                        text "[_hud_loc]" size 11 color "#33ff33" font "fonts/JetBrainsMono-Regular.ttf"
-                        text "₡[money]  HEX:[hex_rep]" size 10 color "#33ff33cc" font "fonts/JetBrainsMono-Regular.ttf"
-
-            # ═══ ФІЗИЧНІ КНОПКИ ПЕЙДЖЕРА ═══
-
-            # ◄ Попереднє повідомлення
-            button:
-                xpos 44 ypos 161 xsize 99 ysize 34
-                background "#ffffff00"
-                hover_background "#ffffff18"
-                if pager_mode == "message":
-                    action Function(pager_prev_msg)
-                elif pager_mode == "request":
-                    action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))]
-                else:
-                    action NullAction()
-
-            # ► Наступне повідомлення
-            button:
-                xpos 143 ypos 161 xsize 88 ysize 34
-                background "#ffffff00"
-                hover_background "#ffffff18"
-                if pager_mode == "message":
-                    action Function(pager_next_msg)
-                elif pager_mode == "request":
-                    action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))]
-                else:
-                    action NullAction()
-
-            # ▲ Вгору (ТАК в режимі запиту)
-            button:
-                xpos 353 ypos 29 xsize 37 ysize 80
-                background "#ffffff00"
-                hover_background "#ffffff18"
                 if pager_mode == "request":
-                    action [Function(pager_dismiss), Return(("pager_accept", pager_request_accept))]
+                    # ═══ ЗАПИТ ═══
+                    text "[pager_request_who]" xpos 6 ypos 4 size 18 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    fixed:
+                        xpos 6 ypos 22
+                        xsize 240 ysize 58
+                        text "[pager_request_text]" size 16 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+
+                elif pager_mode == "message" and pager_messages:
+                    # ═══ ПОВІДОМЛЕННЯ ═══
+                    $ _pi = min(pager_msg_index, len(pager_messages) - 1)
+                    $ _pmsg_entry = pager_messages[_pi]
+                    $ _pmsg_who = _pmsg_entry["who"]
+                    $ _pmsg_text = _pmsg_entry["text"]
+                    $ _pnum = _pi + 1
+                    $ _ptotal = len(pager_messages)
+                    text "[_pmsg_who]" xpos 6 ypos 4 size 18 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    fixed:
+                        xpos 6 ypos 22
+                        xsize 240 ysize 58
+                        text "[_pmsg_text]" size 16 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    text "[_pnum]/[_ptotal]" xpos 251 ypos 63 size 18 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+
+                else:
+                    # ═══ СТАТУС ═══
+                    text "[_hud_loc]" xpos 6 ypos 8 size 20 color "#131f1f" font "fonts/JetBrainsMono-Regular.ttf"
+                    text "[_hud_time]" xpos 6 ypos 38 size 36 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    text "[hex_rep]" xpos 240 ypos 50 size 20 color "#131f1f" bold True font "fonts/JetBrainsMono-Bold.ttf"
+                    if renpy.loadable("gui/icons/the-hex_pager.png"):
+                        add "gui/icons/the-hex_pager.png" xpos 255 ypos 45 zoom 0.4
+
+            # 3. Overlay-effect поверх тексту (обрізаний до LCD)
+            add Crop((0, 0, 285, 86), "gui/overlay-effect.png") xpos 54 ypos 43
+
+            # 4. Каркас пейджера (масштабований)
+            add "gui/pager.png" zoom 0.4 align (0.0, 0.0)
+
+            # ═══ 3 ФІЗИЧНІ КНОПКИ ═══
+
+            # Кнопка 1 — ліва (зелена): prev / ТАК
+            imagebutton:
+                xpos 60 ypos 139 xsize 80 ysize 28
+                idle Solid("#ffffff00", xsize=80, ysize=28)
+                hover Solid("#ffffff18", xsize=80, ysize=28)
+                focus_mask True
+                if pager_mode == "message":
+                    action [SetVariable("pager_msg_index", max(pager_msg_index - 1, 0)), Function(pager_click)]
+                elif pager_mode == "request":
+                    action Return(("pager_accept", pager_request_accept))
                 else:
                     action NullAction()
 
-            # ▼ Вниз (НІ в режимі запиту)
-            button:
-                xpos 353 ypos 110 xsize 37 ysize 73
-                background "#ffffff00"
-                hover_background "#ffffff18"
+            # Кнопка 2 — центральна: dismiss / toggle
+            imagebutton:
+                xpos 153 ypos 139 xsize 80 ysize 28
+                idle Solid("#ffffff00", xsize=80, ysize=28)
+                hover Solid("#ffffff18", xsize=80, ysize=28)
+                focus_mask True
                 if pager_mode == "request":
-                    action [Function(pager_dismiss), Return(("pager_decline", pager_request_decline))]
+                    action NullAction()
+                elif pager_mode == "message":
+                    action [SetVariable("pager_mode", "status"), Function(pager_click)]
+                elif pager_messages:
+                    action [SetVariable("pager_mode", "message"), Function(pager_click)]
                 else:
                     action NullAction()
 
-            # ● Підтвердити / Закрити повідомлення
-            button:
-                xpos 232 ypos 161 xsize 88 ysize 34
-                background "#ffffff00"
-                hover_background "#ffffff18"
-                if pager_mode in ("message", "request"):
-                    action Function(pager_dismiss)
+            # Кнопка 3 — права (червона): next / НІ
+            imagebutton:
+                xpos 246 ypos 139 xsize 80 ysize 28
+                idle Solid("#ffffff00", xsize=80, ysize=28)
+                hover Solid("#ffffff18", xsize=80, ysize=28)
+                focus_mask True
+                if pager_mode == "message" and pager_messages:
+                    action [SetVariable("pager_msg_index", min(pager_msg_index + 1, len(pager_messages) - 1)), Function(pager_click)]
+                elif pager_mode == "request":
+                    action Return(("pager_decline", pager_request_decline))
                 else:
                     action NullAction()
-
-            # Бокова кнопка (підсвітка) — поки перемикає на статус
-            button:
-                xpos 327 ypos 221 xsize 76 ysize 39
-                background "#ffffff00"
-                hover_background "#ffffff18"
-                action Function(pager_dismiss)
 
 
 # ═══════════════════════════════════
