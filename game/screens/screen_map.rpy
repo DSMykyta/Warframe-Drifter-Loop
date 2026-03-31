@@ -29,7 +29,8 @@ init python:
         "cafe":       (500, 470),
         "cafe_balcony": (500, 340),
         "utility":    (1400, 790),
-        "warehouse":  (1600, 790),
+        "warehouse":      (1600, 790),
+        "clothing_shop":  (300, 400),
     }
 
 screen mall_map():
@@ -75,6 +76,31 @@ screen mall_map():
             text "X" size 22 color "#fca5a5" bold True
 
 
+# ═══ Іконки локацій ═══
+init python:
+    LOCATION_ICONS = {
+        "mall":           "gui/icons/mall_white.png",
+        "info_desk":      "gui/icons/info_desk_white.png",
+        "security_desk":  "gui/icons/security_desk_white.png",
+        "security_room":  "gui/icons/security_room_white.png",
+        "arcade":         "gui/icons/arcade_white.png",
+        "music_shop":     "gui/icons/music_shop_white.png",
+        "furniture":      "gui/icons/furniture_white.png",
+        "range":          "gui/icons/range_white.png",
+        "medbay":         "gui/icons/medbay_white.png",
+        "bar":            "gui/icons/bar_white.png",
+        "foodcourt":      "gui/icons/foodcourt_white.png",
+        "comp_club":      "gui/icons/comp_club_white.png",
+        "garage":         "gui/icons/garage_white.png",
+        "backroom":       "gui/icons/backroom_white.png",
+        "rooftop":        "gui/icons/rooftop_white.png",
+        "balcony":        "gui/icons/balcony_white.png",
+        "cafe":           "gui/icons/cafe_white.png",
+        "utility":        "gui/icons/utility_white.png",
+        "warehouse":      "gui/icons/warehouse_white.png",
+        "clothing_shop":  "gui/icons/clothing_shop_white.png",
+    }
+
 # ═══ Кнопка однієї локації ═══
 screen map_btn(loc_id, bx, by):
     $ _loc_label = LOCATION_NAMES.get(loc_id, loc_id)
@@ -82,30 +108,41 @@ screen map_btn(loc_id, bx, by):
     $ _chars = get_chars_at(loc_id)
     $ _is_current = (current_location == loc_id)
     $ _chars_text = ", ".join(_chars) if _chars else ""
+    $ _locked = is_locked(loc_id)
+    $ _hidden = is_hidden(loc_id)
+    $ _icon = LOCATION_ICONS.get(loc_id)
 
-    button:
-        xpos bx ypos by
-        if _is_current:
-            background "#a855f760"
-        else:
-            background "#09090fcc"
-            hover_background "#a855f750"
-        padding (10, 6, 10, 6)
-        xminimum 150
+    # Приховані локації не показуємо взагалі
+    if not _hidden:
+        button:
+            xpos bx ypos by xanchor 0.5 yanchor 0.5
+            if _is_current:
+                background "#a855f760"
+            elif _locked:
+                background "#09090faa"
+            else:
+                background "#09090fcc"
+                hover_background "#a855f750"
+            padding (8, 5, 8, 5)
 
-        if _is_current:
-            action NullAction()
-        else:
-            action [Function(travel_to, loc_id), Return()]
+            if _is_current or _locked:
+                action NullAction()
+            else:
+                action [Function(travel_to, loc_id), Return()]
 
-        vbox:
-            spacing 2
-            hbox:
-                spacing 6
-                text "[_loc_label]" size 13 color "#d8b4fe" bold True
-                if _is_current:
-                    text "ТУТ" size 10 color "#facc15" bold True
-                elif _cost > 0:
-                    text "[_cost]хв" size 10 color "#22d3ee"
-            if _chars_text:
-                text "[_chars_text]" size 11 color "#ffffffa0"
+            vbox:
+                spacing 1
+                hbox:
+                    spacing 4
+                    yalign 0.5
+                    if _locked:
+                        add "gui/icons/lock_white.png" zoom 0.6 yalign 0.5
+                    elif _icon and renpy.loadable(_icon):
+                        add _icon zoom 0.6 yalign 0.5
+                    text "[_loc_label]" size 12 color ("#666666" if _locked else "#d8b4fe") bold True
+                    if _is_current:
+                        text "ТУТ" size 9 color "#facc15" bold True
+                    elif not _locked and _cost > 0:
+                        text "[_cost]хв" size 9 color "#22d3ee"
+                if _chars_text and not _locked:
+                    text "[_chars_text]" size 10 color "#ffffffa0"

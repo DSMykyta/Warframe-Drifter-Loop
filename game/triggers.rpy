@@ -60,7 +60,7 @@ init -5 python:
             "info_desk", "security_desk", "arcade", "music_shop", "furniture",
             "range", "medbay", "bar", "foodcourt", "comp_club", "garage",
             "rooftop", "balcony", "cafe", "cafe_balcony",
-            "utility", "warehouse", "backroom",
+            "utility", "warehouse", "backroom", "clothing_shop",
         ],
         "info_desk":      ["mall"],
         "security_desk":  ["mall", "security_room"],
@@ -81,6 +81,7 @@ init -5 python:
         "cafe_balcony":   ["mall", "cafe"],
         "utility":        ["mall"],
         "warehouse":      ["mall"],
+        "clothing_shop":  ["mall"],
     }
 
     # ═══ УКРАЇНСЬКІ НАЗВИ ═══
@@ -106,6 +107,7 @@ init -5 python:
         "cafe_balcony":   "Біля кав'ярні (2 поверх)",
         "utility":        "Підсобка",
         "warehouse":      "Склад",
+        "clothing_shop":  "Магазин одягу",
     }
 
     # ═══ СУМІЖНІ ЛОКАЦІЇ ═══
@@ -215,7 +217,8 @@ init -5 python:
         "comp_club":  (1400, 600),
         "garage":     (1600, 700),
         "backroom":   (200, 300),
-        "rooftop":    (960, 150),
+        "rooftop":        (960, 150),
+        "clothing_shop":  (300, 400),
     }
 
 

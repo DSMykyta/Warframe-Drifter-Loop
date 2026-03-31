@@ -13,24 +13,8 @@
 #   "tired"    — після 23:00
 #   "stressed" — 3+ днів без місій
 #   "normal"   — все інше
-
-# Приклад: stub для Артура, тема "cooking"
-label stub_Артур_cooking:
-    ar "Сьогодні готую рагу. Якщо знайду картоплю."
-    ar "Якщо ні — знову консерви."
-    return
-
-# Специфічний для локації + стану
-label stub_Артур_cooking_bar_tired:
-    ar "Пізно для кухні. Завтра."
-    return
-
-# Мінімальний stub
-label stub_Артур_silence:
-    ar "..."
-    return
-
-# Приклад для Квінсі (зі сленгом)
-label stub_Квінсі_boredom:
-    qu "Нудьга, m8. Чиста нудьга."
-    return
+#
+# Приклади (реальні label в game/stubs/):
+#   label stub_Артур_cooking:
+#   label stub_Артур_cooking_bar_tired:
+#   label stub_Квінсі_boredom:

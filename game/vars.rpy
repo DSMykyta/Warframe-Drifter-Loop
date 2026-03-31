@@ -128,7 +128,7 @@ default chemistry_gained_today = {
 # СЛУЖБОВІ ФУНКЦІЇ — ЧАС
 # ═══════════════════════════════════════════════════
 
-init python:
+init -3 python:
 
     def advance_time(mins):
         """Просуває час на mins хвилин. Оновлює hour."""

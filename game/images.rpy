@@ -31,6 +31,7 @@ image bg_cafe = "backgrounds/bg_cafe.png"
 image bg_cafe_balcony = "backgrounds/bg_cafe_balcony.png"
 image bg_utility = "backgrounds/bg_utility.webp"
 image bg_warehouse = "backgrounds/bg_warehouse.webp"
+image bg_clothing_shop = "backgrounds/bg_clothing_shop.png"
 
 # === МАППІНГ ЛОКАЦІЙ → ФОНІВ ===
 init python:
@@ -54,7 +55,8 @@ init python:
         "cafe":       "bg_cafe",
         "cafe_balcony": "bg_cafe_balcony",
         "utility":    "bg_utility",
-        "warehouse":  "bg_warehouse",
+        "warehouse":      "bg_warehouse",
+        "clothing_shop":  "bg_clothing_shop",
     }
 
     def show_location_bg(loc=None):
