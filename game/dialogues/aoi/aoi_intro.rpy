@@ -95,6 +95,7 @@ label aoi_intro:
     $ set_flag("aoi_intro_done")
     $ add_journal_entry("Аоі — логістик Гексу. Обожнює On-lyne. Грайлива, тепла, щира.", "event")
     $ add_insight("aoi_logistics", "Аоі — логістика і координація. Музичний магазин. Маг.")
+    $ add_insight("aoi_observer", "Аоі спостерігає. Помічає те, що інші пропускають.")
     $ add_insight("onlyne_band", "On-lyne — популярний гурт. Одна пісня, але всюди. Аоі фанатка.")
 
     return

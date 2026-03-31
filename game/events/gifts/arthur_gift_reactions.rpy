@@ -10,7 +10,7 @@ init python:
         "id": "arthur_bad_gift_keychains",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["bad_gift_артур_keychains"],
+            "flag_true": ["bad_gift_arthur_keychains"],
             "flag_false": ["gift_arthur_keychains_done"],
             "rank_min": 1,
         },
@@ -70,7 +70,7 @@ init python:
         "id": "arthur_bad_gift_roadsigns",
         "who": "Артур",
         "conditions": {
-            "flag_true": ["bad_gift_артур_roadsigns"],
+            "flag_true": ["bad_gift_arthur_roadsigns"],
             "flag_false": ["gift_arthur_roadsigns_done"],
             "rank_min": 1,
         },

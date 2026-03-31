@@ -5,7 +5,7 @@ init python:
         "id": "eleanor_petersham_tease",
         "who": "Елеонор",
         "conditions": {
-            "flag_true": ["arthur_middlename_petersham"],
+            "flag_true": ["arthur_middle_name_done"],
             "flag_false": ["eleanor_petersham_seen"],
         },
         "priority": 25,
