@@ -50,6 +50,11 @@ define config.has_sound = True
 define config.has_music = True
 define config.has_voice = True
 
+## Збереження — вимкнути стандартний автосейв/квіксейв Ren'Py
+define config.has_autosave = False
+define config.has_quicksave = False
+define config.autosave_on_quit = False
+
 
 ## Щоб дозволити користувачеві відтворювати тестовий звук на звуковому або
 ## голосовому каналі, розкоментуйте рядок нижче та скористайтеся ним, щоб задати

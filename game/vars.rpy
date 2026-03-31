@@ -129,6 +129,26 @@ default chemistry_gained_today = {
 # СЛУЖБОВІ ФУНКЦІЇ — ЧАС
 # ═══════════════════════════════════════════════════
 
+# ── Метадані для збережень (The Alters стиль) ──
+init -5 python:
+    def _save_metadata(d):
+        d["_game_day"] = store.day
+        d["_game_time"] = store.minutes
+        d["_game_location"] = store.current_location
+        d["_game_chemistry"] = dict(store.chemistry)
+        d["_game_hex_rep"] = store.hex_rep
+    config.save_json_callbacks = [_save_metadata]
+
+    # Маппінг персонажів на face-аватарки
+    CHAR_FACE_AVATARS = {
+        "Артур":   "character_sprites/Arthur/face-calm.png",
+        "Амір":    "character_sprites/Amir/face-template-hm.png",
+        "Аоі":     "character_sprites/Aoi/face-template.png",
+        "Елеонор": "character_sprites/Eleanor/face-template.png",
+        "Летті":   "character_sprites/Lettie/face-template.png",
+        "Квінсі":  "character_sprites/Quincy/face-template.png",
+    }
+
 init -3 python:
 
     def advance_time(mins):

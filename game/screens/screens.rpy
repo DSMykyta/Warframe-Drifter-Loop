@@ -107,7 +107,7 @@ define audio.pager_click = "audio/pager_click.mp3"
 
 # ── ПЕЙДЖЕР — правий нижній кут (тільки після отримання від Аміра) ──
 screen pager_hud():
-    zorder 50
+    zorder 10
 
     if store.flags.get("has_pager"):
         fixed:
@@ -171,11 +171,10 @@ screen pager_hud():
             # ═══ 3 ФІЗИЧНІ КНОПКИ ═══
 
             # Кнопка 1 — ліва (зелена): prev / ТАК
-            imagebutton:
+            button:
                 xpos 60 ypos 139 xsize 80 ysize 28
-                idle Solid("#ffffff00", xsize=80, ysize=28)
-                hover Solid("#ffffff18", xsize=80, ysize=28)
-                focus_mask True
+                background Solid("#ffffff00")
+                hover_background Solid("#ffffff30")
                 if pager_mode == "message":
                     action [SetVariable("pager_msg_index", max(pager_msg_index - 1, 0)), Function(pager_click)]
                 elif pager_mode == "request":
@@ -184,11 +183,10 @@ screen pager_hud():
                     action NullAction()
 
             # Кнопка 2 — центральна: dismiss / toggle
-            imagebutton:
+            button:
                 xpos 153 ypos 139 xsize 80 ysize 28
-                idle Solid("#ffffff00", xsize=80, ysize=28)
-                hover Solid("#ffffff18", xsize=80, ysize=28)
-                focus_mask True
+                background Solid("#ffffff00")
+                hover_background Solid("#ffffff30")
                 if pager_mode == "request":
                     action NullAction()
                 elif pager_mode == "message":
@@ -199,11 +197,10 @@ screen pager_hud():
                     action NullAction()
 
             # Кнопка 3 — права (червона): next / НІ
-            imagebutton:
+            button:
                 xpos 246 ypos 139 xsize 80 ysize 28
-                idle Solid("#ffffff00", xsize=80, ysize=28)
-                hover Solid("#ffffff18", xsize=80, ysize=28)
-                focus_mask True
+                background Solid("#ffffff00")
+                hover_background Solid("#ffffff30")
                 if pager_mode == "message" and pager_messages:
                     action [SetVariable("pager_msg_index", min(pager_msg_index + 1, len(pager_messages) - 1)), Function(pager_click)]
                 elif pager_mode == "request":

@@ -209,6 +209,8 @@ init -5 python:
         # Зміна локації скидає пейджер на статус
         if store.pager_mode == "message":
             store.pager_mode = "status"
+        # Автозбереження при зміні локації
+        renpy.save("auto-1", "День {} — {}".format(store.day, LOCATION_NAMES.get(destination, destination)))
 
     # ═══ ПОЗИЦІЇ НА КАРТІ (для UI) ═══
 

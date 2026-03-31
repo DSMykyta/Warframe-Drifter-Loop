@@ -47,12 +47,6 @@ screen main_menu():
         yalign 0.72
         spacing 10
 
-        if renpy.can_load("1-1-LT1.save") or renpy.newest_slot():
-            textbutton _("► ПРОДОВЖИТИ"):
-                xalign 0.5
-                action FileLoad(1, confirm=False, newest=True)
-                style "mm_start_button"
-
         textbutton _("► ПОЧАТИ НОВУ"):
             xalign 0.5
             action Start()
