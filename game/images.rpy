@@ -28,12 +28,13 @@ image bg_laundry         = "backgrounds/bg_laundry.png"
 image bg_parking         = "backgrounds/bg_parking.png"
 # --- Поверх 2 (балкон по колу) ---
 image bg_medbay          = "backgrounds/bg_medbay.png"
-image bg_room_1          = "backgrounds/bg_room_1.png"
+image bg_recovery_room   = "backgrounds/bg_recovery_room.png"
+image bg_pharmacy          = "backgrounds/bg_pharmacy.png"
 image bg_room_2          = "backgrounds/bg_room_2.png"
 image bg_utility         = "backgrounds/bg_utility.webp"
-image bg_shop_1          = "backgrounds/bg_shop_1.png"
-image bg_shop_2          = "backgrounds/bg_shop_2.png"
-image bg_shop_3          = "backgrounds/bg_shop_3.png"
+image bg_video_rental          = "backgrounds/bg_video_rental.png"
+image bg_electronics          = "backgrounds/bg_electronics.png"
+image bg_jewelry          = "backgrounds/bg_jewelry.png"
 image bg_clothing_shop   = "backgrounds/bg_clothing_shop.png"
 image bg_backroom        = "backgrounds/bg_backroom.png"
 image bg_comp_club       = "backgrounds/bg_comp_club.png"
@@ -69,12 +70,13 @@ init python:
         "parking":        "bg_parking",
         # Поверх 2
         "medbay":         "bg_medbay",
-        "room_1":         "bg_room_1",
+        "recovery_room":  "bg_recovery_room",
+        "pharmacy":         "bg_pharmacy",
         "room_2":         "bg_room_2",
         "utility":        "bg_utility",
-        "shop_1":         "bg_shop_1",
-        "shop_2":         "bg_shop_2",
-        "shop_3":         "bg_shop_3",
+        "video_rental":         "bg_video_rental",
+        "electronics":         "bg_electronics",
+        "jewelry":         "bg_jewelry",
         "clothing_shop":  "bg_clothing_shop",
         "backroom":       "bg_backroom",
         "comp_club":      "bg_comp_club",
@@ -86,10 +88,20 @@ init python:
         "rooftop":        "bg_rooftop",
     }
 
+    # Флаг → локація → новий фон
+    BG_OVERRIDES = {
+        # "wc_cleaned": {"wc": "bg_wc_clean"},
+        # "coffee_machine_found": {"cafe": "bg_cafe_coffee"},
+    }
+
     def show_location_bg(loc=None):
         if loc is None:
             loc = store.current_location
         bg_name = LOCATION_BG.get(loc, "bg_mall")
+        # Перевірити оверрайди (останній активний виграє)
+        for flag, overrides in BG_OVERRIDES.items():
+            if loc in overrides and store.flags.get(flag):
+                bg_name = overrides[loc]
         renpy.scene()
         renpy.show(bg_name)
 
