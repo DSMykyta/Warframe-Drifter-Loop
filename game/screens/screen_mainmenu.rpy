@@ -52,7 +52,7 @@ screen main_menu():
         if _newest_slot:
             textbutton _("► ПРОДОВЖИТИ"):
                 xalign 0.5
-                action FileLoad(_newest_slot, confirm=False)
+                action Function(renpy.load, _newest_slot)
                 style "mm_start_button"
 
         textbutton _("► ПОЧАТИ НОВУ"):

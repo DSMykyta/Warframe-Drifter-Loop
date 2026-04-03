@@ -147,8 +147,11 @@ label arthur_intro_end:
 
     $ store.seen_dialogues.add("arthur_intro")
     $ set_flag("arthur_intro_done")
+    $ set_flag("garage_unlocked")
     $ add_journal_entry("Артур пояснив систему місій. Гараж, напарники, репутація. Халтура — не варіант.", "event")
     $ add_insight("arthur_leader", "Артур — лідер Гексу. Місії в гаражі. Не терпить халтури.")
-    $ add_insight("missions_garage", "Місії — в гаражі через комп'ютерний клуб. Щодня нові завдання.")
+    $ add_insight("missions_garage", "Місії — в гаражі. Щодня нові завдання.")
+
+    ar "Гараж тепер відкритий. Підеш коли будеш готовий — там дошка з місіями."
 
     return

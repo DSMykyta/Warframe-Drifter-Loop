@@ -163,6 +163,13 @@ screen location_ui():
                 action Return("missions")
                 text "Місії" size 18 color "#fca5a5"
 
+        # Автомат (тільки в кав'ярні)
+        if current_location == "cafe" and store.flags.get("coffee_machine_found"):
+            button:
+                style "hex_btn"
+                action Return("coffee")
+                text "Автомат" size 18 color "#facc15"
+
         # Зачекати (не вночі)
         if not is_night():
             button:

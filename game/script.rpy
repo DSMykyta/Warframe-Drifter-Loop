@@ -16,6 +16,8 @@ label start:
     if not store.flags.get("has_map"):
         call explore_mall
         $ store.minutes = 920           # 15:20 — після обходу молу
+    # Тимчасово: автомат працює без квесту
+    $ set_flag("coffee_machine_found")
     # Побудувати першу колоду діалогів
     $ build_daily_deck()
     jump generic_day
@@ -107,6 +109,12 @@ label location_loop:
         $ show_pager()
         jump location_loop
 
+    if _choice == "coffee":
+        $ hide_pager()
+        call coffee_machine_interact
+        $ show_pager()
+        jump location_loop
+
     if _choice == "sleep":
         $ next_day()
         # Автозбереження
@@ -171,8 +179,9 @@ label interact_with_npc:
     $ _active_dlg = get_active_dialogue(_interact_target)
     # Зібрати бонусні опції
     $ _bonus = get_bonus_options(_interact_target)
-    # Чи є що подарувати
-    $ _can_gift = bool(store.inventory) and _interact_target not in store.gifted_today
+    # Чи є що подарувати (кава — не подарунок)
+    $ _gift_items = {k: v for k, v in store.inventory.items() if not k.startswith("coffee_")}
+    $ _can_gift = bool(_gift_items) and _interact_target not in store.gifted_today
 
     # Якщо нема діалогу з titles — fallback на старий get_dialogue
     if _active_dlg is None:
@@ -297,13 +306,12 @@ label execute_mission:
     $ store.current_mission_partner = m['partner']
     $ store.current_mission_partner2 = m.get('partner2')
 
-    scene black
-    show text "Виконується місія [m['name']]" at truecenter
-    pause 1.5
-    hide text
-
-    # Спеціальна місія — виконати label замість стандартної логіки
+    # Спеціальна місія — повноцінна сцена
     if m.get("is_special") and m.get("special_label"):
+        scene black
+        show text "Виконується місія [m['name']]" at truecenter
+        pause 1.5
+        hide text
         $ _sp_label = m["special_label"]
         $ _sp_id = m.get("special_id", "")
         call expression _sp_label
@@ -316,7 +324,21 @@ label execute_mission:
         $ generate_missions()
         return
 
-    # Місійний міні-діалог (якщо є напарник)
+    # Звичайна місія — коротка анімація
+    $ _partner_name = m['partner'] if m['partner'] else ""
+    scene black
+    show text "{size=28}[m['name']]{/size}" at truecenter
+    pause 1.0
+    hide text
+    if _partner_name:
+        show text "{size=20}Напарник: [_partner_name]{/size}" at truecenter
+        pause 0.8
+        hide text
+    show text "{size=16}. . .{/size}" at truecenter
+    pause 1.5
+    hide text
+
+    # Місійний івент (з шансом, якщо є conditions)
     if m['partner'] is not None:
         $ _mission_dlg = get_mission_dialogue(m['partner'])
         if _mission_dlg:

@@ -94,6 +94,7 @@ label arthur_intro_dejavu:
     $ store.seen_dialogues.add("arthur_intro_dejavu")
     $ set_flag("arthur_intro_dejavu_done")
     $ set_flag("arthur_intro_done")
+    $ set_flag("garage_unlocked")
     $ add_insight("arthur_leader", "Артур — лідер Гексу. Спокійний, обережний.")
 
     hide arthur

@@ -73,6 +73,10 @@ init -5 python:
                 oc_name, oc_outfit = opt["outfit_check"]
                 if store.current_outfits.get(oc_name) != oc_outfit:
                     continue
+            # Перевірка кави: є кава + не давав сьогодні
+            if opt["id"].startswith("coffee_give_"):
+                if not (has_any_coffee() and can_give_coffee_to(opt["who"])):
+                    continue
             result.append(opt)
         return result
 

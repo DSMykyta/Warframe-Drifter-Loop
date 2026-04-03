@@ -50,6 +50,9 @@ init python:
             "helped_someone_today",
             "helped_lettie_today", "helped_amir_today", "helped_arthur_today",
             "helped_aoi_today", "helped_quincy_today", "helped_eleanor_today",
+            "coffee_given_arthur_today", "coffee_given_eleanor_today",
+            "coffee_given_lettie_today", "coffee_given_amir_today",
+            "coffee_given_aoi_today", "coffee_given_quincy_today",
         ]
         for _f in _daily_flags:
             if store.flags.get(_f):
