@@ -37,6 +37,7 @@ default dating = None        # None або ім'я (ексклюзивний р�
 # -------------- локація --------------
 default current_location = "mall"
 default current_mission_partner = None
+default current_mission_partner2 = None
 
 # -------------- діалогова система --------------
 default seen_dialogues = set()          # {"arthur_middle_name", ...}
@@ -165,7 +166,6 @@ init -3 python:
         Ховає HUD, скидає лічильник реплік. Пейджер лишається видимим."""
         store.dialogue_line_count = 0
         renpy.hide_screen("hud")
-        renpy.hide_screen("pager")
 
     def dialogue_end():
         """Викликати в кінці кожного діалогу.

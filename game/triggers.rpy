@@ -69,7 +69,8 @@ init -5 python:
         "music_shop":     ["mall"],
         "furniture":      ["mall"],
         "range":          ["mall"],
-        "medbay":         ["mall"],
+        "medbay":         ["mall", "recovery_room"],
+        "recovery_room":  ["medbay"],
         "bar":            ["mall"],
         "foodcourt":      ["mall"],
         "comp_club":      ["mall"],
@@ -108,12 +109,14 @@ init -5 python:
         "utility":        "Підсобка",
         "warehouse":      "Склад",
         "clothing_shop":  "Магазин одягу",
+        "recovery_room":  "Палата",
     }
 
     # ═══ СУМІЖНІ ЛОКАЦІЇ ═══
     # Дочірня → батьківська. Дочірня доступна ЛИШЕ через батьківську.
     ADJACENT_LOCATIONS = {
         "security_room": "security_desk",
+        "recovery_room": "medbay",
     }
 
     # ═══ ПОЄДНАНІ ЛОКАЦІЇ ═══
@@ -127,7 +130,8 @@ init -5 python:
     # Видно на карті (із замочком), але не можна увійти.
     # Локація → прапорець для відкриття.
     LOCKED_LOCATIONS = {
-        "garage": "garage_unlocked",         # поговорити з Артуром
+        "garage": "garage_unlocked",
+        "recovery_room": "recovery_room_never_unlocked",  # завжди закрита для гравця
     }
 
     # ═══ ПРИХОВАНІ ЛОКАЦІЇ ═══
@@ -281,27 +285,54 @@ init -4 python:
         {
             "id": "arthur_injured_medbay", "chars": ["Артур"],
             "location": "medbay",
-            "condition": lambda: get_injury_stacks("Артур") >= 1,
+            "condition": lambda: get_injury_stacks("Артур") >= 1 and not is_npc_in_recovery("Артур"),
         },
         {
             "id": "eleanor_injured_medbay", "chars": ["Елеонор"],
             "location": "medbay",
-            "condition": lambda: get_injury_stacks("Елеонор") >= 1,
+            "condition": lambda: get_injury_stacks("Елеонор") >= 1 and not is_npc_in_recovery("Елеонор"),
         },
         {
             "id": "amir_injured_medbay", "chars": ["Амір"],
             "location": "medbay",
-            "condition": lambda: get_injury_stacks("Амір") >= 1,
+            "condition": lambda: get_injury_stacks("Амір") >= 1 and not is_npc_in_recovery("Амір"),
         },
         {
             "id": "aoi_injured_medbay", "chars": ["Аоі"],
             "location": "medbay",
-            "condition": lambda: get_injury_stacks("Аоі") >= 1,
+            "condition": lambda: get_injury_stacks("Аоі") >= 1 and not is_npc_in_recovery("Аоі"),
         },
         {
             "id": "quincy_injured_medbay", "chars": ["Квінсі"],
             "location": "medbay",
-            "condition": lambda: get_injury_stacks("Квінсі") >= 1,
+            "condition": lambda: get_injury_stacks("Квінсі") >= 1 and not is_npc_in_recovery("Квінсі"),
+        },
+
+        # Критично травмовані (3 стаки) — в палаті, без свідомості
+        {
+            "id": "arthur_recovery", "chars": ["Артур"],
+            "location": "recovery_room",
+            "condition": lambda: is_npc_in_recovery("Артур"),
+        },
+        {
+            "id": "eleanor_recovery", "chars": ["Елеонор"],
+            "location": "recovery_room",
+            "condition": lambda: is_npc_in_recovery("Елеонор"),
+        },
+        {
+            "id": "amir_recovery", "chars": ["Амір"],
+            "location": "recovery_room",
+            "condition": lambda: is_npc_in_recovery("Амір"),
+        },
+        {
+            "id": "aoi_recovery", "chars": ["Аоі"],
+            "location": "recovery_room",
+            "condition": lambda: is_npc_in_recovery("Аоі"),
+        },
+        {
+            "id": "quincy_recovery", "chars": ["Квінсі"],
+            "location": "recovery_room",
+            "condition": lambda: is_npc_in_recovery("Квінсі"),
         },
 
         # Аоі шукає інгредієнти на футкорті

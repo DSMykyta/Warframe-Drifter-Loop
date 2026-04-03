@@ -1,64 +1,86 @@
 # game/injuries.rpy
 # ═══════════════════════════════════════════════════
-# СИСТЕМА ТРАВМ — стаки, місійні поранення
+# СИСТЕМА ТРАВМ v2
 # ═══════════════════════════════════════════════════
 #
-# Стак отриманий в день X → присутній день X+1 → зникає день X+2 (якщо нового не було).
-# 2 стаки = NPC не потрапляє в пул місій.
-# 3-й стак на місії = місія переривається (евакуація).
-# 3 стаки поза місією = NPC відсутній до кінця наступного дня.
-# Летті як напарник = 0% шанс травми для всіх.
+# Стак 0 — здоровий
+# Стак 1 — легка травма. Може на місію. +5% шанс.
+# Стак 2 — серйозна. Може на місію (гра попереджає). +10% шанс.
+# Стак 3 — критичний. Тільки через місію (3-й стак під час бою).
+#   NPC: переміщується в recovery_room, відсутній 2 дні.
+#   Дріфтер: непритомний, emergency_skip 2 дні.
+#   Обидва: Гекс рятує, emergency_skip 3 дні.
+#
+# Летті на місії = 0% шанс + знімає ВСІ стаки з усіх учасників.
 
 init -5 python:
 
-    # ═══ БАЗОВИЙ ШАНС ТРАВМИ ЗА РІВНЕМ МІСІЇ ═══
+    # ═══ БАЗОВИЙ ШАНС ТРАВМИ ═══
 
     INJURY_CHANCE = {
-        1: 5,
-        2: 10,
-        3: 15,
-        4: 25,
-        5: 35,
-        6: 45,
+        1: 3,
+        2: 5,
+        3: 8,
+        4: 12,
+        5: 18,
+        6: 25,
     }
 
+    # ═══ ЧИТАННЯ СТАКІВ ═══
+
     def get_injury_stacks(name):
-        """Кількість стаків травм. name = ім'я NPC або 'player'."""
         return store.injury_stacks.get(name, 0)
 
+    def is_npc_injured(name):
+        return get_injury_stacks(name) > 0
+
+    def is_player_injured():
+        return get_injury_stacks("player") > 0
+
+    def get_injury_text(target):
+        stacks = get_injury_stacks(target)
+        if stacks == 0:
+            return None
+        if stacks == 1:
+            return "Легка травма"
+        if stacks == 2:
+            return "Серйозна травма"
+        return "Критична травма"
+
+    # ═══ ДОДАВАННЯ / ЗНЯТТЯ СТАКІВ ═══
+
     def add_injury_stack(name):
-        """Додає стак травми. Повертає нову кількість стаків."""
         current = store.injury_stacks.get(name, 0)
         new_val = min(3, current + 1)
         store.injury_stacks[name] = new_val
-        # Запам'ятати день отримання (для загоєння)
+
         if name not in store.injury_day_gained:
             store.injury_day_gained[name] = []
         store.injury_day_gained[name].append(store.day)
 
-        # Флаги
         if name != "player":
             char_key = char_flag(name)
             set_flag(char_key + "_injured")
             if new_val >= 2:
                 set_flag(char_key + "_injured_severe")
             if new_val >= 3:
-                store.npc_absent_until[name] = store.day + 2
-                set_flag(char_key + "_absent")
+                # NPC в палату на 2 дні
+                store.npc_recovery_until[name] = store.day + 2
+                set_flag(char_key + "_in_recovery")
         else:
             set_flag("player_injured")
+            if new_val >= 2:
+                set_flag("player_injured_severe")
 
         return new_val
 
     def remove_injury_stack(name):
-        """Знімає 1 стак травми."""
         current = store.injury_stacks.get(name, 0)
         if current <= 0:
             return
         new_val = current - 1
         store.injury_stacks[name] = new_val
 
-        # Прибрати найстаріший день з історії
         if name in store.injury_day_gained and store.injury_day_gained[name]:
             store.injury_day_gained[name].pop(0)
 
@@ -71,88 +93,187 @@ init -5 python:
         else:
             if new_val == 0:
                 store.flags["player_injured"] = False
+            if new_val < 2:
+                store.flags["player_injured_severe"] = False
 
-    def is_npc_absent(name):
-        """Чи NPC відсутній через 3 стаки травм."""
-        until = store.npc_absent_until.get(name, 0)
+    def remove_all_stacks(name):
+        """Знімає ВСІ стаки. Використовується Летті на місії."""
+        while get_injury_stacks(name) > 0:
+            remove_injury_stack(name)
+
+    # ═══ ПАЛАТА (recovery_room) ═══
+
+    def is_npc_in_recovery(name):
+        """NPC в палаті (3 стаки, без свідомості)."""
+        until = store.npc_recovery_until.get(name, 0)
         return store.day < until
 
-    def is_npc_mission_eligible(name):
-        """Чи NPC може йти на місію (менше 2 стаків)."""
-        return get_injury_stacks(name) < 2
+    def is_npc_absent(name):
+        """NPC відсутній = в палаті."""
+        return is_npc_in_recovery(name)
 
-    def roll_mission_injury(mission_level, partner_name):
-        """Кидає на травму після місії.
-        Летті як напарник = 0% шанс.
-        +10% за кожну повторну місію з напарником сьогодні.
-        +10% за кожен існуючий стак напарника."""
+    # ═══ КИДОК НА ТРАВМУ ═══
 
-        # Летті = повна імунність
-        if partner_name == "Летті":
+    def roll_mission_injury(mission_level, partner_name, partner2_name=None):
+        """Кидає на травму для кожного учасника окремо.
+        Летті = 0% + лікує всіх.
+        Повертає dict або None."""
+
+        participants = ["player"]
+        if partner_name:
+            participants.append(partner_name)
+        if partner2_name:
+            participants.append(partner2_name)
+
+        # Летті на місії — повна імунність + лікування
+        lettie_present = "Летті" in participants
+        if lettie_present:
+            # Зняти ВСІ стаки з усіх учасників
+            for p in participants:
+                if get_injury_stacks(p) > 0:
+                    remove_all_stacks(p)
             return None
 
         base_chance = INJURY_CHANCE.get(mission_level, 10)
 
-        # +10% за повторну місію з цим напарником сьогодні
-        repeats = store.missions_today_with.get(partner_name, 0)
-        repeat_bonus = max(0, (repeats - 1)) * 10
+        result = {}
+        any_hit = False
 
-        # +10% за кожен існуючий стак напарника
-        partner_stacks = get_injury_stacks(partner_name)
-        stack_bonus = partner_stacks * 10
+        for p in participants:
+            # Індивідуальний шанс
+            stacks = get_injury_stacks(p)
+            stack_bonus = stacks * 5
 
-        chance = base_chance + repeat_bonus + stack_bonus
+            repeat_bonus = 0
+            if p != "player" and p in store.missions_today_with:
+                repeats = store.missions_today_with.get(p, 0)
+                repeat_bonus = max(0, (repeats - 1)) * 5
 
-        result = {"player": False, "partner": False}
+            chance = base_chance + stack_bonus + repeat_bonus
 
-        # Шанс травми гравця
-        if renpy.random.randint(1, 100) <= chance:
-            result["player"] = True
+            if renpy.random.randint(1, 100) <= chance:
+                result[p] = True
+                any_hit = True
+            else:
+                result[p] = False
 
-        # Шанс травми напарника
-        if renpy.random.randint(1, 100) <= chance:
-            result["partner"] = True
-
-        if not result["player"] and not result["partner"]:
+        if not any_hit:
             return None
         return result
 
-    def apply_mission_injuries(result, partner_name):
-        """Застосовує травми. Повертає (messages, abort).
-        abort=True якщо напарник отримав 3-й стак — місія переривається."""
+    # ═══ ЗАСТОСУВАННЯ ТРАВМ ═══
+
+    def apply_mission_injuries(result, partner_name, partner2_name=None):
+        """Застосовує травми. Повертає (messages, outcome).
+        outcome: "normal" / "partner_evac" / "player_evac" / "both_evac"
+        """
         messages = []
-        abort = False
+        player_down = False
+        any_partner_down = False
 
-        if result["player"]:
+        # Гравець
+        if result.get("player"):
             stacks = add_injury_stack("player")
-            messages.append("Ти отримав травму. (Стаків: {}/3)".format(stacks))
-            add_journal_entry("Травма на місії. Стаків: {}/3.".format(stacks), "event")
-
-        if result["partner"]:
-            stacks = add_injury_stack(partner_name)
             if stacks >= 3:
-                # 3-й стак = евакуація, місія перервана
-                abort = True
-                messages.append("{} критично поранений! Евакуація.".format(partner_name))
-                messages.append("Місію перервано. Нагород немає.")
+                player_down = True
+                messages.append("Ти впав. Темрява.")
+            else:
+                messages.append("Ти отримав травму. (Стаків: {}/3)".format(stacks))
+                add_journal_entry("Травма на місії. Стаків: {}/3.".format(stacks), "event")
+
+        # Напарники
+        for p_name in [partner_name, partner2_name]:
+            if p_name is None:
+                continue
+            if not result.get(p_name):
+                continue
+            stacks = add_injury_stack(p_name)
+            if stacks >= 3:
+                any_partner_down = True
+                messages.append("{} без свідомості. Критичний стан.".format(p_name))
                 add_journal_entry(
-                    "Місію перервано — {} потребував евакуації. Я допоміг.".format(partner_name),
-                    "event"
+                    "{} критично поранений на місії.".format(p_name), "event"
                 )
             else:
-                messages.append("{} отримав травму. (Стаків: {}/3)".format(partner_name, stacks))
+                messages.append("{} отримав травму. (Стаків: {}/3)".format(p_name, stacks))
 
-        return messages, abort
+        # Визначити outcome
+        if player_down and any_partner_down:
+            outcome = "both_evac"
+        elif player_down:
+            outcome = "player_evac"
+        elif any_partner_down:
+            outcome = "partner_evac"
+        else:
+            outcome = "normal"
+
+        return messages, outcome
+
+    # ═══ EMERGENCY SKIP ═══
+
+    def emergency_skip(days):
+        """Дріфтер непритомний. Скіп N днів.
+        Обіцянки не штрафуються. NPC які мали обіцянки — прийдуть потім."""
+        set_flag("emergency_skip_active")
+
+        # Зберегти хто мав обіцянки — вони прийдуть після
+        store._emergency_visitors = set()
+        for p in store.promises:
+            if p["day"] >= store.day and p["day"] < store.day + days:
+                store._emergency_visitors.add(p["who"])
+
+        # Скіп днів
+        for _ in range(days):
+            next_day()
+
+        store.flags["emergency_skip_active"] = False
+        store.current_location = "medbay"
+
+        # Зняти 1 стак гравця (Летті лікувала поки був непритомний)
+        if get_injury_stacks("player") > 0:
+            remove_injury_stack("player")
+
+        add_journal_entry(
+            "Прокинувся в медвідділі. Пропустив {} дн.".format(days), "event"
+        )
+
+    def get_emergency_visitors():
+        """Повертає set імен NPC які прийшли поки Дріфтер був непритомний."""
+        return getattr(store, '_emergency_visitors', set())
+
+    def clear_emergency_visitors():
+        store._emergency_visitors = set()
+
+    # ═══ ПЕЙДЖЕР: ПОВІДОМЛЕННЯ ПРО ТРАВМИ ═══
+
+    def send_injury_pager_messages(result, partner_name, partner2_name=None):
+        """Надсилає повідомлення від Летті на пейджер після травм."""
+        for p_name in [partner_name, partner2_name]:
+            if p_name is None or p_name == "Летті":
+                continue
+            if not result.get(p_name):
+                continue
+            stacks = get_injury_stacks(p_name)
+            if stacks >= 3:
+                add_pager_message("Летті", "{} без свідомості. Палата закрита.".format(p_name))
+            elif stacks == 2:
+                add_pager_message("Летті", "{} серйозно поранений. Веди до мене.".format(p_name))
+            elif stacks == 1:
+                add_pager_message("Летті", "{} зачепило. Нічого серйозного.".format(p_name))
+
+        # Якщо гравця поранено
+        if result.get("player") and get_injury_stacks("player") < 3:
+            add_pager_message("Летті", "Ти поранений. Зайди до мене.")
+
+    # ═══ ЗАГОЄННЯ (next_day) ═══
 
     def check_injuries_heal():
-        """Знімає стаки що "дозріли" — отримані 2+ дні тому без оновлення.
-        Стак отриманий день X → є день X+1 → зникає день X+2.
-        Викликати в next_day()."""
+        """Знімає стаки що 'дозріли' — отримані 2+ дні тому.
+        Стак день X → є день X+1 → зникає день X+2."""
         for name in list(store.injury_stacks.keys()):
             if store.injury_stacks[name] <= 0:
                 continue
             days = store.injury_day_gained.get(name, [])
-            # Знімати стаки отримані 2+ дні тому
             healed = 0
             remaining = []
             for d in days:
@@ -164,45 +285,27 @@ init -5 python:
             for _ in range(healed):
                 remove_injury_stack(name)
 
-        # Перевірити absent — зняти флаг якщо день настав
+        # Перевірити recovery — повернути NPC зі стаком 1
         expired = []
-        for name, until_day in store.npc_absent_until.items():
+        for name, until_day in store.npc_recovery_until.items():
             if store.day >= until_day:
                 expired.append(name)
                 char_key = char_flag(name)
-                if store.flags.get(char_key + "_absent"):
-                    store.flags[char_key + "_absent"] = False
+                store.flags.pop(char_key + "_in_recovery", None)
         for name in expired:
-            del store.npc_absent_until[name]
-
-    def is_player_injured():
-        """Чи гравець має хоча б 1 стак."""
-        return get_injury_stacks("player") > 0
-
-    def is_npc_injured(name):
-        """Чи NPC має хоча б 1 стак."""
-        return get_injury_stacks(name) > 0
-
-    def get_injury_text(target):
-        """Повертає текст стану травм для UI."""
-        stacks = get_injury_stacks(target)
-        if stacks == 0:
-            return None
-        if stacks == 1:
-            return "Легка травма"
-        if stacks == 2:
-            return "Серйозна травма"
-        return "Критична травма"
+            del store.npc_recovery_until[name]
+            # NPC повертається зі стаком 1 (вже зняті загоєнням)
+            # Якщо загоєння ще не зняло — залишається скільки є
 
 
 # ═══════════════════════════════════════════════════
 # ЗМІННІ
 # ═══════════════════════════════════════════════════
 
-default injury_stacks = {}           # {"player": 0-3, "Амір": 0-3, ...}
-default injury_day_gained = {}       # {"player": [12, 13], "Амір": [12], ...} — дні отримання кожного стаку
-default npc_absent_until = {}        # {"Амір": 14, ...} — день до якого NPC відсутній
-# missions_today_with — визначено в vars.rpy
+default injury_stacks = {}
+default injury_day_gained = {}
+default npc_recovery_until = {}        # {"Амір": 14} — день до якого NPC в палаті
+default _emergency_visitors = set()    # NPC які мали обіцянки під час emergency skip
 
 
 # ═══════════════════════════════════════════════════
@@ -224,9 +327,24 @@ init python:
         "repeatable": True,
     })
 
+    # Летті НАПОЛЯГАЄ якщо гравець на 2 стаках
+    DIALOGUE_ENTRIES.append({
+        "id": "lettie_forced_heal",
+        "who": "Летті",
+        "conditions": {
+            "flag_true": ["player_injured_severe"],
+            "flag_false": ["lettie_healed_today"],
+        },
+        "priority": 95,
+        "chance": 100,
+        "forced": True,
+        "label": "lettie_forced_heal",
+        "repeatable": True,
+    })
+
 
 # ═══════════════════════════════════════════════════
-# LABEL: ЛЕТТІ ЛІКУЄ ГРАВЦЯ (знімає 1 стак)
+# LABELS
 # ═══════════════════════════════════════════════════
 
 label lettie_heal_player:
@@ -234,34 +352,94 @@ label lettie_heal_player:
     $ store.talked_today.add("Летті")
 
     $ _inj_text = get_injury_text("player")
-    $ _stacks = get_injury_stacks("player")
 
     le "Стій. Не рухайся."
-    $ advance_time(5)
 
     le "[_inj_text]? На місії?"
-    $ advance_time(5)
 
     menu:
         "Так, не пощастило.":
-            $ advance_time(5)
             le "Пощастило що я тут. Сідай."
-            $ advance_time(5)
 
         "Нічого страшного.":
-            $ advance_time(5)
             le "Я вирішу що страшно а що ні. Сідай."
-            $ advance_time(5)
 
     le "Готово. Не геройствуй."
-    $ advance_time(5)
 
     $ remove_injury_stack("player")
     $ set_flag("lettie_healed_today")
-    $ add_chemistry("Летті", 2)  # Баланс v2: було +3
-    $ add_journal_entry("Летті залатала травму. Як завжди — мовчки і ефективно.", "event")
+    $ add_chemistry("Летті", 2)
+    $ add_journal_entry("Летті залатала травму.", "event")
 
     hide lettie
+    return
+
+
+label lettie_forced_heal:
+    show lettie at char_center
+    $ store.talked_today.add("Летті")
+
+    le "Сядь."
+
+    mc "Я нор—"
+
+    le "Сядь. Зараз."
+
+    "Летті не питає. Вона бере тебе за плече і садить на стілець."
+
+    le "Два стаки. Ти ледь стоїш. Ніяких місій поки я не скажу."
+
+    $ remove_injury_stack("player")
+    $ set_flag("lettie_healed_today")
+    $ add_chemistry("Летті", 3)
+    $ add_journal_entry("Летті примусово залатала. Серйозна мова.", "event")
+
+    hide lettie
+    return
+
+
+# ═══════════════════════════════════════════════════
+# LABEL: ПРОКИДАННЯ ПІСЛЯ EMERGENCY SKIP
+# ═══════════════════════════════════════════════════
+
+label emergency_wake_up:
+    scene black
+    pause 1.0
+    "..."
+    pause 1.0
+    "...тиша."
+    pause 1.5
+
+    scene bg_medbay
+    pause 0.5
+
+    "Прокидаєшся в медвідділі. Голова болить. Тіло — ще більше."
+
+    $ _skip_visitors = get_emergency_visitors()
+
+    if "Летті" in _skip_visitors or True:
+        show lettie at char_center
+        le "Живий."
+        le "Не рухайся. Ти тут вже два дні."
+
+        menu:
+            "Що сталося?":
+                le "Тебе принесли. Без свідомості."
+            "Скільки я пропустив?":
+                le "Достатньо. Лежи."
+
+        hide lettie
+
+    # Відвідувачі — NPC які мали обіцянки
+    if _skip_visitors:
+        python:
+            for _vname in _skip_visitors:
+                if _vname == "Летті":
+                    continue
+                add_chemistry(_vname, 2)
+                add_journal_entry("{} приходив поки я був непритомний.".format(_vname), "event")
+
+    $ clear_emergency_visitors()
     return
 
 

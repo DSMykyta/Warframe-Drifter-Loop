@@ -25,11 +25,12 @@ screen pager():
                 for _p in _active:
                     $ _p_time_from = "{:02d}:{:02d}".format(_p["from_min"] // 60, _p["from_min"] % 60)
                     $ _p_time_to = "{:02d}:{:02d}".format(_p["to_min"] // 60, _p["to_min"] % 60)
+                    $ _p_who = _p["who"]
                     $ _p_loc = LOCATION_NAMES.get(_p["where"], _p["where"])
                     hbox:
                         spacing 6
                         if _warning and _warning["who"] == _p["who"]:
                             text "!" size 14 color "#ef4444" bold True
-                        text "[_p[who]]" size 14 color "#d8b4fe"
+                        text "[_p_who]" size 14 color "#d8b4fe"
                         text "[_p_loc]" size 13 color "#a5f3fc"
                         text "[_p_time_from]-[_p_time_to]" size 13 color "#ffffff60"

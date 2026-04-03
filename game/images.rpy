@@ -6,52 +6,84 @@ define config.screen_height = 1080
 
 # ═══ ФОНИ ЛОКАЦІЙ ═══
 # Стандарт: 1920x1080, PNG, bg_{location_id}.png
+# --- Поверх 1 (атріум) ---
 image bg_mall            = "backgrounds/bg-hub-mall.png"
+image bg_foodcourt       = "backgrounds/bg_foodcourt.jpg"
 image bg_info_desk       = "backgrounds/bg_info_desk.png"
-image bg_security_desk   = "backgrounds/bg_security_desk.png"
-image bg_security_room   = "backgrounds/bg_security_room.png"
 image bg_arcade          = "backgrounds/bg_arcade.png"
 image bg_music_shop      = "backgrounds/bg_music_shop.png"
-image bg_furniture       = "backgrounds/bg_furniture.png"
 image bg_range           = "backgrounds/bg_range.png"
-image bg_medbay          = "backgrounds/bg_medbay.png"
 image bg_bar             = "backgrounds/bg_bar.png"
-image bg_foodcourt       = "backgrounds/bg_foodcourt.jpg"
-image bg_comp_club       = "backgrounds/bg_comp_club.png"
+image bg_wc              = "backgrounds/bg_wc.png"
+image bg_furniture       = "backgrounds/bg_furniture.png"
+image bg_security_desk   = "backgrounds/bg_security_desk.png"
+image bg_security_room   = "backgrounds/bg_security_room.png"
 image bg_garage          = "backgrounds/bg_garage.png"
+image bg_cinema          = "backgrounds/bg_cinema.png"
+image bg_gym             = "backgrounds/bg_gym.png"
+image bg_billiard        = "backgrounds/bg_billiard.png"
+image bg_barbershop      = "backgrounds/bg_barbershop.png"
+image bg_photo_studio    = "backgrounds/bg_photo_studio.png"
+image bg_laundry         = "backgrounds/bg_laundry.png"
+image bg_parking         = "backgrounds/bg_parking.png"
+# --- Поверх 2 (балкон по колу) ---
+image bg_medbay          = "backgrounds/bg_medbay.png"
+image bg_room_1          = "backgrounds/bg_room_1.png"
+image bg_room_2          = "backgrounds/bg_room_2.png"
+image bg_utility         = "backgrounds/bg_utility.webp"
+image bg_shop_1          = "backgrounds/bg_shop_1.png"
+image bg_shop_2          = "backgrounds/bg_shop_2.png"
+image bg_shop_3          = "backgrounds/bg_shop_3.png"
+image bg_clothing_shop   = "backgrounds/bg_clothing_shop.png"
 image bg_backroom        = "backgrounds/bg_backroom.png"
-image bg_rooftop         = "backgrounds/bg_rooftop.png"
-image bg_balcony         = "backgrounds/bg_balcony.png"
+image bg_comp_club       = "backgrounds/bg_comp_club.png"
 image bg_cafe            = "backgrounds/bg_cafe.png"
 image bg_cafe_balcony    = "backgrounds/bg_cafe_balcony.png"
-image bg_utility         = "backgrounds/bg_utility.webp"
+image bg_balcony         = "backgrounds/bg_balcony.png"
+image bg_bookshop        = "backgrounds/bg_bookshop.png"
 image bg_warehouse       = "backgrounds/bg_warehouse.webp"
-image bg_clothing_shop   = "backgrounds/bg_clothing_shop.png"
+image bg_rooftop         = "backgrounds/bg_rooftop.png"
 
 # ═══ МАППІНГ ЛОКАЦІЙ → ФОНІВ ═══
 init python:
     LOCATION_BG = {
+        # Поверх 1
         "mall":           "bg_mall",
+        "foodcourt":      "bg_foodcourt",
         "info_desk":      "bg_info_desk",
-        "security_desk":  "bg_security_desk",
-        "security_room":  "bg_security_room",
         "arcade":         "bg_arcade",
         "music_shop":     "bg_music_shop",
-        "furniture":      "bg_furniture",
         "range":          "bg_range",
-        "medbay":         "bg_medbay",
         "bar":            "bg_bar",
-        "foodcourt":      "bg_foodcourt",
-        "comp_club":      "bg_comp_club",
+        "wc":             "bg_wc",
+        "furniture":      "bg_furniture",
+        "security_desk":  "bg_security_desk",
+        "security_room":  "bg_security_room",
         "garage":         "bg_garage",
+        "cinema":         "bg_cinema",
+        "gym":            "bg_gym",
+        "billiard":       "bg_billiard",
+        "barbershop":     "bg_barbershop",
+        "photo_studio":   "bg_photo_studio",
+        "laundry":        "bg_laundry",
+        "parking":        "bg_parking",
+        # Поверх 2
+        "medbay":         "bg_medbay",
+        "room_1":         "bg_room_1",
+        "room_2":         "bg_room_2",
+        "utility":        "bg_utility",
+        "shop_1":         "bg_shop_1",
+        "shop_2":         "bg_shop_2",
+        "shop_3":         "bg_shop_3",
+        "clothing_shop":  "bg_clothing_shop",
         "backroom":       "bg_backroom",
-        "rooftop":        "bg_rooftop",
-        "balcony":        "bg_balcony",
+        "comp_club":      "bg_comp_club",
         "cafe":           "bg_cafe",
         "cafe_balcony":   "bg_cafe_balcony",
-        "utility":        "bg_utility",
+        "balcony":        "bg_balcony",
+        "bookshop":       "bg_bookshop",
         "warehouse":      "bg_warehouse",
-        "clothing_shop":  "bg_clothing_shop",
+        "rooftop":        "bg_rooftop",
     }
 
     def show_location_bg(loc=None):

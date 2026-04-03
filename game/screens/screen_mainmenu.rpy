@@ -47,6 +47,14 @@ screen main_menu():
         yalign 0.72
         spacing 10
 
+        # Продовжити — тільки якщо є збереження
+        $ _newest_slot = renpy.newest_slot()
+        if _newest_slot:
+            textbutton _("► ПРОДОВЖИТИ"):
+                xalign 0.5
+                action FileLoad(_newest_slot, confirm=False)
+                style "mm_start_button"
+
         textbutton _("► ПОЧАТИ НОВУ"):
             xalign 0.5
             action Start()

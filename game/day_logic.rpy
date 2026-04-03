@@ -30,8 +30,9 @@ init python:
         # 4. Лічильник днів без місій
         store.days_without_mission += 1
 
-        # 5. Перевірка порушених обіцянок
-        check_broken_promises()
+        # 5. Перевірка порушених обіцянок (не під час emergency skip)
+        if not store.flags.get("emergency_skip_active"):
+            check_broken_promises()
 
         # 6. Штраф за ігнорування місій
         check_mission_neglect()

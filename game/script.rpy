@@ -53,8 +53,18 @@ label location_loop:
     # Показати спрайти NPC в локації
     $ show_location_chars()
 
-    # Показати HUD
+    # Показати HUD і пейджер
     show screen hud
+    $ show_pager()
+
+    # ═══ ПЕРЕВІРКА PENDING PAGER RESPONSE ═══
+    if has_pending_pager():
+        $ _pr_resp, _pr_label, _pr_who = consume_pager_response()
+        if _pr_resp == "accept" and _pr_label is not None:
+            call expression _pr_label
+        elif _pr_resp == "decline" and _pr_label is not None:
+            call expression _pr_label
+        jump location_loop
 
     # Перевірити banter при вході
     $ _banter = get_banter(current_location)
@@ -86,11 +96,15 @@ label location_loop:
     $ _choice = _return
 
     if _choice == "map":
+        $ hide_pager()
         call screen mall_map
+        $ show_pager()
         jump location_loop
 
     if _choice == "missions":
+        $ hide_pager()
         call missions_ui
+        $ show_pager()
         jump location_loop
 
     if _choice == "sleep":
@@ -106,19 +120,27 @@ label location_loop:
         jump do_wait
 
     if _choice == "shop":
+        $ hide_pager()
         call screen shop
+        $ show_pager()
         jump location_loop
 
     if _choice == "journal":
+        $ hide_pager()
         call screen journal
+        $ show_pager()
         jump location_loop
 
     if _choice == "gallery":
+        $ hide_pager()
         call screen gallery
+        $ show_pager()
         jump location_loop
 
     if _choice == "insights":
+        $ hide_pager()
         call screen thought_cabinet
+        $ show_pager()
         jump location_loop
 
     if isinstance(_choice, tuple):
@@ -271,13 +293,28 @@ label execute_mission:
     $ m = missions[selected_mission]
     $ dur_mins = max(1, m['level']) * 45  # Баланс v2: було ×60
 
-    # Встановити напарника для condition-based місійних діалогів
+    # Встановити напарників для condition-based місійних діалогів
     $ store.current_mission_partner = m['partner']
+    $ store.current_mission_partner2 = m.get('partner2')
 
     scene black
     show text "Виконується місія [m['name']]" at truecenter
     pause 1.5
     hide text
+
+    # Спеціальна місія — виконати label замість стандартної логіки
+    if m.get("is_special") and m.get("special_label"):
+        $ _sp_label = m["special_label"]
+        $ _sp_id = m.get("special_id", "")
+        call expression _sp_label
+        if _sp_id:
+            $ store.seen_dialogues.add(_sp_id)
+            $ set_flag(_sp_id + "_done")
+        $ store.current_mission_partner = None
+        $ store.current_mission_partner2 = None
+        $ on_mission_complete()
+        $ generate_missions()
+        return
 
     # Місійний міні-діалог (якщо є напарник)
     if m['partner'] is not None:
@@ -288,30 +325,57 @@ label execute_mission:
     $ store.minutes += dur_mins
     $ store.hour = store.minutes // 60
 
-    # Травми (тільки якщо є напарник)
-    $ _mission_aborted = False
+    # ═══ ТРАВМИ ═══
+    $ _outcome = "normal"
     if m['partner'] is not None:
-        # Лічильник повторних місій з напарником
         $ store.missions_today_with[m['partner']] = store.missions_today_with.get(m['partner'], 0) + 1
 
-        # Перевірка травм
-        $ _injury_result = roll_mission_injury(m['level'], m['partner'])
+        $ _injury_result = roll_mission_injury(m['level'], m['partner'], m.get('partner2'))
         if _injury_result is not None:
-            $ _inj_messages, _mission_aborted = apply_mission_injuries(_injury_result, m['partner'])
+            $ _inj_messages, _outcome = apply_mission_injuries(_injury_result, m['partner'], m.get('partner2'))
             python:
                 for _msg in _inj_messages:
                     renpy.say(None, _msg)
+            # Повідомлення на пейджер від Летті
+            $ send_injury_pager_messages(_injury_result, m['partner'], m.get('partner2'))
 
-    if _mission_aborted:
-        # Евакуація: час коротший (50%), нагород нема, +хімія за допомогу
+    # ═══ ОБРОБКА OUTCOMES ═══
+
+    if _outcome == "both_evac":
+        # Обидва впали — Гекс рятує, 3 дні скіп
+        $ store.current_mission_partner = None
+        $ store.current_mission_partner2 = None
+        $ generate_missions()
+        "Місію зірвано. Евакуація..."
+        $ emergency_skip(3)
+        call emergency_wake_up
+        jump location_loop
+
+    if _outcome == "player_evac":
+        # Дріфтер впав — напарник евакуює, 2 дні скіп
+        if m['partner'] is not None:
+            $ add_chemistry(m['partner'], 5)
+        $ store.current_mission_partner = None
+        $ store.current_mission_partner2 = None
+        $ on_mission_complete()
+        $ generate_missions()
+        "Темрява..."
+        $ emergency_skip(2)
+        call emergency_wake_up
+        jump location_loop
+
+    if _outcome == "partner_evac":
+        # Напарник впав — Дріфтер евакуює, 0 днів скіп
         $ store.minutes -= dur_mins // 2
         $ store.hour = store.minutes // 60
-        $ add_chemistry(m['partner'], 5)
+        if m['partner'] is not None:
+            $ add_chemistry(m['partner'], 5)
         $ on_mission_complete()
         if m['partner'] is not None:
             $ reset_interaction(m['partner'])
         $ generate_missions()
         $ store.current_mission_partner = None
+        $ store.current_mission_partner2 = None
         "Місію перервано. Евакуація напарника."
         return
 
@@ -336,8 +400,9 @@ label execute_mission:
     # Перегенерувати місії
     $ generate_missions()
 
-    # Скинути напарника
+    # Скинути напарників
     $ store.current_mission_partner = None
+    $ store.current_mission_partner2 = None
 
     "Місія виконана. Отримано [m['reward']] крон. Репутація +[m['rep']]."
     return

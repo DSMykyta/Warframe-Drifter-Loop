@@ -151,6 +151,9 @@ init -5 python:
         if "mission_partner" in conds:
             if store.current_mission_partner != conds["mission_partner"]:
                 return False
+        if "mission_partner2" in conds:
+            if store.current_mission_partner2 != conds["mission_partner2"]:
+                return False
         if "chars_at_location" in conds:
             here = get_chars_at(store.current_location)
             for c in conds["chars_at_location"]:
@@ -394,12 +397,22 @@ init -5 python:
             conds = entry.get("conditions", {})
             if not check_stable_conditions(conds):
                 continue
+            if not check_dynamic_conditions(conds):
+                continue
             eligible.append(entry)
         if not eligible:
             return None
         max_pri = max(e.get("priority", 1) for e in eligible)
         top = [e for e in eligible if e.get("priority", 1) == max_pri]
-        winner = renpy.random.choice(top)
+        # Chance — кидок кубика
+        passed = []
+        for e in top:
+            ch = e.get("chance", 100)
+            if ch >= 100 or renpy.random.randint(1, 100) <= ch:
+                passed.append(e)
+        if not passed:
+            return None
+        winner = renpy.random.choice(passed)
         return winner["label"]
 
 
