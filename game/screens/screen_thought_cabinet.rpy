@@ -60,9 +60,8 @@ screen thought_cabinet():
 
                 null height 4
 
-                for _cp in [("arthur", "Артур"), ("eleanor", "Елеонор"), ("lettie", "Летті"), ("amir", "Амір"), ("aoi", "Аоі"), ("quincy", "Квінсі")]:
-                    $ _ck = _cp[0]
-                    $ _cn = _cp[1]
+                for _cn in CAST:
+                    $ _ck = CHAR_FLAG_ID[_cn]
                     $ _chem = store.chemistry.get(_cn, 0)
 
                     button:

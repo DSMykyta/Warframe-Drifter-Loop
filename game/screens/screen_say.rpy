@@ -18,12 +18,8 @@ screen say(who, what):
 
     # Визначаємо колір бордера за персонажем
     python:
-        _hex_colors = {
-            "Артур": "#4a7cff", "Елеонор": "#a855f7", "Летті": "#22d3ee",
-            "Амір": "#facc15", "Аоі": "#d946ef", "Квінсі": "#ef4444",
-            "Дрифтер": "#a855f7",
-        }
-        _border_color = _hex_colors.get(who, "#a855f7")
+        _cd = CAST_DATA.get(who)
+        _border_color = _cd["color"] if _cd else "#a855f7"
 
     # ── Елеонор — телепатія: текст по центру, без вікна ──
     if who == "Елеонор":

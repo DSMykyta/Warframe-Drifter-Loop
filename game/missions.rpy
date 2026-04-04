@@ -65,19 +65,43 @@ init python:
 
     def generate_missions():
         """Генерує місії на день.
-        Пул напарників спільний — кожен NPC на одній місії максимум.
-        Парна місія забирає 2 з пулу."""
+        Пріоритет: квестові спецмісії → звичайні → аварійна.
+        Пул напарників спільний — кожен NPC на одній місії максимум."""
         names = list(mission_names_pool)
         random.shuffle(names)
 
         # Пул напарників (без тих хто в палаті — 3 стаки)
-        all_partners = list(store.chemistry.keys())
-        pool = [p for p in all_partners if not is_npc_in_recovery(p)]
+        pool = [p for p in CAST if not is_npc_in_recovery(p)]
         random.shuffle(pool)
 
         store.missions = []
 
-        for i in range(6):
+        # ═══ 1. СПЕЦМІСІЇ ПЕРШИМИ — квест має пріоритет ═══
+        for special in get_special_missions():
+            sp_partner = special.get("partner")
+            sp_partner2 = special.get("partner2")
+            # Забрати напарників спецмісії з пулу
+            if sp_partner and sp_partner in pool:
+                pool.remove(sp_partner)
+            if sp_partner2 and sp_partner2 in pool:
+                pool.remove(sp_partner2)
+            sp_mission = {
+                "name": special.get("name", "СПЕЦОПЕРАЦІЯ"),
+                "level": special.get("level", 3),
+                "reward": special.get("reward", 0),
+                "rep": special.get("rep", 0),
+                "partner": sp_partner,
+                "partner2": sp_partner2,
+                "partner_count": special.get("partner_count", 0),
+                "is_special": True,
+                "special_id": special["id"],
+                "special_label": special.get("label"),
+            }
+            store.missions.append(sp_mission)
+
+        # ═══ 2. ЗВИЧАЙНІ МІСІЇ — кількість за рівнями ═══
+        max_level = len(MISSION_REWARDS)
+        for i in range(max_level):
             level = i + 1
             mr = MISSION_REWARDS.get(level, {"reward": 100 * level, "rep": level})
             name = names[i % len(names)]
@@ -110,32 +134,18 @@ init python:
 
             store.missions.append(mission)
 
-        # ═══ СПЕЦІАЛЬНІ МІСІЇ ═══
-        for special in get_special_missions():
-            sp_mission = {
-                "name": special.get("name", "СПЕЦОПЕРАЦІЯ"),
-                "level": special.get("level", 3),
-                "reward": special.get("reward", 0),
-                "rep": special.get("rep", 0),
-                "partner": special.get("partner"),
-                "partner2": special.get("partner2"),
-                "partner_count": special.get("partner_count", 0),
-                "is_special": True,
-                "special_id": special["id"],
-                "special_label": special.get("label"),
-            }
-            store.missions.append(sp_mission)
-
-        # Аварійна місія (redemption) якщо neglect критичний
+        # ═══ 3. АВАРІЙНА МІСІЯ — якщо neglect критичний ═══
         if store.days_without_mission >= 5:
+            # Лідер загону як напарник
+            _redemption_partner = CAST[0] if CAST else None
             store.missions.append({
                 "name": "АВАРІЙНА ОПЕРАЦІЯ",
                 "level": 4,
                 "reward": 0,
                 "rep": 0,
-                "partner": "Артур",
+                "partner": _redemption_partner,
                 "partner2": None,
-                "partner_count": 1,
+                "partner_count": 1 if _redemption_partner else 0,
                 "is_redemption": True,
             })
 

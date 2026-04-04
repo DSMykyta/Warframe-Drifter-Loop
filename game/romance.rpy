@@ -53,7 +53,7 @@ init -5 python:
 # Зізнання доступне коли chemistry >= 160 і friends_milestone вже пройдений
 
 init python:
-    for _char in ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"]:
+    for _char in CAST:
         _cid = CHAR_FLAG_ID[_char]
         DIALOGUE_ENTRIES.append({
             "id": "romance_confession_" + _cid,

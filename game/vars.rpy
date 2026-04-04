@@ -22,14 +22,7 @@ default mission_chem_today = set()      # замість mission_rel_done
 default tags_used_today = {}            # {"Артур": {"heavy_lore"}, ...}
 
 # -------------- хімія (дружба) --------------
-default chemistry = {
-    "Артур":   0,
-    "Елеонор": 0,
-    "Летті":   0,
-    "Амір":    0,
-    "Аоі":     0,
-    "Квінсі":  0,
-}
+default chemistry = _init_cast_dict(0)
 
 # -------------- стосунки & романс --------------
 default dating = None        # None або ім'я (ексклюзивний романс)
@@ -57,14 +50,7 @@ default promises = []                   # [{who, where, from_min, to_min, day, l
 default days_without_mission = 0
 
 # -------------- розпад стосунків --------------
-default days_since_interaction = {
-    "Артур":   0,
-    "Елеонор": 0,
-    "Летті":   0,
-    "Амір":    0,
-    "Аоі":     0,
-    "Квінсі":  0,
-}
+default days_since_interaction = _init_cast_dict(0)
 default decay_paused_until = 0          # день до якого decay на паузі
 
 # -------------- плітки --------------
@@ -92,14 +78,7 @@ default pager_request_decline = None
 default journal_entries = []            # [{day, text, type}, ...]
 
 # -------------- патерни взаємодії --------------
-default interaction_counts = {
-    "Артур":   0,
-    "Елеонор": 0,
-    "Летті":   0,
-    "Амір":    0,
-    "Аоі":     0,
-    "Квінсі":  0,
-}
+default interaction_counts = _init_cast_dict(0)
 
 # -------------- persistent (між петлями) --------------
 default persistent.cg_unlocked = set()
@@ -116,14 +95,7 @@ default missions_today_with = {}     # {"Артур": 2, ...} — місій з 
 default dialogue_line_count = 0        # скільки реплік сказано в поточному діалозі
 
 # -------------- daily chemistry cap трекер --------------
-default chemistry_gained_today = {
-    "Артур":   0,
-    "Елеонор": 0,
-    "Летті":   0,
-    "Амір":    0,
-    "Аоі":     0,
-    "Квінсі":  0,
-}
+default chemistry_gained_today = _init_cast_dict(0)
 
 
 # ═══════════════════════════════════════════════════
@@ -140,15 +112,7 @@ init -5 python:
         d["_game_hex_rep"] = store.hex_rep
     config.save_json_callbacks = [_save_metadata]
 
-    # Маппінг персонажів на face-аватарки
-    CHAR_FACE_AVATARS = {
-        "Артур":   "character_sprites/Arthur/face-calm.png",
-        "Амір":    "character_sprites/Amir/face-template-hm.png",
-        "Аоі":     "character_sprites/Aoi/face-template.png",
-        "Елеонор": "character_sprites/Eleanor/face-template.png",
-        "Летті":   "character_sprites/Lettie/face-template.png",
-        "Квінсі":  "character_sprites/Quincy/face-template.png",
-    }
+    # CHAR_FACE_AVATARS — визначені в cast.rpy
 
 init -3 python:
 
@@ -213,20 +177,7 @@ init -3 python:
     # Mission chem gate: потрібна розмова за останні N днів
     MISSION_CHEM_TALK_GATE = 3
 
-    # Канонічний маппінг: кирилиця → латинський ID для флагів
-    # ВСІ автогенеровані флаги МАЮТЬ використовувати цей маппінг
-    CHAR_FLAG_ID = {
-        "Артур":   "arthur",
-        "Елеонор": "eleanor",
-        "Летті":   "lettie",
-        "Амір":    "amir",
-        "Аоі":     "aoi",
-        "Квінсі":  "quincy",
-    }
-
-    def char_flag(name):
-        """Повертає латинський ID для флагів. ЗАВЖДИ використовувати замість name.lower()."""
-        return CHAR_FLAG_ID.get(name, name.lower())
+    # CHAR_FLAG_ID, char_flag() — визначені в cast.rpy
 
     def can_rank_up():
         """Перевіряє чи можна підвищити ранг Гексу."""

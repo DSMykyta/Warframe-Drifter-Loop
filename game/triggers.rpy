@@ -8,20 +8,7 @@
 
 init -5 python:
 
-    # ═══ СПИСОК ПЕРСОНАЖІВ ═══
-
-    CAST = ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"]
-
-    # ═══ ДОМАШНІ ЛОКАЦІЇ ═══
-
-    HOME_LOCATIONS = {
-        "Артур":   "security_desk",
-        "Аоі":     "music_shop",
-        "Амір":    "arcade",
-        "Квінсі":  "range",
-        "Летті":   "medbay",
-        "Елеонор": "furniture",
-    }
+    # CAST, HOME_LOCATIONS — визначені в cast.rpy
 
     # ═══════════════════════════════════════════════════
     # 5 ТИПІВ ЛОКАЦІЙ
@@ -298,7 +285,7 @@ init -4 python:
         # Після інтро — розходяться по HOME_LOCATIONS
         {
             "id": "day_1_all_mall",
-            "chars": ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"],
+            "chars": list(CAST),
             "location": "mall",
             "condition": lambda: store.day == 1 and not store.flags.get("intro_done"),
         },
@@ -306,7 +293,7 @@ init -4 python:
         # Вечірній збір у барі (після 20:00, якщо є тригер)
         {
             "id": "group_event_bar",
-            "chars": ["Артур", "Елеонор", "Летті", "Амір", "Аоі", "Квінсі"],
+            "chars": list(CAST),
             "location": "bar",
             "condition": lambda: store.flags.get("group_bar_tonight_active") and store.minutes >= 1200,
         },
@@ -418,36 +405,114 @@ init -4 python:
         return None
 
 
+    # ═══ ДОПОМІЖНІ: ПЕРЕВІРКА СУМІСНОСТІ В ЛОКАЦІЇ ═══
+
+    def _is_scripted_together(names, location):
+        """Перевіряє чи персонажі зібрані тригером з кількома chars."""
+        for trigger in reversed(LOCATION_TRIGGERS):
+            if trigger["location"] != location:
+                continue
+            if len(trigger["chars"]) < 2:
+                continue
+            if not trigger["condition"]():
+                continue
+            if all(n in trigger["chars"] for n in names):
+                return True
+        return False
+
+    def _has_pair_content(name_a, name_b, location):
+        """Перевіряє чи є незіграний парний banter/діалог для двох NPC в локації."""
+        pair = {name_a, name_b}
+        for entry in BANTER_ENTRIES:
+            if entry["id"] in store.seen_dialogues:
+                continue
+            entry_loc = entry.get("location")
+            if entry_loc is not None and entry_loc != location:
+                continue
+            chars = entry.get("chars")
+            if chars and set(chars) == pair:
+                conds = entry.get("conditions", {})
+                if check_stable_conditions(conds):
+                    return True
+        return False
+
+    def _has_promise_at(name, location):
+        """Перевіряє чи персонаж має обіцянку в цій локації зараз."""
+        for p in store.promises:
+            if p["who"] == name and p["day"] == store.day:
+                if store.minutes >= p["from_min"] and store.minutes < p["to_min"]:
+                    if p["where"] == location:
+                        return True
+        return False
+
+    def _location_priority(name, location):
+        """Пріоритет NPC в локації. Вищий = сильніша причина бути тут.
+        3 = дім, 2 = скриптовий тригер, 1 = обіцянка, 0 = інший тригер."""
+        if HOME_LOCATIONS.get(name) == location:
+            return 3
+        for trigger in reversed(LOCATION_TRIGGERS):
+            if name in trigger["chars"] and trigger["location"] == location and trigger["condition"]():
+                if len(trigger["chars"]) >= 2:
+                    return 2
+                return 0
+        if _has_promise_at(name, location):
+            return 1
+        return 0
+
+
     # ═══ ГОЛОВНА ФУНКЦІЯ: ДЕ ПЕРСОНАЖ? ═══
 
-    def get_char_location(name):
-        """Визначає поточну локацію персонажа.
-        Пріоритет: absent (3 стаки) → ніч → тригери → обіцянки → домашня."""
-        # 3 стаки травм = повністю відсутній
+    def _get_raw_location(name):
+        """Визначає бажану локацію без перевірки зайнятості."""
         if is_npc_absent(name):
             return None
-
-        # Після 24:00 всі зникли
         if is_night():
             return None
-
-        # Перевірити тригери (пріоритет від останнього)
         for trigger in reversed(LOCATION_TRIGGERS):
             if name in trigger["chars"]:
                 if trigger["condition"]():
                     return trigger["location"]
-
-        # Перевірити обіцянки
         promise_loc = _check_promise_location(name)
         if promise_loc:
             return promise_loc
-
-        # Домашня локація
         return HOME_LOCATIONS.get(name, "mall")
+
+    def get_char_location(name):
+        """Визначає поточну локацію персонажа.
+        Якщо бажана локація зайнята іншим NPC без парного контенту —
+        NPC з нижчим пріоритетом залишається вдома."""
+        loc = _get_raw_location(name)
+        if loc is None:
+            return None
+        home = HOME_LOCATIONS.get(name, "mall")
+        if loc == home:
+            return loc
+        # Хто ще хоче бути в цій локації?
+        others = [n for n in CAST if n != name and _get_raw_location(n) == loc]
+        if not others:
+            return loc
+        # Скриптовий тригер зібрав разом — ок
+        if _is_scripted_together([name] + others, loc):
+            return loc
+        # Є парний контент з кимось там — ок
+        for other in others:
+            if _has_pair_content(name, other, loc):
+                return loc
+        # Обіцянки привели обох — ок
+        if _has_promise_at(name, loc):
+            for other in others:
+                if _has_promise_at(other, loc):
+                    return loc
+        # Конфлікт: хто має вищий пріоритет — той залишається
+        my_pri = _location_priority(name, loc)
+        max_other_pri = max(_location_priority(o, loc) for o in others)
+        if my_pri >= max_other_pri:
+            return loc
+        return home
 
 
     def get_chars_at(location):
-        """Повертає список персонажів у локації. Порожній після 24:00."""
+        """Повертає список персонажів у локації."""
         if is_night():
             return []
         return [n for n in CAST if get_char_location(n) == location]

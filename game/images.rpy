@@ -106,15 +106,7 @@ init python:
         renpy.scene()
         renpy.show(bg_name)
 
-    # === МАППІНГ: кирилиця → image tag ===
-    CHAR_IMAGE_TAG = {
-        "Артур":   "arthur",
-        "Елеонор": "eleanor",
-        "Летті":   "lettie",
-        "Амір":    "amir",
-        "Аоі":     "aoi",
-        "Квінсі":  "quince",
-    }
+    # CHAR_IMAGE_TAG — визначений в cast.rpy
 
     # Позиції для N персонажів в локації
     CHAR_POSITIONS = {
@@ -147,7 +139,7 @@ init python:
 default _speaking_char = None
 
 init -10 python:
-    _CHAR_TAGS = {"arthur", "eleanor", "lettie", "amir", "aoi", "quince"}
+    # _CHAR_TAGS — визначений в cast.rpy
 
     def speaker_callback(speaker_tag):
         """Фабрика: callback тільки виставляє хто говорить. Все."""
@@ -164,47 +156,19 @@ init -10 python:
 # ConditionSwitch: якщо хтось говорить і це НЕ я → затемнений.
 # Інакше (я говорю АБО ніхто не говорить) → нормальний.
 
-image arthur = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'arthur'",
-    Transform("character_sprites/Character-Arthur-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Arthur-Hex/knee-test.png",
-)
-
-image eleanor = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'eleanor'",
-    Transform("character_sprites/Character-Eleanor-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Eleanor-Hex/knee-test.png",
-)
-
-image lettie = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'lettie'",
-    Transform("character_sprites/Character-Lettie-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Lettie-Hex/knee-test.png",
-)
-
-image amir = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'amir'",
-    Transform("character_sprites/Character-Amir-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Amir-Hex/knee-test.png",
-)
-
-image aoi = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'aoi'",
-    Transform("character_sprites/Character-Aoi-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Aoi-Hex/knee-test.png",
-)
-
-image quince = ConditionSwitch(
-    "_speaking_char is not None and _speaking_char != 'quince'",
-    Transform("character_sprites/Character-Quincy-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
-    "True",
-    "character_sprites/Character-Quincy-Hex/knee-test.png",
-)
+# ═══ СПРАЙТИ — автогенерація з CAST_DATA ═══
+# ConditionSwitch: хто говорить — яскравий, решта — затемнені.
+init python:
+    for _name, _data in CAST_DATA.items():
+        _tag = _data["image_tag"]
+        _sprite = _data["sprite_folder"] + "/knee-test.png"
+        _dim = "_speaking_char is not None and _speaking_char != '{}'".format(_tag)
+        renpy.image(_tag, ConditionSwitch(
+            _dim,
+            Transform(_sprite, matrixcolor=TintMatrix(Color("#555555"))),
+            "True",
+            _sprite,
+        ))
 
 # ═══ ТРАНСФОРМИ ═══
 
