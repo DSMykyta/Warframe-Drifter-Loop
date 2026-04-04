@@ -165,44 +165,44 @@ init -10 python:
 
 image arthur = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'arthur'",
-    Transform("character_sprites/Arthur/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Arthur-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Arthur/waist-legacy.png",
+    "character_sprites/Character-Arthur-Hex/knee-test.png",
 )
 
 image eleanor = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'eleanor'",
-    Transform("character_sprites/Eleanor/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Eleanor-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Eleanor/waist-legacy.png",
+    "character_sprites/Character-Eleanor-Hex/knee-test.png",
 )
 
 image lettie = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'lettie'",
-    Transform("character_sprites/Lettie/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Lettie-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Lettie/waist-legacy.png",
+    "character_sprites/Character-Lettie-Hex/knee-test.png",
 )
 
 image amir = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'amir'",
-    Transform("character_sprites/Amir/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Amir-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Amir/waist-legacy.png",
+    "character_sprites/Character-Amir-Hex/knee-test.png",
 )
 
 image aoi = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'aoi'",
-    Transform("character_sprites/Aoi/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Aoi-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Aoi/waist-legacy.png",
+    "character_sprites/Character-Aoi-Hex/knee-test.png",
 )
 
 image quince = ConditionSwitch(
     "_speaking_char is not None and _speaking_char != 'quince'",
-    Transform("character_sprites/Quincy/waist-legacy.png", matrixcolor=TintMatrix(Color("#555555"))),
+    Transform("character_sprites/Character-Quincy-Hex/knee-test.png", matrixcolor=TintMatrix(Color("#555555"))),
     "True",
-    "character_sprites/Quincy/waist-legacy.png",
+    "character_sprites/Character-Quincy-Hex/knee-test.png",
 )
 
 # ═══ ТРАНСФОРМИ ═══
