@@ -636,11 +636,28 @@ init -5 python:
         renpy.sound.play("<to 2.1>audio/pager_beep.mp3", channel="sound")
 
     def clear_pager():
-        """Очищує пейджер."""
+        """Очищує повідомлення, але залишає запити і додає плани."""
         store.pager_messages = []
-        store.pager_mode = "status"
         store.pager_msg_index = 0
-        store.pager_unread = False
+
+        # Додати активні обіцянки/плани як повідомлення
+        for p in store.promises:
+            if p["day"] >= store.day and not p.get("fulfilled"):
+                _day_str = "{} грудня".format(p["day"])
+                _time_from = "{}:{:02d}".format(p["from_min"] // 60, p["from_min"] % 60)
+                _text = "План: {} о {} ({})".format(p["who"], _time_from, _day_str)
+                store.pager_messages.append({"who": p["who"], "text": _text, "pinned": True})
+
+        # Якщо є активний запит — зберегти режим
+        if store.pager_mode == "request":
+            return
+
+        if store.pager_messages:
+            store.pager_mode = "message"
+            store.pager_unread = True
+        else:
+            store.pager_mode = "status"
+            store.pager_unread = False
 
 
 # ═══════════════════════════════════════════════════

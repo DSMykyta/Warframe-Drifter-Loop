@@ -76,5 +76,15 @@ init python:
         # 13. Очистити пейджер від вчорашніх повідомлень
         clear_pager()
 
-        # 14. Переміщення в бекрум (прокинувся)
+        # 14. Хуки кавового квесту (ПІСЛЯ clear_pager!)
+        check_coffee_extract_deadline()
+        check_coffee_cafe_find()
+        # check_coffee_parts_pager — в location_loop (після 12:00)
+        check_coffee_amir_diy()
+        check_coffee_cafe_open()
+
+        # 15. Перегенерувати місії (хуки могли відкрити нові спецмісії)
+        generate_missions()
+
+        # 16. Переміщення в бекрум (прокинувся)
         store.current_location = "backroom"

@@ -177,16 +177,12 @@ screen location_ui():
                 action Return("wait")
                 text "Зачекати" size 18 color "#a5f3fc"
 
-    # Спати (тільки в бекрумі)
-    if current_location == "backroom":
-        button:
-            style "hex_btn_accent"
-            xpos 0.96
-            ypos 0.85
-            xanchor 1.0
-            yanchor 1.0
-            action Return("sleep")
-            text "Спати" size 20 color "#facc15"
+        # Спати (тільки в бекрумі)
+        if current_location == "backroom":
+            button:
+                style "hex_btn"
+                action Return("sleep")
+                text "Спати" size 20 color "#facc15"
 
 
 # ═══ СТИЛІ КНОПОК ═══

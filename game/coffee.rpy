@@ -2,44 +2,33 @@
 # ═══════════════════════════════════════════════════
 # КАВОВИЙ АВТОМАТ — кав'ярня
 # ═══════════════════════════════════════════════════
-#
-# Автомат з'являється в cafe після квесту (flag: coffee_machine_found).
-# Кава — предмет в інвентарі. Можна випити або дати NPC.
-# Дати NPC — через BONUS_OPTIONS, з'являється в будь-якому діалозі.
-# Один раз на день на NPC.
 
 init -5 python:
 
     # ═══ ТИПИ КАВИ ═══
 
-    COFFEE_MENU = [
-        {
-            "id": "coffee_black",
-            "name": "Чорна кава",
-            "price": 5,
-            "desc": "Гаряча. Гірка. Чесна.",
-        },
-        {
-            "id": "coffee_latte",
-            "name": "Лате",
-            "price": 15,
-            "desc": "М'яка, з молоком. Летті таке п'є.",
-        },
-        {
-            "id": "coffee_cocoa",
-            "name": "Какао",
-            "price": 15,
-            "desc": "Солодке, густе. Аоі б оцінила.",
-        },
-        {
-            "id": "coffee_espresso",
-            "name": "Подвійний еспресо",
-            "price": 25,
-            "desc": "Удар. Для тих хто не спав.",
-        },
+    COFFEE_MENU_BASE = [
+        {"id": "coffee_black", "name": "Чорна кава", "price": 5, "desc": "Гаряча. Гірка. Чесна."},
+        {"id": "coffee_espresso", "name": "Подвійний еспресо", "price": 25, "desc": "Удар. Для тих хто не спав."},
     ]
 
-    # Хто що любить (liked = +4, інше = +2)
+    COFFEE_MENU_MILK = [
+        {"id": "coffee_latte", "name": "Лате", "price": 15, "desc": "М'яка, з молоком.", "requires_milk": True},
+        {"id": "coffee_cocoa", "name": "Какао", "price": 15, "desc": "Солодке, густе, тепле.", "requires_milk": True},
+        {"id": "coffee_cappuccino", "name": "Капучіно", "price": 20, "desc": "Піна, молоко, кава. Класика.", "requires_fresh": True},
+    ]
+
+    def get_available_coffees():
+        """Повертає список доступних напоїв з урахуванням молока."""
+        result = list(COFFEE_MENU_BASE)
+        if store.flags.get("milk_drinks_unlocked"):
+            for c in COFFEE_MENU_MILK:
+                if c.get("requires_fresh") and not store.flags.get("milk_cappuccino_unlocked"):
+                    continue
+                result.append(c)
+        return result
+
+    # Хто що любить
     COFFEE_PREFERENCES = {
         "Артур":   "coffee_espresso",
         "Летті":   "coffee_latte",
@@ -52,24 +41,21 @@ init -5 python:
     # ═══ ФУНКЦІЇ ═══
 
     def has_any_coffee():
-        """Чи є хоча б одна кава в інвентарі."""
-        for c in COFFEE_MENU:
+        for c in get_available_coffees():
             if store.inventory.get(c["id"], 0) > 0:
                 return True
         return False
 
     def get_coffee_list():
-        """Повертає список кав в інвентарі."""
         result = []
-        for c in COFFEE_MENU:
+        for c in get_available_coffees():
             qty = store.inventory.get(c["id"], 0)
             if qty > 0:
                 result.append({"id": c["id"], "name": c["name"], "qty": qty})
         return result
 
     def buy_coffee(coffee_id):
-        """Купити каву. Повертає True якщо вистачило грошей."""
-        for c in COFFEE_MENU:
+        for c in get_available_coffees():
             if c["id"] == coffee_id:
                 if store.money >= c["price"]:
                     store.money -= c["price"]
@@ -79,7 +65,6 @@ init -5 python:
         return False
 
     def drink_coffee(coffee_id):
-        """Випити каву. Забирає з інвентарю. Повертає id або None."""
         if store.inventory.get(coffee_id, 0) <= 0:
             return None
         store.inventory[coffee_id] -= 1
@@ -88,36 +73,27 @@ init -5 python:
         return coffee_id
 
     def give_coffee_to(name, coffee_id):
-        """Дати каву NPC. Повертає chemistry bonus."""
         if store.inventory.get(coffee_id, 0) <= 0:
             return 0
         store.inventory[coffee_id] -= 1
         if store.inventory[coffee_id] <= 0:
             del store.inventory[coffee_id]
-
-        # Позначити що сьогодні вже давав каву цьому NPC
         set_flag("coffee_given_{}_today".format(char_flag(name)))
-
-        # Перевірити вподобання
         preferred = COFFEE_PREFERENCES.get(name)
         if coffee_id == preferred:
-            return 4  # liked
-        return 2      # small
+            return 4
+        return 2
 
     def can_give_coffee_to(name):
-        """Чи можна дати каву (є кава + не давав сьогодні)."""
         if not has_any_coffee():
             return False
         flag = "coffee_given_{}_today".format(char_flag(name))
         return not store.flags.get(flag)
 
 
-# ═══════════════════════════════════════════════════
-# БОНУСНІ ОПЦІЇ — "Тримай, каву приніс"
-# ═══════════════════════════════════════════════════
+# ═══ БОНУСНІ ОПЦІЇ — "Тримай, каву приніс" ═══
 
 init python:
-
     for _coffee_npc in CAST:
         BONUS_OPTIONS.append({
             "id": "coffee_give_{}".format(char_flag(_coffee_npc)),
@@ -128,13 +104,11 @@ init python:
                 "flag_true": ["coffee_machine_found"],
                 "flag_false": ["coffee_given_{}_today".format(char_flag(_coffee_npc))],
             },
-            "once": False,  # повторюється щодня
+            "once": False,
         })
 
 
-# ═══════════════════════════════════════════════════
-# ЕКРАН АВТОМАТУ
-# ═══════════════════════════════════════════════════
+# ═══ ЕКРАН АВТОМАТУ ═══
 
 screen coffee_machine():
     modal True
@@ -149,7 +123,7 @@ screen coffee_machine():
 
         null height 8
 
-        for _c in COFFEE_MENU:
+        for _c in get_available_coffees():
             $ _c_id = _c["id"]
             $ _c_name = _c["name"]
             $ _c_price = _c["price"]
@@ -178,7 +152,6 @@ screen coffee_machine():
 
         null height 8
 
-        # Випити зі свого інвентарю
         if has_any_coffee():
             text "В РУКАХ:" size 14 color "#ffffff30" xalign 0.5
 
@@ -210,9 +183,7 @@ screen coffee_machine():
             text "Відійти" size 16 color "#ffffff40" xalign 0.5
 
 
-# ═══════════════════════════════════════════════════
-# LABEL: АВТОМАТ (викликається з location_ui)
-# ═══════════════════════════════════════════════════
+# ═══ LABELS ═══
 
 label coffee_machine_interact:
     call screen coffee_machine
@@ -228,7 +199,8 @@ label coffee_machine_interact:
             $ _bought_ok = buy_coffee(_bought_id)
             if _bought_ok:
                 python:
-                    for _cm in COFFEE_MENU:
+                    _bought_name = ""
+                    for _cm in get_available_coffees():
                         if _cm["id"] == _bought_id:
                             _bought_name = _cm["name"]
                             break
@@ -243,7 +215,6 @@ label coffee_machine_interact:
             if _drank is not None:
                 $ advance_time(10)
                 if _drink_id == "coffee_espresso":
-                    # Еспресо знімає штраф пізнього сну
                     if store.minutes > 540:
                         $ store.minutes = max(480, store.minutes - 60)
                         $ store.hour = store.minutes // 60
@@ -254,10 +225,12 @@ label coffee_machine_interact:
                     "Какао. Солодке, густе, тепле. На хвилину — все нормально."
                 elif _drink_id == "coffee_latte":
                     "Лате. М'яко. Тихо. Десять хвилин для себе."
+                elif _drink_id == "coffee_cappuccino":
+                    "Капучіно. Піна на губах. Майже як вдома. Майже."
                 else:
                     "Чорна кава. Гаряче. Гірко. Достатньо."
 
-                # Шанс на banter якщо NPC в кав'ярні
+                # Шанс на banter
                 $ _cafe_chars = get_chars_at("cafe")
                 if _cafe_chars and renpy.random.randint(1, 100) <= 40:
                     $ _cafe_npc = renpy.random.choice(_cafe_chars)
@@ -279,26 +252,13 @@ label coffee_machine_interact:
     return
 
 
-# ═══════════════════════════════════════════════════
-# LABEL: ДАТИ КАВУ NPC (через bonus option)
-# ═══════════════════════════════════════════════════
-
 label coffee_give_scene:
-    # _interact_target вже встановлений location_loop
     $ _coffee_target = _interact_target
-
-    # Показати вибір якої кави дати
     $ _my_coffees = get_coffee_list()
 
     if not _my_coffees:
         "В тебе нема кави."
         return
-
-    # Меню вибору
-    python:
-        _coffee_items = []
-        for _cc in _my_coffees:
-            _coffee_items.append((_cc["name"], _cc["id"]))
 
     menu:
         "Чорна кава" if store.inventory.get("coffee_black", 0) > 0:
@@ -309,13 +269,13 @@ label coffee_give_scene:
             $ _give_id = "coffee_cocoa"
         "Подвійний еспресо" if store.inventory.get("coffee_espresso", 0) > 0:
             $ _give_id = "coffee_espresso"
+        "Капучіно" if store.inventory.get("coffee_cappuccino", 0) > 0:
+            $ _give_id = "coffee_cappuccino"
         "Не зараз":
             return
 
     $ _chem_bonus = give_coffee_to(_coffee_target, _give_id)
     $ _is_preferred = (_give_id == COFFEE_PREFERENCES.get(_coffee_target))
-
-    # ═══ РЕАКЦІЇ ═══
 
     if _coffee_target == "Летті":
         if _is_preferred:
@@ -324,46 +284,37 @@ label coffee_give_scene:
             le "...Дякую."
         else:
             le "...Дякую."
-            "Бере. П'є. Нічого більше."
 
     elif _coffee_target == "Артур":
         if _is_preferred:
             ar "Подвійний?"
             mc "Так."
             ar "Добре."
-            "П'є одним ковтком."
         else:
             ar "Дякую."
-            "Бере. Кивнув."
 
     elif _coffee_target == "Аоі":
         if _is_preferred:
             ao "О! Какао?! Ти серйозно?!"
             ao "ДЯКУЮЮ!"
-            "Обхоплює чашку обома руками. Очі світяться."
         else:
             ao "О! Дякую!"
-            "Бере з посмішкою."
 
     elif _coffee_target == "Амір":
         am "Оо, брат! Рятуєш!"
         if _is_preferred:
             am "Подвійний?! Ти знаєш мої потреби!"
-        else:
-            am "Давай-давай. Будь-яка кава — хороша кава."
 
     elif _coffee_target == "Квінсі":
         if _is_preferred:
             qu "...чорна?"
-            "Бере."
-            qu "...thanks."
+            qu "...cheers."
         else:
             "Квінсі бере. Кивнув."
 
     elif _coffee_target == "Елеонор":
         if _is_preferred:
             el "Ти запам'ятав що я п'ю?"
-            "Посміхається. Тепло."
         else:
             el "Дякую. Мило з твого боку."
 
@@ -371,12 +322,3 @@ label coffee_give_scene:
     $ reset_interaction(_coffee_target)
 
     return
-
-
-# ═══════════════════════════════════════════════════
-# ЩОДЕННИЙ СКИД КАВОВИХ ФЛАГІВ
-# ═══════════════════════════════════════════════════
-# Додати в day_logic.rpy в список _daily_flags:
-#   "coffee_given_arthur_today", "coffee_given_eleanor_today",
-#   "coffee_given_lettie_today", "coffee_given_amir_today",
-#   "coffee_given_aoi_today", "coffee_given_quincy_today",

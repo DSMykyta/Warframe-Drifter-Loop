@@ -39,6 +39,7 @@ image bg_clothing_shop   = "backgrounds/bg_clothing_shop.png"
 image bg_backroom        = "backgrounds/bg_backroom.png"
 image bg_comp_club       = "backgrounds/bg_comp_club.png"
 image bg_cafe            = "backgrounds/bg_cafe.png"
+image bg_cafe_coffee     = "backgrounds/bg_cafe_coffee.png"
 image bg_cafe_balcony    = "backgrounds/bg_cafe_balcony.png"
 image bg_balcony         = "backgrounds/bg_balcony.png"
 image bg_bookshop        = "backgrounds/bg_bookshop.png"
@@ -91,7 +92,7 @@ init python:
     # Флаг → локація → новий фон
     BG_OVERRIDES = {
         # "wc_cleaned": {"wc": "bg_wc_clean"},
-        # "coffee_machine_found": {"cafe": "bg_cafe_coffee"},
+        "coffee_machine_found": {"cafe": "bg_cafe_coffee"},
     }
 
     def show_location_bg(loc=None):
@@ -207,11 +208,11 @@ image quince = ConditionSwitch(
 
 # ═══ ТРАНСФОРМИ ═══
 
-# Соло/дует — персонаж на ~74% висоти екрана
-define char_zoom = 1080.0 / 1456.0        # 0.742
+# Соло/дует — персонаж вміщується на екрані (knee-test: 1280x2138)
+define char_zoom = 1080.0 / 2138.0        # 0.505
 
 # Група (6 персонажів) — менші, щоб вмістилися
-define group_zoom = 1080.0 / 2100.0       # 0.514
+define group_zoom = 1080.0 / 2138.0 * 0.7 # ~0.354
 
 transform char_center:
     zoom char_zoom
@@ -241,7 +242,7 @@ transform center_left:
     yalign 1.0
 
 transform center:
-    zoom group_zoom
+    zoom group_zoom * 1.15
     xalign 0.5
     yalign 1.0
 
@@ -256,6 +257,6 @@ transform right_of_center:
     yalign 1.0
 
 transform far_right:
-    zoom group_zoom
+    zoom group_zoom * 0.85
     xalign 0.95
     yalign 1.0

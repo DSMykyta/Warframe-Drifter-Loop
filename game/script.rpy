@@ -16,8 +16,7 @@ label start:
     if not store.flags.get("has_map"):
         call explore_mall
         $ store.minutes = 920           # 15:20 — після обходу молу
-    # Тимчасово: автомат працює без квесту
-    $ set_flag("coffee_machine_found")
+    # coffee_machine_found тепер ставиться через кавовий квест
     # Побудувати першу колоду діалогів
     $ build_daily_deck()
     jump generic_day
@@ -58,6 +57,9 @@ label location_loop:
     # Показати HUD і пейджер
     show screen hud
     $ show_pager()
+
+    # Кавовий квест: Амір пейджер після 12:00
+    $ check_coffee_parts_pager()
 
     # ═══ ПЕРЕВІРКА PENDING PAGER RESPONSE ═══
     if has_pending_pager():
@@ -318,6 +320,8 @@ label execute_mission:
         if _sp_id:
             $ store.seen_dialogues.add(_sp_id)
             $ set_flag(_sp_id + "_done")
+        $ store.minutes += dur_mins
+        $ store.hour = store.minutes // 60
         $ store.current_mission_partner = None
         $ store.current_mission_partner2 = None
         $ on_mission_complete()

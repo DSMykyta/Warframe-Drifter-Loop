@@ -190,6 +190,8 @@ init -5 python:
         "electronics":         "electronics_unlocked",
         "jewelry":         "jewelry_unlocked",
         "bookshop":       "bookshop_unlocked",
+        "cafe":           "cafe_unlocked",
+        "cafe_balcony":   "cafe_balcony_unlocked",
     }
 
     def is_locked(loc):
