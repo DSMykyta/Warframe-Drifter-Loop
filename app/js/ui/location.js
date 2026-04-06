@@ -46,6 +46,17 @@ function showLocation() {
     }
   }
 
+  // Перевірити banter (парні сцени NPC)
+  if (typeof getBanter === "function") {
+    var banter = getBanter(locId);
+    if (banter && banter.label && SCRIPTS[banter.label]) {
+      hideHUD();
+      if (typeof hidePager === "function") hidePager();
+      runScript(banter.label);
+      return;
+    }
+  }
+
   // NPC і дії
   showLocationUI();
 }

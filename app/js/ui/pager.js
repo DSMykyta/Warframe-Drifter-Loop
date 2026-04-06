@@ -52,6 +52,10 @@ function initPager() {
 
 function showPager() {
   var pager = document.querySelector(".pager");
+  if (!getFlag("has_pager")) {
+    if (pager) pager.style.display = "none";
+    return;
+  }
   if (pager) pager.style.display = "flex";
   _pagerVisible = true;
   updatePagerScreen();
@@ -72,16 +76,19 @@ function updatePagerScreen() {
   var screen = document.querySelector(".pager-screen");
   if (!screen) return;
 
+  var hasPager = getFlag("has_pager");
+
   if (_pagerQueue.length > 0) {
     var msg = _pagerQueue[0];
     screen.innerHTML = '<div class="pager-who">' + msg.who + '</div>' +
       '<div class="pager-text">' + msg.text + '</div>';
     _pagerMode = "message";
-    // Показати пейджер коли є повідомлення
-    var pager = document.querySelector(".pager");
-    if (pager) pager.style.display = "flex";
+  } else if (hasPager) {
+    // Пейджер є але немає повідомлень — порожній екран
+    _pagerMode = "status";
+    screen.innerHTML = '<div class="pager-status-time" style="font-size:14px;color:rgba(255,255,255,0.3);">Немає повідомлень</div>';
   } else {
-    // Немає повідомлень — сховати пейджер
+    // Пейджер ще не отриманий — сховати
     _pagerMode = "status";
     screen.innerHTML = '';
     var pager2 = document.querySelector(".pager");

@@ -146,9 +146,19 @@ function execute(index) {
             for (var cn in ch.chemistry) addChemistry(cn, ch.chemistry[cn]);
           }
           choices.style.display = "none";
-          if (ch.next) {
-            var t = currentScript._labels[ch.next];
-            if (t !== undefined) { pc = t + 1; execute(pc); }
+          if (ch.label) {
+            // Спочатку шукати label в поточному скрипті
+            var t = currentScript._labels[ch.label];
+            if (t !== undefined) {
+              pc = t + 1; execute(pc);
+            } else if (SCRIPTS[ch.label]) {
+              // Окремий скрипт — перейти на нього
+              currentScript = SCRIPTS[ch.label];
+              pc = 0;
+              execute(pc);
+            } else {
+              pc++; execute(pc);
+            }
           } else {
             pc++; execute(pc);
           }
@@ -239,7 +249,11 @@ function execute(index) {
       pc = index + 1; execute(pc); break;
 
     case "chemistry":
-      for (var cn in node.values) addChemistry(cn, node.values[cn]);
+      if (node.values) {
+        for (var cn in node.values) addChemistry(cn, node.values[cn]);
+      } else if (node.who) {
+        addChemistry(node.who, node.amount || 0);
+      }
       pc = index + 1; execute(pc); break;
 
     case "time":

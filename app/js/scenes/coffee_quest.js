@@ -211,10 +211,6 @@ if (typeof BONUS_OPTIONS !== "undefined") {
 // СПЕЦМІСІЇ
 // ═══════════════════════════════════════════════════
 
-if (typeof SPECIAL_MISSION_ENTRIES === "undefined") {
-  var SPECIAL_MISSION_ENTRIES = [];
-}
-
 SPECIAL_MISSION_ENTRIES.push({
   id: "coffee_extract_mission",
   name: "Витягти кавомашину",

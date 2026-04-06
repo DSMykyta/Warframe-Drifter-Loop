@@ -23,19 +23,19 @@ registerScript("intro", [
       text: "З Новим Роком.",
       flag: "intro_dark_humor",
       chemistry: { "Квінсі": 2 },
-      next: "after_choice_1"
+      label: "after_choice_1"
     },
     {
       text: "Я не прошу вірити. Перевірте.",
       flag: "intro_asked_to_verify",
       chemistry: { "Артур": 2 },
-      next: "after_choice_1"
+      label: "after_choice_1"
     },
     {
       text: "[Нічого не сказати.]",
       flag: "intro_stayed_silent",
       chemistry: { "Артур": 1, "Квінсі": 1 },
-      next: "intro_silent_reaction"
+      label: "intro_silent_reaction"
     }
   ]},
 
@@ -59,19 +59,19 @@ registerScript("intro", [
       text: "Так точно.",
       flag: "intro_military_response",
       chemistry: { "Артур": 2 },
-      next: "after_choice_2"
+      label: "after_choice_2"
     },
     {
       text: "Поки мене не прив'язують до стільців — так.",
       flag: "intro_sarcastic_response",
       chemistry: { "Квінсі": 2, "Амір": 1 },
-      next: "intro_sarcastic_reaction"
+      label: "intro_sarcastic_reaction"
     },
     {
       text: "Обіцяю.",
       flag: "intro_promised",
       chemistry: { "Елеонор": 2 },
-      next: "after_choice_2"
+      label: "after_choice_2"
     }
   ]},
 
@@ -97,17 +97,17 @@ registerScript("intro", [
     {
       text: "Дріфтер. Відносно приємно.",
       chemistry: { "Аоі": 2 },
-      next: "after_choice_3"
+      label: "after_choice_3"
     },
     {
       text: "[Потиснути руку.]",
       chemistry: { "Аоі": 1, "Артур": 1 },
-      next: "intro_handshake_reaction"
+      label: "intro_handshake_reaction"
     },
     {
       text: "Вибач за голову. Не було іншого способу.",
       chemistry: { "Аоі": 1 },
-      next: "intro_apology_reaction"
+      label: "intro_apology_reaction"
     }
   ]},
 

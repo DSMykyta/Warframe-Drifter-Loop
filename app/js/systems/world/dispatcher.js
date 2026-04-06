@@ -231,7 +231,7 @@ function getActiveDialogue(name) {
 
   for (var i = 0; i < deck.length; i++) {
     var entry = deck[i];
-    if (!entry.titles) continue;
+    if (!entry.label && !entry.titles) continue;
     if (gameState.dispatcher.seen_dialogues.indexOf(entry.id) >= 0 && !entry.repeatable) continue;
     if (!checkDynamicConditions(entry.conditions || {})) continue;
 

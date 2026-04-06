@@ -483,6 +483,18 @@ function _executeMission(m, index) {
     gameState.missions.current_partner2 = partner2;
   }
 
+  // Місійний діалог (якщо є)
+  if (partner && typeof getMissionDialogue === "function") {
+    var missionDlgLabel = getMissionDialogue(partner);
+    if (missionDlgLabel && SCRIPTS[missionDlgLabel]) {
+      // Зберегти дані місії для показу результату після діалогу
+      gameState.missions._pendingMission = {m: m, index: index, partner: partner, partner2: partner2};
+      runScript(missionDlgLabel);
+      // Результат покажеться після діалогу через onSceneEnd → _returnToLocation
+      return;
+    }
+  }
+
   // Кидок на травму
   var injuryResult = null;
   var injuryMessages = [];
