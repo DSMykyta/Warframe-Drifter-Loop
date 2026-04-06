@@ -140,8 +140,8 @@ registerScript("intro", [
   { type: "say", who: "am", text: "Ну, бувай, Марті." },
   { type: "say", who: "lt", text: "Рану промий вранці. Водою. Не спирт." },
 
-  // ─── Після допиту ───
-  { type: "bg", file: "bg_black.png" },
+  // ─── Після допиту — думки Дріфтера (персонажі йдуть) ───
+  { type: "scene", bg: "black" },
   { type: "say", who: null, text: "Бекрум. Коридор, другі двері — як Артур сказав." },
   { type: "say", who: null, text: "Кинув речі. Рука ниє, але пов'язка тримається." },
   { type: "say", who: null, text: "Треба оглянути це місце." },
