@@ -1,14 +1,11 @@
 // ═══════════════════════════════════════════════════
-// ДІАЛОГОВИЙ РУШІЙ
+// ДІАЛОГОВИЙ РУШІЙ — ЯДРО
 // ═══════════════════════════════════════════════════
 //
-// Бере масив команд і виконує їх по черзі.
-// Гравець клікає — наступна команда.
-//
-// Команди:
-//   say, menu, jump, call, return, label,
-//   telepathy, set_flag, if, chemistry, time,
-//   pager, bg, scene, end
+// Виконує масив команд по черзі. Гравець клікає — наступна.
+// Спрайти  → sprites.js
+// Аудіо    → audio.js
+// Переходи → transitions.js
 
 var SCRIPTS = {};
 var currentScript = null;
@@ -18,74 +15,9 @@ var typing = false;
 var _typeTimer = null;
 var _fullText = "";
 
-// Список персонажів в поточній сцені (додавати через _addSceneChar)
-var _sceneChars = {};
 
-// Додати персонажа в сцену (викликається при кожному say)
-function _addSceneChar(who) {
-  if (!who) return;
-  var charData = CAST[who] || null;
-  if (!charData) {
-    for (var s in CAST) {
-      if (CAST[s].name === who) { charData = CAST[s]; break; }
-    }
-  }
-  if (charData && charData.sprite) {
-    _sceneChars[charData.name] = charData;
-  }
-}
+// ═══ РЕЄСТРАЦІЯ ТА ЗАПУСК ═══
 
-// Показати всіх персонажів сцени, підсвітити того хто говорить
-function _showDialogueSprite(who) {
-  _addSceneChar(who);
-
-  var container = document.getElementById("sprites-container");
-  if (!container) return;
-  container.innerHTML = "";
-
-  var names = Object.keys(_sceneChars);
-  if (names.length === 0) return;
-
-  // Позиції
-  var positions = [50];
-  if (names.length === 2) positions = [30, 70];
-  if (names.length === 3) positions = [20, 50, 80];
-  if (names.length === 4) positions = [15, 38, 62, 85];
-  if (names.length === 5) positions = [10, 30, 50, 70, 90];
-  if (names.length >= 6) positions = [8, 23, 38, 53, 68, 83];
-
-  // Знайти ім'я того хто говорить
-  var speakerName = "";
-  if (who && CAST[who]) speakerName = CAST[who].name;
-  else if (who) {
-    for (var s2 in CAST) {
-      if (CAST[s2].name === who) { speakerName = who; break; }
-    }
-  }
-
-  for (var i = 0; i < names.length; i++) {
-    var ch = _sceneChars[names[i]];
-    var img = document.createElement("img");
-    img.className = "sprite sprite-dialogue";
-    img.src = "assets/sprites/" + ch.sprite + "/knee-test.png";
-    img.style.left = positions[i] + "%";
-    img.alt = ch.name;
-    // Затемнити тих хто не говорить
-    if (speakerName && ch.name !== speakerName) {
-      img.style.filter = "brightness(0.5)";
-    }
-    img.onerror = function() { this.style.display = "none"; };
-    container.appendChild(img);
-  }
-}
-
-// Очистити сцену (при старті нового скрипта)
-function _clearSceneChars() {
-  _sceneChars = {};
-}
-
-
-// Зареєструвати сцену
 function registerScript(name, nodes) {
   SCRIPTS[name] = nodes;
   nodes._labels = {};
@@ -94,17 +26,18 @@ function registerScript(name, nodes) {
   });
 }
 
-// Запустити сцену
 function runScript(name) {
   if (!SCRIPTS[name]) return;
   currentScript = SCRIPTS[name];
   pc = 0;
   callStack = [];
-  _clearSceneChars();
+  _sceneSprites = {};
   execute(pc);
 }
 
-// Друк по буквах
+
+// ═══ ДРУК ПО БУКВАХ ═══
+
 function typewrite(text, el) {
   clearInterval(_typeTimer);
   _fullText = text;
@@ -130,7 +63,9 @@ function skipType() {
   typing = false;
 }
 
-// Виконати команду
+
+// ═══ ВИКОНАННЯ КОМАНД ═══
+
 function execute(index) {
   if (!currentScript) return;
   if (index >= currentScript.length) {
@@ -148,44 +83,59 @@ function execute(index) {
 
   switch (node.type) {
 
+    // ─── show: показати спрайт ───
+    case "show":
+      showSceneSprite(node.who, node.at || "center", node.zorder || 0);
+      pc = index + 1; execute(pc); break;
+
+    // ─── hide: сховати спрайт ───
+    case "hide":
+      hideSceneSprite(node.who);
+      pc = index + 1; execute(pc); break;
+
+    // ─── scene: змінити фон + очистити спрайти ───
     case "scene":
-      var bg = document.querySelector(".game-bg");
-      if (bg) {
+      clearSceneSprites();
+      var bgS = document.querySelector(".game-bg");
+      if (bgS) {
         if (node.bg === "bg_black.png" || node.bg === "black") {
-          bg.style.background = "#000";
+          bgS.style.background = "#000";
         } else {
-          bg.style.background = "url('assets/backgrounds/" + node.bg + "') center/cover no-repeat";
+          bgS.style.background = "url('assets/backgrounds/" + node.bg + "') center/cover no-repeat";
         }
       }
-      var title = document.querySelector(".scene-title");
-      if (title) {
-        title.querySelector("span").textContent = node.text;
-        title.classList.add("visible");
-        setTimeout(function() {
-          title.classList.remove("visible");
-          setTimeout(function() { pc = index + 1; execute(pc); }, 600);
-        }, 2000);
+      if (node.text) {
+        var title = document.querySelector(".scene-title");
+        if (title) {
+          title.querySelector("span").textContent = node.text;
+          title.classList.add("visible");
+          setTimeout(function() {
+            title.classList.remove("visible");
+            setTimeout(function() { pc = index + 1; execute(pc); }, 600);
+          }, 2000);
+        }
+      } else {
+        pc = index + 1; execute(pc);
       }
       break;
 
+    // ─── say: діалог ───
     case "say":
       var nameEl = document.querySelector(".say-name");
       var textEl = document.querySelector(".say-text");
       var dlg = document.querySelector(".dialogue");
       if (dlg) dlg.style.display = "flex";
 
-      // Показати спрайт того хто говорить
-      _showDialogueSprite(node.who);
-
       if (node.who) {
+        ensureSpeakerVisible(node.who);
         nameEl.style.visibility = "visible";
         nameEl.textContent = charName(node.who);
         textEl.className = "say-text";
-        // Телепатія
         if (charCan(node.who, "telepathy")) {
           textEl.className = "say-text telepathy";
         }
       } else {
+        renderSceneSprites(null);
         nameEl.style.visibility = "hidden";
         textEl.className = "say-text narrator";
       }
@@ -197,6 +147,7 @@ function execute(index) {
       if (node.time) advanceTime(node.time);
       break;
 
+    // ─── menu: вибір ───
     case "menu":
       var dlg2 = document.querySelector(".dialogue");
       if (dlg2) dlg2.style.display = "none";
@@ -219,12 +170,10 @@ function execute(index) {
           }
           choices.style.display = "none";
           if (ch.label) {
-            // Спочатку шукати label в поточному скрипті
             var t = currentScript._labels[ch.label];
             if (t !== undefined) {
               pc = t + 1; execute(pc);
             } else if (SCRIPTS[ch.label]) {
-              // Окремий скрипт — перейти на нього
               currentScript = SCRIPTS[ch.label];
               pc = 0;
               execute(pc);
@@ -240,12 +189,19 @@ function execute(index) {
       choices.style.display = "flex";
       break;
 
+    // ─── flow control ───
     case "label":
       pc = index + 1; execute(pc); break;
 
     case "jump":
-      var t = currentScript._labels[node.to];
-      if (t !== undefined) { pc = t + 1; execute(pc); }
+      var jt = currentScript._labels[node.to];
+      if (jt !== undefined) {
+        pc = jt + 1; execute(pc);
+      } else if (SCRIPTS[node.to]) {
+        currentScript = SCRIPTS[node.to];
+        pc = 0;
+        execute(pc);
+      }
       break;
 
     case "call":
@@ -258,8 +214,8 @@ function execute(index) {
           if (ct !== undefined) pc = ct + 1;
         }
       } else {
-        var lt = currentScript._labels[node.to];
-        if (lt !== undefined) pc = lt + 1;
+        var lt2 = currentScript._labels[node.to];
+        if (lt2 !== undefined) pc = lt2 + 1;
       }
       execute(pc);
       break;
@@ -273,6 +229,23 @@ function execute(index) {
       }
       break;
 
+    // ─── with: transition ───
+    case "with":
+      applyTransition(node.transition || "dissolve", node.duration || 500, function() {
+        pc = index + 1; execute(pc);
+      });
+      break;
+
+    // ─── play/stop: audio ───
+    case "play":
+      playAudio(node.channel || "sound", node.file, node.loop, node.fadein);
+      pc = index + 1; execute(pc); break;
+
+    case "stop":
+      stopAudio(node.channel || "music", node.fadeout);
+      pc = index + 1; execute(pc); break;
+
+    // ─── telepathy/think ───
     case "telepathy":
       var dlg3 = document.querySelector(".dialogue");
       if (dlg3) dlg3.style.display = "none";
@@ -299,6 +272,7 @@ function execute(index) {
       typewrite(node.text, think);
       break;
 
+    // ─── game state ───
     case "set_flag":
       setFlag(node.flag, node.value !== undefined ? node.value : true);
       pc = index + 1; execute(pc); break;
@@ -322,7 +296,7 @@ function execute(index) {
 
     case "chemistry":
       if (node.values) {
-        for (var cn in node.values) addChemistry(cn, node.values[cn]);
+        for (var cn2 in node.values) addChemistry(cn2, node.values[cn2]);
       } else if (node.who) {
         addChemistry(node.who, node.amount || 0);
       }
@@ -333,7 +307,9 @@ function execute(index) {
       pc = index + 1; execute(pc); break;
 
     case "pager":
-      // TODO: пейджер UI
+      if (typeof sendPagerMessage === "function") {
+        sendPagerMessage(node.who || "", node.text || "");
+      }
       pc = index + 1; execute(pc); break;
 
     case "bg":
@@ -355,7 +331,7 @@ function execute(index) {
       if (nameE) nameE.style.visibility = "hidden";
       if (textE) {
         textE.className = "say-text narrator";
-        textE.textContent = node.text;
+        textE.textContent = node.text || "";
       }
       break;
 
@@ -364,7 +340,9 @@ function execute(index) {
   }
 }
 
-// Клік — наступна команда
+
+// ═══ КЛІК — НАСТУПНА КОМАНДА ═══
+
 function advance() {
   if (!currentScript) return;
   var choices = document.querySelector(".choices");
@@ -375,9 +353,9 @@ function advance() {
   if (tel && tel.style.display === "flex") { tel.style.display = "none"; }
   if (typing) { skipType(); return; }
 
-  // Якщо сцена закінчилась — продовжити гру
   if (pc >= currentScript.length - 1 && currentScript[pc] && currentScript[pc].type === "end") {
     currentScript = null;
+    clearSceneSprites();
     onSceneEnd();
     return;
   }
