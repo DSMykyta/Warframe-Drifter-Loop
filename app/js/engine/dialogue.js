@@ -18,6 +18,43 @@ var typing = false;
 var _typeTimer = null;
 var _fullText = "";
 
+// Показати спрайт персонажа під час діалогу
+function _showDialogueSprite(who) {
+  var container = document.getElementById("sprites-container");
+  if (!container) return;
+
+  // Знайти персонажа за short або name
+  var charData = null;
+  if (who && CAST[who]) {
+    charData = CAST[who];
+  } else if (who) {
+    for (var s in CAST) {
+      if (CAST[s].name === who) { charData = CAST[s]; break; }
+    }
+  }
+
+  if (!charData || !charData.sprite) {
+    // Наратор або невідомий — прибрати спрайти
+    container.innerHTML = "";
+    return;
+  }
+
+  // Перевірити чи вже показано цей спрайт
+  var existing = container.querySelector(".sprite-dialogue");
+  if (existing && existing.alt === charData.name) return;
+
+  // Прибрати старий і показати новий
+  container.innerHTML = "";
+  var img = document.createElement("img");
+  img.className = "sprite sprite-dialogue";
+  img.src = "assets/sprites/" + charData.sprite + "/knee-test.png";
+  img.style.left = "25%";
+  img.alt = charData.name;
+  img.onerror = function() { this.style.display = "none"; };
+  container.appendChild(img);
+}
+
+
 // Зареєструвати сцену
 function registerScript(name, nodes) {
   SCRIPTS[name] = nodes;
@@ -105,6 +142,10 @@ function execute(index) {
       var textEl = document.querySelector(".say-text");
       var dlg = document.querySelector(".dialogue");
       if (dlg) dlg.style.display = "flex";
+
+      // Показати спрайт того хто говорить
+      _showDialogueSprite(node.who);
+
       if (node.who) {
         nameEl.style.visibility = "visible";
         nameEl.textContent = charName(node.who);
