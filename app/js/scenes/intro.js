@@ -10,12 +10,12 @@ registerScript("intro", [
 
   // ─── Футкорт: всі 6 вже сидять навпроти ───
   { type: "bg", file: "bg_foodcourt.webp" },
-  { type: "show", who: "ao", at: 8,  zorder: 0 },
-  { type: "show", who: "lt", at: 22, zorder: 0 },
-  { type: "show", who: "el", at: 36, zorder: 0 },
-  { type: "show", who: "ar", at: 50, zorder: 2 },
-  { type: "show", who: "am", at: 64, zorder: 0 },
-  { type: "show", who: "qu", at: 85, zorder: 0 },
+  { type: "show", who: "ar", zorder: 1 },
+  { type: "show", who: "el" },
+  { type: "show", who: "lt" },
+  { type: "show", who: "am" },
+  { type: "show", who: "ao" },
+  { type: "show", who: "qu" },
 
   { type: "say", who: "am", text: "Ого. Тобто ти типу... Марті МакФлай?" },
   { type: "say", who: "qu", text: "Знущаєшся, мабуть?" },
