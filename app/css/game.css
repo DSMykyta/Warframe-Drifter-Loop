@@ -110,23 +110,18 @@
 
 /* Вибір */
 .choices {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  top: 60px;
-  width: 500px;
+  position: absolute; inset: 0;
   display: none;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center; justify-content: center;
   z-index: 20;
   font-family: var(--font-body);
-  padding-right: 24px;
 }
-.choices-left { display: none; }
+.choices-left { flex: 1; }
 .choices-list {
+  flex: 1;
   display: flex; flex-direction: column;
-  gap: 12px; align-items: flex-end; justify-content: center;
+  gap: 62px; align-items: flex-start; justify-content: center;
 }
 .choice-btn {
   background: var(--black-50);
