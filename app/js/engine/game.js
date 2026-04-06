@@ -31,7 +31,7 @@ function startNewGame() {
   showScreen("game-screen");
   hideHUD();
   if (typeof hidePager === "function") hidePager();
-  _hideMapButton();
+  if (typeof _hideMapButton === "function") _hideMapButton();
 
   // Позначити що після інтро треба перейти в explore_mall
   _afterIntro = true;
@@ -39,7 +39,12 @@ function startNewGame() {
 
   // Запустити інтро
   if (SCRIPTS["intro"]) {
-    runScript("intro");
+    try {
+      runScript("intro");
+    } catch(e) {
+      console.error("[game] intro error:", e);
+      _startLocationLoop();
+    }
   } else {
     console.warn("[game] No intro script! Skipping to location loop.");
     _startLocationLoop();

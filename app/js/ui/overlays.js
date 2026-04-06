@@ -103,6 +103,10 @@ function _renderFloorRooms(floor) {
   var layout = _getMapLayout(floor);
   var html = '';
 
+  // Масштаб: оригінальні координати розраховані на 1100x620
+  var scaleX = 100 / 1100;
+  var scaleY = 100 / 620;
+
   for (var i = 0; i < layout.length; i++) {
     var room = layout[i];
     var loc = LOCATIONS[room.id];
@@ -112,7 +116,6 @@ function _renderFloorRooms(floor) {
     var isCurrent = (room.id === gameState.location.current);
     var locked = !isAccessible(room.id);
 
-    // NPC в цій кімнаті
     var charsHere = [];
     try { charsHere = getCharsHere(room.id); } catch(e) {}
     var charNames = [];
@@ -130,8 +133,8 @@ function _renderFloorRooms(floor) {
     var dataAttr = ' data-bg="' + bgPath + '"';
 
     html += '<div class="' + classes + '" style="' +
-      'left:' + room.x + 'px;top:' + room.y + 'px;' +
-      'width:' + room.w + 'px;height:' + room.h + 'px;"' +
+      'left:' + (room.x * scaleX).toFixed(1) + '%;top:' + (room.y * scaleY).toFixed(1) + '%;' +
+      'width:' + (room.w * scaleX).toFixed(1) + '%;height:' + (room.h * scaleY).toFixed(1) + '%;"' +
       onclick + dataAttr +
       ' onmouseenter="_mapRoomHover(this)" onmouseleave="_mapRoomUnhover(this)">';
 
