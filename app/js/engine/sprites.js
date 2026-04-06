@@ -84,12 +84,6 @@ function renderSceneSprites(speakerName) {
     img.style.zIndex = 5 + entry.zorder;
     img.alt = ch.name;
 
-    // Більший zorder = ближче до камери = більший спрайт
-    if (entry.zorder > 0) {
-      var scale = 1 + (entry.zorder * 0.1);
-      img.style.height = (80 * scale) + "%";
-    }
-
     if (speakerName && ch.name !== speakerName) {
       img.style.filter = "brightness(0.5)";
       img.style.transition = "filter 0.3s ease";
