@@ -101,27 +101,28 @@ function getCharsHere(locId) {
   var seen = {};
 
   // Спробувати trigger систему
-  if (typeof getCharsAt === "function") {
-    var charNames = getCharsAt(locId);
-    for (var i = 0; i < charNames.length; i++) {
-      for (var short in CAST) {
-        if (CAST[short].name === charNames[i] && !seen[short]) {
-          seen[short] = true;
-          result.push(CAST[short]);
-          break;
+  try {
+    if (typeof getCharsAt === "function") {
+      var charNames = getCharsAt(locId);
+      for (var i = 0; i < charNames.length; i++) {
+        for (var short in CAST) {
+          if (CAST[short].name === charNames[i] && !seen[short]) {
+            seen[short] = true;
+            result.push(CAST[short]);
+            break;
+          }
         }
       }
     }
+  } catch (e) {
+    console.error("[getCharsHere] trigger error:", e);
   }
 
-  // Fallback: home location (якщо тригери нікого не знайшли)
+  // Fallback: home location
   if (result.length === 0) {
     for (var s in CAST) {
       var ch = CAST[s];
-      // Перевірити home з CAST або HOME_LOCATIONS
-      var charHome = ch.home || HOME_LOCATIONS[ch.name];
-      if (charHome === locId && !seen[s]) {
-        if (typeof isNpcAbsent === "function" && isNpcAbsent(ch.name)) continue;
+      if (ch.home === locId && !seen[s]) {
         result.push(ch);
       }
     }
