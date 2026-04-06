@@ -63,14 +63,18 @@ function c(short, name, full, missions, romance, telepathy) {
   }
 }
 
-// Отримати ім'я для діалогу за скороченням
-function charName(short) {
-  return CAST[short] ? CAST[short].name : short;
+// Отримати ім'я для діалогу за скороченням або повним іменем
+function charName(who) {
+  if (CAST[who]) return CAST[who].name;
+  if (CAST_BY_NAME[who]) return CAST_BY_NAME[who].name;
+  return who;
 }
 
-// Перевірити чи персонаж має здатність
-function charCan(short, ability) {
-  return CAST[short] && CAST[short][ability];
+// Перевірити чи персонаж має здатність (приймає short або повне ім'я)
+function charCan(who, ability) {
+  if (CAST[who]) return CAST[who][ability];
+  if (CAST_BY_NAME[who]) return CAST_BY_NAME[who][ability];
+  return false;
 }
 
 // Список всіх хто має здатність
