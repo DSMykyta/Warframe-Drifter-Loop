@@ -99,9 +99,16 @@ function nextDay() {
   // ═══ 12. Поширити плітки ═══
   spreadGossip();
 
-  // ═══ 13. Переміщення в бекрум (прокинувся) ═══
+  // ═══ 13. Кавовий квест: хуки ═══
+  if (typeof checkCoffeeExtractDeadline === "function") checkCoffeeExtractDeadline();
+  if (typeof checkCoffeePartsPager === "function") checkCoffeePartsPager();
+  if (typeof checkCoffeeAmirDiy === "function") checkCoffeeAmirDiy();
+  if (typeof checkCoffeeCafeFind === "function") checkCoffeeCafeFind();
+  if (typeof checkCoffeeCafeOpen === "function") checkCoffeeCafeOpen();
+
+  // ═══ 14. Переміщення в бекрум (прокинувся) ═══
   gameState.location.current = "backroom";
 
-  // ═══ 14. Автозбереження ═══
+  // ═══ 15. ��втозбереження ═══
   autoSave();
 }

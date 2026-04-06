@@ -288,9 +288,13 @@ window.addEventListener('resize', scale);
 <script src="js/systems/world/dispatcher.js"></script>
 <script src="js/systems/world/bonus_options.js"></script>
 <script src="js/systems/world/insights.js"></script>
+<script src="js/systems/world/clothing.js"></script>
 
 <!-- Предмети -->
 <script src="js/systems/items/inventory.js"></script>
+
+<!-- Персистенція (між петлями) -->
+<script src="js/systems/core/persistent.js"></script>
 
 <!-- День (останній — викликає всі підсистеми) -->
 <script src="js/systems/core/day.js"></script>
@@ -302,6 +306,10 @@ window.addEventListener('resize', scale);
 <script src="js/scenes/intro.js"></script>
 <script src="js/scenes/explore_mall.js"></script>
 <script src="js/scenes/stubs.js"></script>
+<script src="js/scenes/coffee_quest.js"></script>
+<script src="js/scenes/pair_events.js"></script>
+<script src="js/scenes/metro_jacket.js"></script>
+<script src="js/scenes/finale.js"></script>
 
 <!-- Інтерфейс -->
 <script src="js/ui/title.js"></script>
@@ -310,6 +318,7 @@ window.addEventListener('resize', scale);
 <script src="js/ui/pager.js"></script>
 <script src="js/ui/location.js"></script>
 <script src="js/ui/overlays.js"></script>
+<script src="js/ui/gallery.js"></script>
 <script src="js/ui/loadscreen.js"></script>
 
 <!-- Запуск -->
@@ -359,11 +368,13 @@ loadLocations(function() {
 
   document.getElementById("btn-gallery").addEventListener("click", function() {
     showScreen("gallery-screen");
+    if (typeof renderGallery === "function") renderGallery();
   });
 
   // ─── HUD: оверлеї ───
   document.getElementById("hud-map").addEventListener("click", function(e) {
     e.stopPropagation();
+    if (!getFlag("has_map")) return;
     showOverlay("map");
   });
 

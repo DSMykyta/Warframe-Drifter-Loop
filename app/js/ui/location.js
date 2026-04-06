@@ -59,6 +59,18 @@ function showSprites(locId) {
   container.innerHTML = "";
 
   var charsHere = getCharsHere(locId);
+  console.log("[sprites] locId:", locId, "charsHere:", charsHere.length);
+  if (charsHere.length === 0) {
+    console.log("[sprites] DEBUG: HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS));
+    console.log("[sprites] DEBUG: intro_done:", getFlag("intro_done"));
+    console.log("[sprites] DEBUG: isNight:", isNight());
+    console.log("[sprites] DEBUG: getCharsAt result:", typeof getCharsAt === "function" ? getCharsAt(locId) : "N/A");
+    // Fallback debug: перевірити CAST
+    for (var _dbg in CAST) {
+      var _c = CAST[_dbg];
+      console.log("[sprites] CAST[" + _dbg + "]:", _c.name, "home:", _c.home, "sprite:", _c.sprite);
+    }
+  }
   var positions = getPositions(charsHere.length);
 
   charsHere.forEach(function(ch, i) {
@@ -142,11 +154,8 @@ function showLocationUI() {
   var left = document.querySelector(".choices-left");
   var list = document.querySelector(".choices-list");
 
-  // Інфо зліва
-  left.innerHTML = "<div style='padding:40px;color:#fff;font-size:24px;align-self:flex-end;'>" +
-    "<div style='font-size:40px;margin-bottom:8px;'>" + locName + "</div>" +
-    "<div>День " + day + " / " + time + "</div>" +
-    "</div>";
+  // Лівий блок — порожній (інфо вже в HUD)
+  left.innerHTML = "";
 
   list.innerHTML = "";
 
@@ -171,8 +180,8 @@ function showLocationUI() {
     list.appendChild(btn);
   });
 
-  // Місії (якщо є)
-  if (gameState.missions && gameState.missions.list && gameState.missions.list.length > 0) {
+  // Місії (тільки в гаражі)
+  if (locId === "garage" && gameState.missions && gameState.missions.list && gameState.missions.list.length > 0) {
     var btnMissions = document.createElement("button");
     btnMissions.className = "choice-btn";
     btnMissions.textContent = "МІСІЇ (" + gameState.missions.list.length + ")";
@@ -182,16 +191,6 @@ function showLocationUI() {
     });
     list.appendChild(btnMissions);
   }
-
-  // Карта
-  var btnMap = document.createElement("button");
-  btnMap.className = "choice-btn";
-  btnMap.textContent = "КАРТА";
-  btnMap.addEventListener("click", function(e) {
-    e.stopPropagation();
-    showOverlay("map");
-  });
-  list.appendChild(btnMap);
 
   // Магазин (мол або магазин одягу)
   if (locId === "mall" || locId === "clothing_shop") {
@@ -231,6 +230,32 @@ function showLocationUI() {
   }
 
   choicesEl.style.display = "flex";
+
+  // Кнопка КАРТА — зліва внизу (тільки якщо карту знайдено)
+  if (getFlag("has_map")) {
+    _showMapButton();
+  }
+}
+
+
+// ─── КНОПКА КАРТИ (зліва внизу) ───
+
+function _showMapButton() {
+  _hideMapButton();
+  var btn = document.createElement("button");
+  btn.id = "map-btn-fixed";
+  btn.className = "map-btn-fixed";
+  btn.textContent = "КАРТА";
+  btn.addEventListener("click", function(e) {
+    e.stopPropagation();
+    showOverlay("map");
+  });
+  document.getElementById("game-screen").appendChild(btn);
+}
+
+function _hideMapButton() {
+  var old = document.getElementById("map-btn-fixed");
+  if (old) old.remove();
 }
 
 
@@ -239,6 +264,7 @@ function showLocationUI() {
 function _talkToNPC(ch) {
   var choicesEl = document.querySelector(".choices");
   choicesEl.style.display = "none";
+  _hideMapButton();
   hideHUD();
   if (typeof hidePager === "function") hidePager();
 
@@ -306,6 +332,7 @@ function _findRandomStub(name) {
 function _goToSleep() {
   var choicesEl = document.querySelector(".choices");
   choicesEl.style.display = "none";
+  _hideMapButton();
   hideHUD();
   if (typeof hidePager === "function") hidePager();
 
@@ -313,14 +340,33 @@ function _goToSleep() {
   if (gameState.time.day >= 31) {
     var bg = document.querySelector(".game-bg");
     if (bg) bg.style.background = "#000";
-    var dlg = document.querySelector(".dialogue");
-    var nameEl = document.querySelector(".say-name");
-    var textEl = document.querySelector(".say-text");
-    if (dlg) dlg.style.display = "flex";
-    if (nameEl) nameEl.style.visibility = "hidden";
-    if (textEl) {
-      textEl.className = "say-text narrator";
-      textEl.textContent = "День 31. Петля замикається. Кінець... цього разу.";
+
+    // Зберегти persistent дані
+    var victory = (typeof checkAllFriends === "function") && checkAllFriends();
+    if (typeof onLoopEnd === "function") onLoopEnd(victory);
+
+    // Запустити фінальну сцену
+    if (victory && SCRIPTS["finale_victory"]) {
+      hideHUD();
+      if (typeof hidePager === "function") hidePager();
+      runScript("finale_victory");
+    } else if (!victory && SCRIPTS["finale_defeat"]) {
+      hideHUD();
+      if (typeof hidePager === "function") hidePager();
+      runScript("finale_defeat");
+    } else {
+      // Fallback якщо скрипти не завантажені
+      var dlg = document.querySelector(".dialogue");
+      var nameEl = document.querySelector(".say-name");
+      var textEl = document.querySelector(".say-text");
+      if (dlg) dlg.style.display = "flex";
+      if (nameEl) nameEl.style.visibility = "hidden";
+      if (textEl) {
+        textEl.className = "say-text narrator";
+        textEl.textContent = victory
+          ? "День 31. Реактор стабілізований. Петля розірвана."
+          : "День 31. Петля замикається. Кінець... цього разу.";
+      }
     }
     return;
   }
@@ -364,9 +410,28 @@ function _goToSleep() {
 
 // ─── ПОМІЧНА ФУНКЦІЯ: встановити фон з fallback на jpg/webp ───
 
+// ─── BG_OVERRIDES: фонові зміни на основі прапорців ───
+
+var BG_OVERRIDES = {
+  "coffee_machine_found": {"cafe": "bg_cafe_coffee"}
+};
+
+function _getOverrideBg(locId) {
+  for (var flag in BG_OVERRIDES) {
+    if (BG_OVERRIDES[flag][locId] && getFlag(flag)) {
+      return BG_OVERRIDES[flag][locId];
+    }
+  }
+  return null;
+}
+
+
 function _setLocationBg(bgEl, locId) {
-  // Спробувати .png, потім .jpg, потім .webp
-  var basePath = "assets/backgrounds/bg_" + locId;
+  // Перевірити оверрайди
+  var override = _getOverrideBg(locId);
+  var basePath = override
+    ? "assets/backgrounds/" + override
+    : "assets/backgrounds/bg_" + locId;
   var img = new Image();
   img.onload = function() {
     bgEl.style.background = "url('" + basePath + ".png') center/cover no-repeat";

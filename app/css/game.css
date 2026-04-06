@@ -110,18 +110,25 @@
 
 /* Вибір */
 .choices {
-  position: absolute; inset: 0;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: 60px;
+  width: 400px;
   display: none;
-  flex-direction: row;
-  align-items: center; justify-content: center;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
   z-index: 20;
   font-family: var(--font-body);
+  pointer-events: none;
+  padding-right: 24px;
 }
-.choices-left { flex: 1; }
+.choices-left { display: none; }
 .choices-list {
-  flex: 1;
   display: flex; flex-direction: column;
-  gap: 62px; align-items: flex-start; justify-content: center;
+  gap: 12px; align-items: flex-end; justify-content: center;
+  pointer-events: auto;
 }
 .choice-btn {
   background: var(--black-50);
@@ -138,13 +145,40 @@
 .choice-btn.bonus:hover { background: #ffce4a; }
 
 /* ═══════════════════════════════════════════════════
-   ПЕЙДЖЕР
+   КНОПКА КАРТИ (зліва внизу)
+   ═══════════════════════════════════════════════════ */
+
+.map-btn-fixed {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 25;
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--white);
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 28px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.15s ease;
+}
+
+.map-btn-fixed:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ПЕЙДЖЕР (справа внизу)
    ═══════════════════════════════════════════════════ */
 
 .pager {
   position: absolute;
   bottom: 24px;
-  left: 24px;
+  right: 24px;
   width: 200px;
   height: 100px;
   background: #1a1a2e;
@@ -228,7 +262,7 @@
 .pager-popup {
   position: absolute;
   bottom: 140px;
-  left: 24px;
+  right: 24px;
   width: 280px;
   background: rgba(26,26,46,0.95);
   border: 1px solid rgba(230,53,128,0.4);

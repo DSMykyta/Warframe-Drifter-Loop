@@ -12,6 +12,8 @@ var _afterIntro = false;   // Чи потрібно запустити explore_m
 var _afterExplore = false; // Чи потрібно перейти в location loop після explore_mall
 
 function startNewGame() {
+  console.log("[game] startNewGame called");
+
   // Скинути весь стан
   resetState();
 
@@ -31,16 +33,20 @@ function startNewGame() {
   showScreen("game-screen");
   hideHUD();
   if (typeof hidePager === "function") hidePager();
+  _hideMapButton();
 
   // Позначити що після інтро треба перейти в explore_mall
   _afterIntro = true;
   _afterExplore = false;
 
+  console.log("[game] SCRIPTS['intro'] exists:", !!SCRIPTS["intro"]);
+  console.log("[game] CAST keys:", Object.keys(CAST));
+
   // Запустити інтро
   if (SCRIPTS["intro"]) {
     runScript("intro");
   } else {
-    // Якщо інтро нема — одразу в локацію
+    console.warn("[game] No intro script! Skipping to location loop.");
     _startLocationLoop();
   }
 }

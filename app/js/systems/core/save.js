@@ -13,6 +13,11 @@ function save(slot, description) {
   data._meta = {
     _save_name: description || "",
     _ctime: Date.now(),
+    _game_day: gameState.time.day,
+    _game_time: gameState.time.minutes,
+    _game_location: gameState.location.current,
+    _game_hex_rep: gameState.rank ? gameState.rank.hex_rep : 0,
+    _game_money: gameState.money ? gameState.money.amount : 0
   };
   localStorage.setItem(SAVE_PREFIX + slot, JSON.stringify(data));
   return true;

@@ -72,19 +72,20 @@ function updatePagerScreen() {
   var screen = document.querySelector(".pager-screen");
   if (!screen) return;
 
-  if (_pagerMode === "message" && _pagerQueue.length > 0) {
+  if (_pagerQueue.length > 0) {
     var msg = _pagerQueue[0];
     screen.innerHTML = '<div class="pager-who">' + msg.who + '</div>' +
       '<div class="pager-text">' + msg.text + '</div>';
+    _pagerMode = "message";
+    // Показати пейджер коли є повідомлення
+    var pager = document.querySelector(".pager");
+    if (pager) pager.style.display = "flex";
   } else {
-    // Статус: час і локація
+    // Немає повідомлень — сховати пейджер
     _pagerMode = "status";
-    var time = getTimeString();
-    var day = gameState.time.day;
-    var loc = currentLocationName();
-    screen.innerHTML = '<div class="pager-status-time">' + time + '</div>' +
-      '<div class="pager-status-day">День ' + day + '</div>' +
-      '<div class="pager-status-loc">' + loc + '</div>';
+    screen.innerHTML = '';
+    var pager2 = document.querySelector(".pager");
+    if (pager2) pager2.style.display = "none";
   }
 }
 
