@@ -70,18 +70,6 @@ function showSprites(locId) {
   container.innerHTML = "";
 
   var charsHere = getCharsHere(locId);
-  console.log("[sprites] locId:", locId, "charsHere:", charsHere.length);
-  if (charsHere.length === 0) {
-    console.log("[sprites] DEBUG: HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS));
-    console.log("[sprites] DEBUG: intro_done:", getFlag("intro_done"));
-    console.log("[sprites] DEBUG: isNight:", isNight());
-    console.log("[sprites] DEBUG: getCharsAt result:", typeof getCharsAt === "function" ? getCharsAt(locId) : "N/A");
-    // Fallback debug: перевірити CAST
-    for (var _dbg in CAST) {
-      var _c = CAST[_dbg];
-      console.log("[sprites] CAST[" + _dbg + "]:", _c.name, "home:", _c.home, "sprite:", _c.sprite);
-    }
-  }
   var positions = getPositions(charsHere.length);
 
   charsHere.forEach(function(ch, i) {
@@ -126,11 +114,13 @@ function getCharsHere(locId) {
     }
   }
 
-  // Fallback: home location
+  // Fallback: home location (якщо тригери нікого не знайшли)
   if (result.length === 0) {
     for (var s in CAST) {
       var ch = CAST[s];
-      if (ch.home === locId && !seen[s]) {
+      // Перевірити home з CAST або HOME_LOCATIONS
+      var charHome = ch.home || HOME_LOCATIONS[ch.name];
+      if (charHome === locId && !seen[s]) {
         if (typeof isNpcAbsent === "function" && isNpcAbsent(ch.name)) continue;
         result.push(ch);
       }

@@ -93,7 +93,8 @@ var LOCATION_NAMES = {
   "video_rental":   "\u0412\u0456\u0434\u0435\u043e\u043f\u0440\u043e\u043a\u0430\u0442",
   "electronics":    "\u0415\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u0456\u043a\u0430 / \u0442\u0435\u0445\u043d\u0456\u043a\u0430",
   "jewelry":        "\u042e\u0432\u0435\u043b\u0456\u0440\u043d\u0438\u0439",
-  "bookshop":       "\u041a\u043d\u0438\u0433\u0430\u0440\u043d\u044f"
+  "bookshop":       "\u041a\u043d\u0438\u0433\u0430\u0440\u043d\u044f",
+  "room_2":         "\u041a\u0456\u043c\u043d\u0430\u0442\u0430 2"
 };
 
 // Домашні локації (заповнюються з CAST)
@@ -113,8 +114,7 @@ var PAIRED_LOCATIONS = [
 
 // Закриті локації: id -> флаг для відкриття
 var LOCKED_LOCATIONS = {
-  "garage": "garage_unlocked",
-  "recovery_room": "recovery_room_never_unlocked"
+  "garage": "garage_unlocked"
 };
 
 // Приховані локації: id -> флаг для появи
@@ -133,7 +133,6 @@ var HIDDEN_LOCATIONS = {
   "photo_studio":   "photo_studio_unlocked",
   "laundry":        "laundry_unlocked",
   "parking":        "parking_unlocked",
-  "wc":             "wc_unlocked",
   "pharmacy":       "pharmacy_unlocked",
   "room_2":         "room_2_unlocked",
   "video_rental":   "video_rental_unlocked",

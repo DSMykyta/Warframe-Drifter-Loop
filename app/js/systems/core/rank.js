@@ -37,6 +37,10 @@ function tryRankUp() {
   if (!canRankUp()) return false;
   gameState.rank.syndicate_rank++;
   setFlag("rank_" + gameState.rank.syndicate_rank);
+  // Ранг 3 — відкрити бар
+  if (gameState.rank.syndicate_rank >= 3) {
+    setFlag("syndicate_rank_3");
+  }
   addJournalEntry(
     "Ранг Гексу підвищено до " + gameState.rank.syndicate_rank + ".",
     "event"

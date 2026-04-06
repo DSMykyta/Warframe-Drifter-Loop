@@ -172,7 +172,11 @@ function _getMapLayout(floor) {
       {id: "photo_studio",   x: 730, y: 150, w: 120, h: 70},
       {id: "laundry",        x: 500, y: 520, w: 160, h: 70},
       {id: "parking",        x: 860, y: 320, w: 180, h: 80},
-      {id: "wc",             x: 730, y: 340, w: 100, h: 60}
+      {id: "wc",             x: 730, y: 340, w: 100, h: 60},
+
+      // Музичний і меблі — поверх 1
+      {id: "music_shop",     x: 310, y: 60,  w: 120, h: 120},
+      {id: "furniture",      x: 310, y: 220, w: 120, h: 100}
     ];
   }
 
@@ -182,9 +186,7 @@ function _getMapLayout(floor) {
     {id: "backroom",       x: 440, y: 220, w: 260, h: 160},
 
     // Ліва частина
-    {id: "music_shop",     x: 100, y: 60,  w: 180, h: 100},
-    {id: "furniture",      x: 100, y: 180, w: 180, h: 100},
-    {id: "clothing_shop",  x: 100, y: 300, w: 180, h: 100},
+    {id: "clothing_shop",  x: 100, y: 180, w: 180, h: 100},
 
     // Права частина
     {id: "medbay",         x: 860, y: 60,  w: 180, h: 100},
@@ -200,13 +202,14 @@ function _getMapLayout(floor) {
     {id: "balcony",        x: 860, y: 280, w: 180, h: 100},
 
     // Приховані
-    {id: "utility",        x: 100, y: 420, w: 160, h: 80},
+    {id: "utility",        x: 100, y: 60,  w: 160, h: 80},
     {id: "warehouse",      x: 280, y: 420, w: 140, h: 80},
     {id: "pharmacy",       x: 730, y: 220, w: 110, h: 80},
     {id: "video_rental",   x: 730, y: 320, w: 110, h: 80},
     {id: "electronics",    x: 310, y: 160, w: 110, h: 80},
     {id: "jewelry",        x: 310, y: 260, w: 110, h: 80},
-    {id: "bookshop",       x: 310, y: 360, w: 110, h: 80}
+    {id: "bookshop",       x: 310, y: 360, w: 110, h: 80},
+    {id: "room_2",         x: 100, y: 420, w: 160, h: 80}
   ];
 }
 
