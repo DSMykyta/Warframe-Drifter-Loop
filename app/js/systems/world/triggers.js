@@ -247,10 +247,12 @@ function initTriggerData() {
   var castKeys = Object.keys(CAST);
   var allNames = [];
   for (var i = 0; i < castKeys.length; i++) {
-    var name = CAST[castKeys[i]].name;
-    allNames.push(name);
-    // HOME_LOCATIONS заповнюється з CAST
-    // (data.home має бути визначений в c() або завантажений)
+    var ch = CAST[castKeys[i]];
+    allNames.push(ch.name);
+    // Заповнити HOME_LOCATIONS з CAST
+    if (ch.home) {
+      HOME_LOCATIONS[ch.name] = ch.home;
+    }
   }
 
   // Заповнити chars для масових тригерів (день 1, бар)
