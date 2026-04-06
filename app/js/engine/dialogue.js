@@ -18,40 +18,70 @@ var typing = false;
 var _typeTimer = null;
 var _fullText = "";
 
-// Показати спрайт персонажа під час діалогу
-function _showDialogueSprite(who) {
-  var container = document.getElementById("sprites-container");
-  if (!container) return;
+// Список персонажів в поточній сцені (додавати через _addSceneChar)
+var _sceneChars = {};
 
-  // Знайти персонажа за short або name
-  var charData = null;
-  if (who && CAST[who]) {
-    charData = CAST[who];
-  } else if (who) {
+// Додати персонажа в сцену (викликається при кожному say)
+function _addSceneChar(who) {
+  if (!who) return;
+  var charData = CAST[who] || null;
+  if (!charData) {
     for (var s in CAST) {
       if (CAST[s].name === who) { charData = CAST[s]; break; }
     }
   }
+  if (charData && charData.sprite) {
+    _sceneChars[charData.name] = charData;
+  }
+}
 
-  if (!charData || !charData.sprite) {
-    // Наратор або невідомий — прибрати спрайти
-    container.innerHTML = "";
-    return;
+// Показати всіх персонажів сцени, підсвітити того хто говорить
+function _showDialogueSprite(who) {
+  _addSceneChar(who);
+
+  var container = document.getElementById("sprites-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  var names = Object.keys(_sceneChars);
+  if (names.length === 0) return;
+
+  // Позиції
+  var positions = [50];
+  if (names.length === 2) positions = [30, 70];
+  if (names.length === 3) positions = [20, 50, 80];
+  if (names.length === 4) positions = [15, 38, 62, 85];
+  if (names.length === 5) positions = [10, 30, 50, 70, 90];
+  if (names.length >= 6) positions = [8, 23, 38, 53, 68, 83];
+
+  // Знайти ім'я того хто говорить
+  var speakerName = "";
+  if (who && CAST[who]) speakerName = CAST[who].name;
+  else if (who) {
+    for (var s2 in CAST) {
+      if (CAST[s2].name === who) { speakerName = who; break; }
+    }
   }
 
-  // Перевірити чи вже показано цей спрайт
-  var existing = container.querySelector(".sprite-dialogue");
-  if (existing && existing.alt === charData.name) return;
+  for (var i = 0; i < names.length; i++) {
+    var ch = _sceneChars[names[i]];
+    var img = document.createElement("img");
+    img.className = "sprite sprite-dialogue";
+    img.src = "assets/sprites/" + ch.sprite + "/knee-test.png";
+    img.style.left = positions[i] + "%";
+    img.alt = ch.name;
+    // Затемнити тих хто не говорить
+    if (speakerName && ch.name !== speakerName) {
+      img.style.filter = "brightness(0.5)";
+    }
+    img.onerror = function() { this.style.display = "none"; };
+    container.appendChild(img);
+  }
+}
 
-  // Прибрати старий і показати новий
-  container.innerHTML = "";
-  var img = document.createElement("img");
-  img.className = "sprite sprite-dialogue";
-  img.src = "assets/sprites/" + charData.sprite + "/knee-test.png";
-  img.style.left = "25%";
-  img.alt = charData.name;
-  img.onerror = function() { this.style.display = "none"; };
-  container.appendChild(img);
+// Очистити сцену (при старті нового скрипта)
+function _clearSceneChars() {
+  _sceneChars = {};
 }
 
 
@@ -70,6 +100,7 @@ function runScript(name) {
   currentScript = SCRIPTS[name];
   pc = 0;
   callStack = [];
+  _clearSceneChars();
   execute(pc);
 }
 
