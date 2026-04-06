@@ -434,24 +434,24 @@ function _setLocationBg(bgEl, locId) {
     : "assets/backgrounds/bg_" + locId;
   var img = new Image();
   img.onload = function() {
-    bgEl.style.background = "url('" + basePath + ".png') center/cover no-repeat";
+    bgEl.style.background = "url('" + basePath + ".webp') center/cover no-repeat";
   };
   img.onerror = function() {
     var img2 = new Image();
     img2.onload = function() {
-      bgEl.style.background = "url('" + basePath + ".jpg') center/cover no-repeat";
+      bgEl.style.background = "url('" + basePath + ".png') center/cover no-repeat";
     };
     img2.onerror = function() {
       var img3 = new Image();
       img3.onload = function() {
-        bgEl.style.background = "url('" + basePath + ".webp') center/cover no-repeat";
+        bgEl.style.background = "url('" + basePath + ".jpg') center/cover no-repeat";
       };
       img3.onerror = function() {
         bgEl.style.background = "#111";
       };
-      img3.src = basePath + ".webp";
+      img3.src = basePath + ".jpg";
     };
-    img2.src = basePath + ".jpg";
+    img2.src = basePath + ".png";
   };
-  img.src = basePath + ".png";
+  img.src = basePath + ".webp";
 }

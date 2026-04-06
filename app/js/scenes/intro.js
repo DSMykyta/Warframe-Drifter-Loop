@@ -9,7 +9,7 @@ registerScript("intro", [
   { type: "say", who: null, text: "..." },
 
   // ─── Футкорт ───
-  { type: "bg", file: "bg_foodcourt.jpg" },
+  { type: "bg", file: "bg_foodcourt.webp" },
 
   { type: "say", who: "am", text: "Ого. Тобто ти типу... Марті МакФлай?" },
   { type: "say", who: "qu", text: "Знущаєшся, мабуть?" },
