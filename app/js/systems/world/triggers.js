@@ -446,9 +446,14 @@ function getCharsAt(location) {
   var allNames = Object.keys(CAST);
   for (var i = 0; i < allNames.length; i++) {
     var name = CAST[allNames[i]].name;
-    if (getCharLocation(name) === location) {
+    var charLoc = getCharLocation(name);
+    if (charLoc === location) {
       result.push(name);
     }
+  }
+  // Діагностика (тимчасова)
+  if (location !== "mall") {
+    console.log("[getCharsAt]", location, "→", result.length, "chars.", "HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS));
   }
   return result;
 }

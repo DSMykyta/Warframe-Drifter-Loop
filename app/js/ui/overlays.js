@@ -75,60 +75,104 @@ function hideOverlay() {
 var _mapFloor = 1;
 
 function renderMap() {
-  _mapFloor = LOCATIONS[gameState.location.current] ?
-    LOCATIONS[gameState.location.current].floor : 1;
-  _renderMapFloor();
-}
-
-function switchMapFloor(floor) {
-  _mapFloor = floor;
-  _renderMapFloor();
-}
-
-function _renderMapFloor() {
   var main = document.querySelector("#overlay-map main");
   if (!main) return;
 
-  // Таби поверхів
-  var html = '<div class="map-tabs">';
-  html += '<button class="map-tab' + (_mapFloor === 1 ? ' active' : '') + '" onclick="switchMapFloor(1)">ПОВЕРХ 1</button>';
-  html += '<button class="map-tab' + (_mapFloor === 2 ? ' active' : '') + '" onclick="switchMapFloor(2)">ПОВЕРХ 2</button>';
-  html += '</div>';
+  // Обидва поверхи на одному екрані
+  var html = '<div class="map-dual">';
 
-  // Креслення
+  // Поверх 1
+  html += '<div class="map-floor-section">';
+  html += '<div class="map-floor-label">ПОВЕРХ 1</div>';
   html += '<div class="map-blueprint">';
+  html += _renderFloorRooms(1);
+  html += '</div></div>';
 
-  // Розташування кімнат на кресленні (вручну задані координати)
-  var layout = _getMapLayout(_mapFloor);
+  // Поверх 2
+  html += '<div class="map-floor-section">';
+  html += '<div class="map-floor-label">ПОВЕРХ 2</div>';
+  html += '<div class="map-blueprint">';
+  html += _renderFloorRooms(2);
+  html += '</div></div>';
+
+  html += '</div>';
+  main.innerHTML = html;
+}
+
+function _renderFloorRooms(floor) {
+  var layout = _getMapLayout(floor);
+  var html = '';
 
   for (var i = 0; i < layout.length; i++) {
     var room = layout[i];
     var loc = LOCATIONS[room.id];
     if (!loc) continue;
-
-    // Перевірка видимості
     if (!isVisible(room.id) && room.id !== gameState.location.current) continue;
 
     var isCurrent = (room.id === gameState.location.current);
-    var isLocked = !isAccessible(room.id);
+    var locked = !isAccessible(room.id);
+
+    // NPC в цій кімнаті
+    var charsHere = [];
+    try { charsHere = getCharsHere(room.id); } catch(e) {}
+    var charNames = [];
+    for (var c = 0; c < charsHere.length; c++) {
+      charNames.push(charsHere[c].name);
+    }
 
     var classes = "map-room";
     if (isCurrent) classes += " current";
-    if (isLocked) classes += " locked";
+    if (locked) classes += " locked";
+    if (charNames.length > 0) classes += " has-npc";
 
-    var onclick = isLocked ? "" :
-      ' onclick="_mapTravelTo(\'' + room.id + '\')"';
+    var bgPath = "assets/backgrounds/bg_" + room.id + ".webp";
+    var onclick = locked ? "" : ' onclick="_mapTravelTo(\'' + room.id + '\')"';
+    var dataAttr = ' data-bg="' + bgPath + '"';
 
     html += '<div class="' + classes + '" style="' +
       'left:' + room.x + 'px;top:' + room.y + 'px;' +
       'width:' + room.w + 'px;height:' + room.h + 'px;"' +
-      onclick + '>' +
-      loc.name + '</div>';
+      onclick + dataAttr +
+      ' onmouseenter="_mapRoomHover(this)" onmouseleave="_mapRoomUnhover(this)">';
+
+    html += '<div class="map-room-name">' + loc.name + '</div>';
+
+    if (charNames.length > 0) {
+      html += '<div class="map-room-chars">' + charNames.join(', ') + '</div>';
+    }
+
+    html += '</div>';
   }
 
-  html += '</div>';
+  return html;
+}
 
-  main.innerHTML = html;
+// Hover — показати ледь помітне превʼю фону локації
+function _mapRoomHover(el) {
+  var bg = el.getAttribute("data-bg");
+  if (!bg) return;
+  // Перевірити чи файл існує (webp → png → jpg)
+  var img = new Image();
+  img.onload = function() {
+    el.style.backgroundImage = "linear-gradient(rgba(0,10,20,0.85), rgba(0,10,20,0.85)), url('" + img.src + "')";
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center";
+  };
+  img.onerror = function() {
+    // Спробувати png
+    var img2 = new Image();
+    img2.onload = function() {
+      el.style.backgroundImage = "linear-gradient(rgba(0,10,20,0.85), rgba(0,10,20,0.85)), url('" + img2.src + "')";
+      el.style.backgroundSize = "cover";
+      el.style.backgroundPosition = "center";
+    };
+    img2.src = bg.replace(".webp", ".png");
+  };
+  img.src = bg;
+}
+
+function _mapRoomUnhover(el) {
+  el.style.backgroundImage = "";
 }
 
 

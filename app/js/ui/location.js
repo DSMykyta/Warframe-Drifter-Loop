@@ -73,12 +73,19 @@ function showSprites(locId) {
   var positions = getPositions(charsHere.length);
 
   charsHere.forEach(function(ch, i) {
+    var spritePath = "assets/sprites/" + (ch.sprite || ch.short) + "/knee-test.png";
     var img = document.createElement("img");
     img.className = "sprite";
-    img.src = "assets/sprites/" + ch.sprite + "/knee-test.png";
+    img.src = spritePath;
     img.style.left = positions[i] + "%";
     img.alt = ch.name;
-    img.onerror = function() { this.style.display = "none"; };
+    img.onerror = function() {
+      console.warn("[sprite] Failed to load:", spritePath, "for", ch.name);
+      this.style.display = "none";
+    };
+    img.onload = function() {
+      console.log("[sprite] Loaded:", spritePath, "for", ch.name);
+    };
     // Клік на спрайт — розмова
     img.addEventListener("click", function(e) {
       e.stopPropagation();

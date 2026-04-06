@@ -394,34 +394,26 @@
 
 /* ─── КАРТА ─── */
 
-.map-tabs {
+.map-dual {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 40px;
+  padding: 20px 0 40px;
 }
 
-.map-tab {
-  font-family: var(--font-body);
-  font-size: 14px;
+.map-floor-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.map-floor-label {
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.4);
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 20px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.map-tab:hover {
-  color: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.map-tab.active {
-  color: var(--white);
-  border-color: var(--accent);
-  background: rgba(230, 53, 128, 0.08);
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 6px;
 }
 
 /* Креслення-блупрінт */
@@ -441,22 +433,50 @@
   background: rgba(0, 180, 220, 0.06);
   border: 1px solid rgba(0, 180, 220, 0.25);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 4px 8px;
+  padding: 4px 6px;
+  overflow: hidden;
+}
+
+.map-room-name {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.map-room-chars {
+  font-size: 10px;
+  color: rgba(0, 220, 180, 0.8);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .map-room:hover {
-  background: rgba(0, 180, 220, 0.15);
   border-color: rgba(0, 180, 220, 0.5);
   color: var(--white);
+}
+
+/* Hover з превʼю фону */
+.map-room:hover .map-room-name,
+.map-room:hover .map-room-chars {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+}
+
+.map-room.has-npc {
+  border-color: rgba(0, 220, 180, 0.35);
 }
 
 .map-room.current {
@@ -472,27 +492,10 @@
   border-style: dashed;
 }
 
-.map-room.locked::after {
-  content: ' 🔒';
-  font-size: 11px;
-  margin-left: 4px;
-}
-
 .map-room.locked:hover {
   background: rgba(0, 180, 220, 0.06);
   border-color: rgba(0, 180, 220, 0.25);
   color: rgba(255, 255, 255, 0.7);
-}
-
-.map-room.hidden {
-  display: none;
-}
-
-/* Коридори (декоративні лінії) */
-.map-corridor {
-  position: absolute;
-  background: rgba(0, 180, 220, 0.08);
-  border: 1px dashed rgba(0, 180, 220, 0.12);
 }
 
 
