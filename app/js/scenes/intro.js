@@ -8,8 +8,14 @@ registerScript("intro", [
   { type: "bg", file: "bg_black.png" },
   { type: "say", who: null, text: "..." },
 
-  // ─── Футкорт ───
+  // ─── Футкорт: всі 6 вже сидять навпроти ───
   { type: "bg", file: "bg_foodcourt.webp" },
+  { type: "show", who: "ar", at: "far_left" },
+  { type: "show", who: "el", at: "center_left" },
+  { type: "show", who: "lt", at: "left" },
+  { type: "show", who: "am", at: "center_right" },
+  { type: "show", who: "ao", at: "right" },
+  { type: "show", who: "qu", at: "far_right" },
 
   { type: "say", who: "am", text: "Ого. Тобто ти типу... Марті МакФлай?" },
   { type: "say", who: "qu", text: "Знущаєшся, мабуть?" },
