@@ -1,0 +1,941 @@
+/* ═══════════════════════════════════════════════════
+   СТИЛІ ЕКРАНІВ — завантаження, налаштування, галерея
+   + оверлеї: карта, щоденник, інвентар, думки, місії, магазин, кава
+   ═══════════════════════════════════════════════════ */
+
+
+/* ─── ЗАГАЛЬНИЙ ШАБЛОН ЕКРАНА ─── */
+
+.screen {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  color: var(--white);
+}
+
+.screen header {
+  flex-shrink: 0;
+}
+
+.screen main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 80px;
+}
+
+.screen footer {
+  flex-shrink: 0;
+  padding: 30px 80px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.screen footer .btn {
+  font-size: 18px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.screen footer .btn:hover {
+  opacity: 1;
+}
+
+
+/* ─── ЕКРАН ЗАВАНТАЖЕННЯ ─── */
+
+#load-screen main {
+  display: flex;
+  gap: 40px;
+}
+
+/* Ліва колонка — список слотів */
+.load-slots {
+  width: 420px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  padding-right: 16px;
+}
+
+.load-slot {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.load-slot:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.load-slot.selected {
+  background: rgba(0, 200, 100, 0.08);
+  border-color: #00c864;
+}
+
+.load-slot.empty {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.load-slot-label {
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.load-slot-date {
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+/* Права колонка — деталі обраного слота */
+.load-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.load-details-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+}
+
+.load-details-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.load-details-info .detail-row {
+  display: flex;
+  gap: 16px;
+  font-size: 16px;
+}
+
+.load-details-info .detail-label {
+  color: rgba(255, 255, 255, 0.4);
+  width: 140px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+.load-details-info .detail-value {
+  color: var(--white);
+}
+
+.load-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.load-actions .btn {
+  font-size: 16px;
+  padding: 10px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.load-actions .btn-load {
+  border-color: #00c864;
+  color: #00c864;
+}
+
+.load-actions .btn-load:hover {
+  background: rgba(0, 200, 100, 0.15);
+}
+
+.load-actions .btn-delete {
+  border-color: #e63580;
+  color: #e63580;
+}
+
+.load-actions .btn-delete:hover {
+  background: rgba(230, 53, 128, 0.15);
+}
+
+
+/* ─── ЕКРАН НАЛАШТУВАНЬ ─── */
+
+#settings-screen main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 20px;
+  max-width: 700px;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-group-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.settings-label {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Повзунки */
+.settings-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Перемикач */
+.settings-toggle {
+  width: 48px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.settings-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.settings-toggle.active {
+  background: var(--accent);
+}
+
+.settings-toggle.active::after {
+  transform: translateX(24px);
+}
+
+
+/* ─── ЕКРАН ГАЛЕРЕЇ ─── */
+
+#gallery-screen main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 20px;
+}
+
+.gallery-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.gallery-tab {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.4);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gallery-tab:hover {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.gallery-tab.active {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(230, 53, 128, 0.08);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.gallery-item {
+  aspect-ratio: 16 / 9;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  overflow: hidden;
+}
+
+.gallery-item:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.gallery-item.locked {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.gallery-item.locked::after {
+  content: '🔒';
+  font-size: 32px;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ОВЕРЛЕЇ — поверх ігрового екрану
+   ═══════════════════════════════════════════════════ */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background: rgba(5, 10, 15, 0.97);
+  display: none;
+  flex-direction: column;
+  font-family: var(--font-body);
+  color: var(--white);
+}
+
+.overlay.visible {
+  display: flex;
+}
+
+.overlay header {
+  flex-shrink: 0;
+}
+
+.overlay main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 80px;
+}
+
+.overlay footer {
+  flex-shrink: 0;
+  padding: 30px 80px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.overlay footer .btn {
+  font-size: 18px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.overlay footer .btn:hover {
+  opacity: 1;
+}
+
+
+/* ─── КАРТА ─── */
+
+.map-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.map-tab {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.4);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.map-tab:hover {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.map-tab.active {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(230, 53, 128, 0.08);
+}
+
+/* Креслення-блупрінт */
+.map-blueprint {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background:
+    linear-gradient(rgba(0, 180, 220, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 180, 220, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  border: 1px solid rgba(0, 180, 220, 0.1);
+}
+
+.map-room {
+  position: absolute;
+  background: rgba(0, 180, 220, 0.06);
+  border: 1px solid rgba(0, 180, 220, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+}
+
+.map-room:hover {
+  background: rgba(0, 180, 220, 0.15);
+  border-color: rgba(0, 180, 220, 0.5);
+  color: var(--white);
+}
+
+.map-room.current {
+  background: rgba(230, 53, 128, 0.15);
+  border-color: var(--accent);
+  color: var(--white);
+  box-shadow: 0 0 12px rgba(230, 53, 128, 0.3);
+}
+
+.map-room.locked {
+  opacity: 0.25;
+  cursor: default;
+  border-style: dashed;
+}
+
+.map-room.locked::after {
+  content: ' 🔒';
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.map-room.locked:hover {
+  background: rgba(0, 180, 220, 0.06);
+  border-color: rgba(0, 180, 220, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.map-room.hidden {
+  display: none;
+}
+
+/* Коридори (декоративні лінії) */
+.map-corridor {
+  position: absolute;
+  background: rgba(0, 180, 220, 0.08);
+  border: 1px dashed rgba(0, 180, 220, 0.12);
+}
+
+
+/* ─── ЩОДЕННИК ─── */
+
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0 40px;
+}
+
+.journal-day {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journal-day-header {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+}
+
+.journal-entry {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 0 8px 20px;
+  border-left: 2px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.5;
+}
+
+.journal-entry.type-event {
+  border-left-color: var(--accent);
+}
+
+.journal-entry.type-mission {
+  border-left-color: #facc15;
+}
+
+.journal-entry.type-note {
+  border-left-color: rgba(255, 255, 255, 0.15);
+}
+
+.journal-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+}
+
+
+/* ─── ІНВЕНТАР ─── */
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 20px 0 40px;
+}
+
+.inventory-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.inventory-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.inventory-item-name {
+  font-size: 14px;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.inventory-item-qty {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inventory-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+  grid-column: 1 / -1;
+}
+
+
+/* ─── ШАФА ДУМОК (INSIGHTS) ─── */
+
+.insights-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 20px 0 40px;
+}
+
+.insights-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insights-group-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+}
+
+.insight-item {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 10px 0 10px 20px;
+  border-left: 2px solid rgba(255, 255, 255, 0.08);
+  line-height: 1.5;
+}
+
+.insight-item.type-fact {
+  border-left-color: rgba(0, 180, 220, 0.5);
+}
+
+.insight-item.type-connection {
+  border-left-color: #d8b4fe;
+}
+
+/* Необдумані зв'язки — кнопка */
+.raw-thought {
+  font-size: 16px;
+  color: rgba(216, 180, 254, 0.6);
+  padding: 12px 20px;
+  border-left: 2px solid rgba(216, 180, 254, 0.3);
+  background: rgba(216, 180, 254, 0.03);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.raw-thought:hover {
+  color: rgba(216, 180, 254, 0.9);
+  background: rgba(216, 180, 254, 0.06);
+  border-left-color: rgba(216, 180, 254, 0.6);
+}
+
+.raw-thought-hint {
+  font-size: 12px;
+  color: rgba(216, 180, 254, 0.35);
+  margin-top: 4px;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.insights-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+}
+
+
+/* ─── МІСІЇ ─── */
+
+.missions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 0 40px;
+}
+
+.mission-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.mission-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.mission-card.special {
+  border-color: rgba(250, 204, 21, 0.3);
+  background: rgba(250, 204, 21, 0.03);
+}
+
+.mission-card.redemption {
+  border-color: rgba(230, 53, 128, 0.3);
+  background: rgba(230, 53, 128, 0.03);
+}
+
+.mission-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mission-name {
+  font-size: 18px;
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.mission-meta {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  gap: 16px;
+}
+
+.mission-meta-level {
+  color: var(--accent);
+}
+
+.mission-meta-partner {
+  color: rgba(0, 180, 220, 0.8);
+}
+
+.mission-reward {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.mission-reward-money {
+  font-size: 16px;
+  color: #facc15;
+  font-weight: 700;
+}
+
+.mission-reward-rep {
+  font-size: 12px;
+  color: #fca5a5;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.missions-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+}
+
+
+/* ─── МАГАЗИН ─── */
+
+.shop-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.shop-tab {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.4);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.shop-tab:hover {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.shop-tab.active {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(230, 53, 128, 0.08);
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  padding-bottom: 40px;
+}
+
+.shop-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.shop-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.shop-item.owned {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.shop-item.cant-afford {
+  opacity: 0.5;
+}
+
+.shop-item-name {
+  font-size: 14px;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.shop-item-price {
+  font-size: 13px;
+  color: #facc15;
+  font-weight: 700;
+}
+
+.shop-item-owned {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Баланс гравця (верхній рядок) */
+.shop-balance {
+  font-size: 16px;
+  color: #facc15;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+
+/* ─── КАВОМАШИНА ─── */
+
+.coffee-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 0 40px;
+}
+
+.coffee-balance {
+  font-size: 16px;
+  color: #facc15;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.coffee-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.coffee-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.coffee-item.cant-afford {
+  opacity: 0.5;
+}
+
+.coffee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coffee-name {
+  font-size: 18px;
+  color: var(--white);
+}
+
+.coffee-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.coffee-price {
+  font-size: 16px;
+  color: #facc15;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.coffee-inventory {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coffee-inventory-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.coffee-inv-item {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.coffee-inv-qty {
+  color: rgba(255, 255, 255, 0.4);
+}

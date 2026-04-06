@@ -1,0 +1,73 @@
+/* ═══════════════════════════════════════════════════
+   HUD — верхня панель під час гри
+   ═══════════════════════════════════════════════════ */
+
+.hud {
+  width: 100%;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+  z-index: 10;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.hud-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.hud-location {
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hud-time {
+  color: rgba(255,255,255,0.5);
+}
+
+.hud-center {
+  display: flex;
+  gap: 8px;
+}
+
+.hud-btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  background: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+}
+
+.hud-btn:hover {
+  color: var(--white);
+  border-color: var(--accent);
+  background: rgba(230,53,128,0.1);
+}
+
+.hud-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.hud-rank {
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+.hud-money {
+  color: #facc15;
+}

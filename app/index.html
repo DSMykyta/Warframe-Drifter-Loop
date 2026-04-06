@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Drifter Loop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/hud.css">
+  <link rel="stylesheet" href="css/screens.css">
+</head>
+<body>
+  <div id="viewport">
+
+    <!-- ГОЛОВНЕ МЕНЮ -->
+    <div id="main-menu">
+      <header>
+        <h1 class="chromatic">&lt;DRIFTER_LOOP/&gt;</h1>
+        <a href="#"></a>
+      </header>
+      <main>
+        <div class="menu-block">
+          <button class="btn" id="btn-continue" style="display:none">ПРОДОВЖИТИ</button>
+          <button class="btn" id="btn-new">НОВА ПЕТЛЯ</button>
+          <button class="btn" id="btn-load">ЗАВАНТАЖИТИ ПЕТЛЮ</button>
+          <button class="btn" id="btn-settings">НАЛАШТУВАННЯ</button>
+          <button class="btn" id="btn-gallery">ГАЛЕРЕЯ</button>
+        </div>
+      </main>
+      <footer></footer>
+    </div>
+
+    <!-- ЕКРАН ЗАВАНТАЖЕННЯ -->
+    <div id="load-screen" class="screen" style="display:none">
+      <header>
+        <h1 class="chromatic" data-word="ЗАВАНТАЖИТИ">&lt;DRIFTER_LOOP/&gt;</h1>
+      </header>
+      <main>
+        <div class="load-slots"></div>
+        <div class="load-details"></div>
+      </main>
+      <footer>
+        <button class="btn" onclick="goBack('load-screen','main-menu')">НАЗАД</button>
+      </footer>
+    </div>
+
+    <!-- ЕКРАН НАЛАШТУВАНЬ -->
+    <div id="settings-screen" class="screen" style="display:none">
+      <header>
+        <h1 class="chromatic" data-word="НАЛАШТУВАННЯ">&lt;DRIFTER_LOOP/&gt;</h1>
+      </header>
+      <main>
+        <!-- Звук -->
+        <div class="settings-group">
+          <div class="settings-group-title">Звук</div>
+          <div class="settings-row">
+            <span class="settings-label">Гучність музики</span>
+            <input type="range" class="settings-slider" id="setting-music" min="0" max="100" value="80">
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Гучність звуків</span>
+            <input type="range" class="settings-slider" id="setting-sfx" min="0" max="100" value="80">
+          </div>
+        </div>
+        <!-- Текст -->
+        <div class="settings-group">
+          <div class="settings-group-title">Текст</div>
+          <div class="settings-row">
+            <span class="settings-label">Швидкість тексту</span>
+            <input type="range" class="settings-slider" id="setting-textspeed" min="0" max="100" value="50">
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Автопрокрутка</span>
+            <button class="settings-toggle" id="setting-auto" onclick="this.classList.toggle('active')"></button>
+          </div>
+        </div>
+        <!-- Екран -->
+        <div class="settings-group">
+          <div class="settings-group-title">Екран</div>
+          <div class="settings-row">
+            <span class="settings-label">Скринжоти</span>
+            <button class="settings-toggle" id="setting-screenshots" onclick="this.classList.toggle('active')"></button>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <button class="btn" onclick="goBack('settings-screen','main-menu')">НАЗАД</button>
+      </footer>
+    </div>
+
+    <!-- ЕКРАН ГАЛЕРЕЇ -->
+    <div id="gallery-screen" class="screen" style="display:none">
+      <header>
+        <h1 class="chromatic" data-word="ГАЛЕРЕЯ">&lt;DRIFTER_LOOP/&gt;</h1>
+      </header>
+      <main>
+        <div class="gallery-tabs">
+          <button class="gallery-tab active">CG</button>
+          <button class="gallery-tab">ПЕРСОНАЖІ</button>
+          <button class="gallery-tab">ЛОКАЦІЇ</button>
+        </div>
+        <div class="gallery-grid" id="gallery-grid">
+          <!-- Заповнюється динамічно -->
+        </div>
+      </main>
+      <footer>
+        <button class="btn" onclick="goBack('gallery-screen','main-menu')">НАЗАД</button>
+      </footer>
+    </div>
+
+    <!-- ІГРОВИЙ ЕКРАН -->
+    <div id="game-screen" style="display:none">
+      <div class="game-bg"></div>
+
+      <!-- HUD -->
+      <div class="hud">
+        <div class="hud-left">
+          <span class="hud-location"></span>
+          <span class="hud-time"></span>
+        </div>
+        <div class="hud-center">
+          <button class="hud-btn" id="hud-map">КАРТА</button>
+          <button class="hud-btn" id="hud-journal">ЩОДЕННИК</button>
+          <button class="hud-btn" id="hud-inventory">ІНВЕНТАР</button>
+          <button class="hud-btn" id="hud-insights">ДУМКИ</button>
+        </div>
+        <div class="hud-right">
+          <span class="hud-rank"></span>
+          <span class="hud-money"></span>
+          <button class="hud-btn" id="hud-save">ЗБЕРЕГТИ</button>
+          <button class="hud-btn" id="hud-menu">МЕНЮ</button>
+        </div>
+      </div>
+
+      <!-- Спрайти NPC -->
+      <div id="sprites-container"></div>
+
+      <!-- ПЕЙДЖЕР -->
+      <div class="pager" style="display:none">
+        <div class="pager-screen">
+          <div class="pager-status-time">--:--</div>
+          <div class="pager-status-day">День 1</div>
+        </div>
+      </div>
+      <div class="pager-popup" style="display:none">
+        <div class="pager-popup-who"></div>
+        <div class="pager-popup-text"></div>
+      </div>
+
+      <div class="scene-title"><span></span></div>
+      <div class="telepathy-overlay" style="display:none"></div>
+
+      <!-- ОВЕРЛЕЙ: КАРТА -->
+      <div id="overlay-map" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="КАРТА">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: ЩОДЕННИК -->
+      <div id="overlay-journal" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="ЩОДЕННИК">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: ІНВЕНТАР -->
+      <div id="overlay-inventory" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="ІНВЕНТАР">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: ШАФА ДУМОК -->
+      <div id="overlay-insights" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="ДУМКИ">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: МІСІЇ -->
+      <div id="overlay-missions" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="МІСІЇ">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: МАГАЗИН -->
+      <div id="overlay-shop" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="МАГАЗИН">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <!-- ОВЕРЛЕЙ: КАВОМАШИНА -->
+      <div id="overlay-coffee" class="overlay">
+        <header>
+          <h1 class="chromatic" data-word="КАВОМАШИНА">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideOverlay()">НАЗАД</button>
+        </footer>
+      </div>
+
+      <div class="choices" style="display:none">
+        <div class="choices-left"></div>
+        <div class="choices-list"></div>
+      </div>
+
+      <div class="dialogue" style="display:none">
+        <div class="name-frame"><div class="say-name"></div></div>
+        <div class="text-frame"><div class="say-text"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+function scale() {
+  var v = document.getElementById('viewport');
+  var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  v.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  v.style.position = 'fixed';
+  v.style.left = '50%';
+  v.style.top = '50%';
+}
+scale();
+window.addEventListener('resize', scale);
+</script>
+
+<!-- Рушій -->
+<script src="js/engine/state.js"></script>
+<script src="js/engine/dialogue.js"></script>
+<script src="js/engine/game.js"></script>
+
+<!-- Ядро -->
+<script src="js/systems/core/time.js"></script>
+<script src="js/systems/core/money.js"></script>
+<script src="js/systems/core/flags.js"></script>
+<script src="js/systems/core/rank.js"></script>
+<script src="js/systems/core/decay.js"></script>
+<script src="js/systems/core/save.js"></script>
+
+<!-- Соціальне -->
+<script src="js/systems/social/chemistry.js"></script>
+<script src="js/systems/social/romance.js"></script>
+<script src="js/systems/social/gossip.js"></script>
+<script src="js/systems/social/promises.js"></script>
+<script src="js/systems/social/gifts.js"></script>
+<script src="js/systems/social/coffee.js"></script>
+<script src="js/systems/social/help_requests.js"></script>
+
+<!-- Бій -->
+<script src="js/systems/combat/missions.js"></script>
+<script src="js/systems/combat/injuries.js"></script>
+
+<!-- Світ -->
+<script src="js/systems/world/locations.js"></script>
+<script src="js/systems/world/triggers.js"></script>
+<script src="js/systems/world/dispatcher.js"></script>
+<script src="js/systems/world/bonus_options.js"></script>
+<script src="js/systems/world/insights.js"></script>
+
+<!-- Предмети -->
+<script src="js/systems/items/inventory.js"></script>
+
+<!-- День (останній — викликає всі підсистеми) -->
+<script src="js/systems/core/day.js"></script>
+
+<!-- Завантажувач -->
+<script src="js/engine/loader.js"></script>
+
+<!-- Сцени -->
+<script src="js/scenes/intro.js"></script>
+<script src="js/scenes/explore_mall.js"></script>
+<script src="js/scenes/stubs.js"></script>
+
+<!-- Інтерфейс -->
+<script src="js/ui/title.js"></script>
+<script src="js/ui/screens.js"></script>
+<script src="js/ui/hud.js"></script>
+<script src="js/ui/pager.js"></script>
+<script src="js/ui/location.js"></script>
+<script src="js/ui/overlays.js"></script>
+<script src="js/ui/loadscreen.js"></script>
+
+<!-- Запуск -->
+<script>
+// Завантажити дані → підключити кнопки
+loadCharacters(function() {
+loadLocations(function() {
+
+  // Ініціалізувати тригери (після CAST завантажено)
+  if (typeof initTriggerData === "function") initTriggerData();
+
+  // Зареєструвати бонусні опції кави
+  if (typeof _registerCoffeeBonusOptions === "function") _registerCoffeeBonusOptions();
+
+  // Заповнити HOME_LOCATIONS з CAST
+  for (var _k in CAST) {
+    if (CAST[_k].home) HOME_LOCATIONS[CAST[_k].name] = CAST[_k].home;
+  }
+
+  // Завантажити повідомлення пейджера
+  if (typeof loadPagerMessages === "function") {
+    loadPagerMessages(function() {
+      if (typeof initPager === "function") initPager();
+    });
+  }
+
+  document.getElementById("btn-new").addEventListener("click", startNewGame);
+  document.getElementById("game-screen").addEventListener("click", advance);
+
+  // Продовжити — завантажити останнє збереження
+  document.getElementById("btn-continue").addEventListener("click", function() {
+    if (load("auto")) {
+      showScreen("game-screen");
+      showLocation();
+    }
+  });
+
+  // ─── Кнопки головного меню ───
+  document.getElementById("btn-load").addEventListener("click", function() {
+    showScreen("load-screen");
+    renderLoadScreen();
+  });
+
+  document.getElementById("btn-settings").addEventListener("click", function() {
+    showScreen("settings-screen");
+  });
+
+  document.getElementById("btn-gallery").addEventListener("click", function() {
+    showScreen("gallery-screen");
+  });
+
+  // ─── HUD: оверлеї ───
+  document.getElementById("hud-map").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showOverlay("map");
+  });
+
+  document.getElementById("hud-journal").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showOverlay("journal");
+  });
+
+  document.getElementById("hud-inventory").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showOverlay("inventory");
+  });
+
+  document.getElementById("hud-insights").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showOverlay("insights");
+  });
+
+  // ─── HUD: зберегти / меню ───
+  document.getElementById("hud-save").addEventListener("click", function(e) {
+    e.stopPropagation();
+    var slot = findFreeSlot();
+    if (slot) {
+      save(slot, "День " + gameState.time.day + " / " + getTimeString());
+    } else {
+      autoSave();
+    }
+  });
+
+  document.getElementById("hud-menu").addEventListener("click", function(e) {
+    e.stopPropagation();
+    autoSave();
+    if (typeof hidePager === "function") hidePager();
+    showScreen("main-menu");
+  });
+
+  // Показати "Продовжити" якщо є збереження
+  if (hasSaves()) {
+    document.getElementById("btn-continue").style.display = "block";
+  }
+});
+});
+</script>
+</body>
+</html>

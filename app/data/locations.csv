@@ -1,0 +1,37 @@
+id,name,floor,type,parent,connects,unlock_flag
+mall,Мол Гьольванії,1,standard,,all,
+info_desk,Інфо-острівець,1,standard,,mall,
+security_desk,Стійка охорони,1,standard,,mall,
+security_room,Кімната охорони,1,adjacent,security_desk,security_desk,security_room_unlocked
+arcade,Аркади,1,standard,,mall,
+music_shop,Музичний магазин,1,standard,,mall,
+furniture,Магазин меблів,1,standard,,mall,
+range,Тир,1,standard,,mall,
+bar,Бар,1,hidden,,mall,syndicate_rank_3
+foodcourt,Футкорт,1,standard,,mall,
+cinema,Кінотеатр,1,hidden,,mall,cinema_unlocked
+gym,Спортзал,1,hidden,,mall,gym_unlocked
+billiard,Більярдна,1,hidden,,mall,billiard_unlocked
+barbershop,Перукарня,1,hidden,,mall,barbershop_unlocked
+photo_studio,Фотостудія,1,hidden,,mall,photo_studio_unlocked
+laundry,Пральня,1,hidden,,mall,laundry_unlocked
+parking,Парковка,1,hidden,,mall,parking_unlocked
+wc,Вбиральня,1,standard,,mall,
+garage,Гараж,1,locked,,mall,garage_unlocked
+medbay,Медвідділ,2,standard,,mall,
+recovery_room,Палата,2,adjacent,medbay,medbay,
+pharmacy,Аптека,2,hidden,,mall,pharmacy_unlocked
+clothing_shop,Магазин одягу,2,standard,,mall,
+backroom,Бекрум,2,standard,,mall,
+comp_club,Комп'ютерний клуб,2,hidden,,mall,comp_club_unlocked
+cafe,Кав'ярня,2,hidden,,mall;cafe_balcony,cafe_unlocked
+cafe_balcony,Біля кав'ярні,2,hidden,,mall;cafe,cafe_balcony_unlocked
+balcony,Балкон 2-го поверху,2,hidden,,mall,balcony_unlocked
+utility,Підсобка,2,hidden,,mall,utility_unlocked
+warehouse,Склад,2,hidden,,mall,warehouse_unlocked
+rooftop,Дах,2,hidden,,mall,rooftop_unlocked
+video_rental,Відеопрокат,2,hidden,,mall,video_rental_unlocked
+electronics,Електроніка,2,hidden,,mall,electronics_unlocked
+jewelry,Ювелірний,2,hidden,,mall,jewelry_unlocked
+bookshop,Книгарня,2,hidden,,mall,bookshop_unlocked
+room_2,Кімната 2,2,hidden,,mall,room_2_unlocked

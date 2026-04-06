@@ -1,0 +1,40 @@
+flag,description,used_in
+intro_done,Інтро пройдено,dispatcher / intro.js
+intro_dark_humor,Вибрав жарт про Новий Рік,intro.js
+intro_asked_to_verify,Попросив перевірити,intro.js
+intro_stayed_silent,Промовчав на допиті,intro.js
+intro_military_response,Відповів по-військовому,intro.js
+intro_sarcastic_response,Відповів саркастично,intro.js
+intro_promised,Пообіцяв Артуру,intro.js
+lettie_bandaged_hand,Летті перевʼязала руку,intro.js / lettie dialogues
+nickname_marty,Амір назвав Марті,intro.js / dialogues
+has_pager,Є пейджер,pager system
+met_arthur,Знайомство з Артуром,triggers / dialogues
+met_eleanor,Знайомство з Елеонор,triggers / dialogues
+met_lettie,Знайомство з Летті,triggers / dialogues
+met_amir,Знайомство з Аміром,triggers / dialogues
+met_aoi,Знайомство з Аоі,triggers / dialogues
+met_quincy,Знайомство з Квінсі,triggers / dialogues
+has_map,Є карта молу,explore_mall / location_ui
+coffee_machine_found,Знайшов кавомашину,coffee system
+coffee_quest_started,Кавовий квест почався,coffee scenes
+coffee_stage_2,Деталь знайдена,coffee scenes
+coffee_stage_3,Амір зібрав,coffee scenes
+coffee_stage_4,Молоко розблоковано,coffee scenes
+coffee_stage_5,Екстракт потрібен,coffee scenes
+coffee_stage_6,Кафе знайдено,coffee scenes
+coffee_stage_7,Амір зробив сам,coffee scenes
+coffee_stage_8,Кафе відкрито,coffee scenes
+milk_drinks_unlocked,Молочні напої доступні,coffee system
+garage_unlocked,Гараж відкритий,triggers
+rooftop_unlocked,Дах відкритий,triggers
+arthur_eleanor_fight_active,Сварка Артур-Елеонор,triggers / dialogues
+arthur_fight_resolved,Сварку вирішено,triggers / dialogues
+player_injured,Гравець поранений,injuries / lettie dialogues
+player_injured_severe,Гравець серйозно поранений,injuries / lettie forced
+dating_arthur,Романс з Артуром,romance system
+dating_eleanor,Романс з Елеонор,romance system
+dating_lettie,Романс з Летті,romance system
+dating_amir,Романс з Аміром,romance system
+dating_aoi,Романс з Аоі,romance system
+dating_quincy,Романс з Квінсі,romance system
