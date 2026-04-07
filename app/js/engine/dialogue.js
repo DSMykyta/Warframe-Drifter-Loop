@@ -14,6 +14,8 @@ var callStack = [];
 var typing = false;
 var _typeTimer = null;
 var _fullText = "";
+var _waitingForPager = false;
+var _waitPagerLabels = null;
 
 
 // ═══ РЕЄСТРАЦІЯ ТА ЗАПУСК ═══
@@ -126,16 +128,18 @@ function execute(index) {
       var dlg = document.querySelector(".dialogue");
       if (dlg) dlg.style.display = "flex";
 
-      if (node.who) {
+      if (node.who === "mc") {
+        // Гравець — без плашки з іменем
+        highlightSpeaker(null);
+        nameEl.style.visibility = "hidden";
+        textEl.className = "say-text";
+      } else if (node.who) {
         ensureSpeakerVisible(node.who);
         nameEl.style.visibility = "visible";
         nameEl.textContent = charName(node.who);
         textEl.className = "say-text";
-        if (charCan(node.who, "telepathy")) {
-          textEl.className = "say-text telepathy";
-        }
       } else {
-        renderSceneSprites(null);
+        highlightSpeaker(null);
         nameEl.style.visibility = "hidden";
         textEl.className = "say-text narrator";
       }
@@ -281,6 +285,9 @@ function execute(index) {
       var cond = false;
       if (node.flag) cond = getFlag(node.flag);
       if (node.flag_false) cond = !getFlag(node.flag_false);
+      if (node.loop_restart) cond = isLoopRestart();
+      if (node.first_loop) cond = !isLoopRestart();
+      if (node.has_save) cond = typeof hasSaveData === "function" && hasSaveData();
       if (node.chemistry_min) {
         cond = (gameState.chemistry.values[node.chemistry_min[0]] || 0) >= node.chemistry_min[1];
       }
@@ -311,6 +318,22 @@ function execute(index) {
         sendPagerMessage(node.who || "", node.text || "");
       }
       pc = index + 1; execute(pc); break;
+
+    case "pager_request":
+      if (typeof sendPagerRequest === "function") {
+        sendPagerRequest(node.who || "", node.text || "", node.accept || null, node.decline || null);
+      }
+      pc = index + 1; execute(pc); break;
+
+    case "wait_pager":
+      // Пауза — чекаємо натискання кнопки пейджера
+      _waitingForPager = true;
+      _waitPagerLabels = {
+        left: node.left || null,
+        center: node.center || null,
+        right: node.right || null
+      };
+      break;
 
     case "bg":
       var gbg = document.querySelector(".game-bg");
@@ -345,6 +368,7 @@ function execute(index) {
 
 function advance() {
   if (!currentScript) return;
+  if (_waitingForPager) return; // Чекаємо кнопку пейджера
   var choices = document.querySelector(".choices");
   if (choices && choices.style.display === "flex") return;
   var title = document.querySelector(".scene-title");
@@ -362,4 +386,22 @@ function advance() {
 
   pc++;
   execute(pc);
+}
+
+
+// Викликається з pager.js коли гравець натиснув кнопку під час wait_pager
+function onPagerButton(button) {
+  if (!_waitingForPager) return;
+  _waitingForPager = false;
+
+  var labelId = _waitPagerLabels ? _waitPagerLabels[button] : null;
+  _waitPagerLabels = null;
+
+  if (labelId && currentScript && currentScript._labels[labelId] !== undefined) {
+    pc = currentScript._labels[labelId];
+    execute(pc);
+  } else {
+    pc++;
+    execute(pc);
+  }
 }

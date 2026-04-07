@@ -74,28 +74,29 @@ function showSprites(locId) {
 
   charsHere.forEach(function(ch, i) {
     var spritePath = "assets/sprites/" + (ch.sprite || ch.short) + "/knee-test.png";
+    var wrapper = document.createElement("div");
+    wrapper.className = "sprite-wrapper clickable";
+    wrapper.style.left = positions[i] + "%";
+    wrapper.alt = ch.name;
+    wrapper.setAttribute("data-name", ch.name);
+
     var img = document.createElement("img");
-    img.className = "sprite";
+    img.className = "sprite-img";
     img.src = spritePath;
-    img.style.left = positions[i] + "%";
     img.alt = ch.name;
-    img.onerror = function() {
-      console.warn("[sprite] Failed to load:", spritePath, "for", ch.name);
-      this.style.display = "none";
-    };
-    img.onload = function() {
-      console.log("[sprite] Loaded:", spritePath, "for", ch.name);
-    };
-    // Клік на спрайт — розмова
-    img.addEventListener("click", function(e) {
+    img.onerror = function() { this.parentElement.style.display = "none"; };
+
+    wrapper.appendChild(img);
+    wrapper.addEventListener("click", function(e) {
       e.stopPropagation();
       _talkToNPC(ch);
     });
-    container.appendChild(img);
+    container.appendChild(wrapper);
   });
 }
 
 function clearSprites() {
+  if (typeof clearSceneSprites === "function") clearSceneSprites();
   var container = document.getElementById("sprites-container");
   if (container) container.innerHTML = "";
 }
@@ -163,31 +164,26 @@ function showLocationUI() {
   var left = document.querySelector(".choices-left");
   var list = document.querySelector(".choices-list");
 
-  // Лівий блок — порожній (інфо вже в HUD)
   left.innerHTML = "";
-
   list.innerHTML = "";
 
-  // Кнопки розмови з NPC
+  // NPC кнопки НЕ потрібні — спрайти самі клікабельні (showSprites).
+  // Підсвітити спрайти з діалогом (зірочка над головою)
   var charsHere = getCharsHere(locId);
-
-  charsHere.forEach(function(ch) {
-    var btn = document.createElement("button");
-    btn.className = "choice-btn";
-
-    // Перевірити чи є спеціальний діалог (маркер *)
-    var hasSpecial = false;
-    if (typeof getActiveDialogue === "function") {
-      hasSpecial = getActiveDialogue(ch.name) !== null;
+  var container = document.getElementById("sprites-container");
+  if (container) {
+    var sprites = container.querySelectorAll(".sprite-wrapper");
+    for (var si = 0; si < sprites.length; si++) {
+      var spriteName = sprites[si].getAttribute("data-name");
+      var hasSpecial = false;
+      if (typeof getActiveDialogue === "function") {
+        hasSpecial = getActiveDialogue(spriteName) !== null;
+      }
+      if (hasSpecial) {
+        sprites[si].classList.add("has-dialogue");
+      }
     }
-    btn.textContent = ch.name + (hasSpecial ? " *" : "");
-
-    btn.addEventListener("click", function(e) {
-      e.stopPropagation();
-      _talkToNPC(ch);
-    });
-    list.appendChild(btn);
-  });
+  }
 
   // Місії (тільки в гаражі)
   if (locId === "garage" && gameState.missions && gameState.missions.list && gameState.missions.list.length > 0) {
@@ -271,51 +267,106 @@ function _hideMapButton() {
 // ─── РОЗМОВА З NPC ───
 
 function _talkToNPC(ch) {
-  var choicesEl = document.querySelector(".choices");
-  choicesEl.style.display = "none";
-  _hideMapButton();
-  hideHUD();
-  if (typeof hidePager === "function") hidePager();
-
   var name = ch.name;
 
   // Позначити що говорили сьогодні
   if (typeof markTalkedToday === "function") markTalkedToday(name);
-
-  // Скинути лічильник decay
   if (typeof resetInteraction === "function") resetInteraction(name);
-
-  // +1 хімія за розмову
   if (typeof addChemistry === "function") addChemistry(name, 1);
-
-  // Час на розмову — 15 хвилин
   advanceTime(15);
 
-  // Шукаємо діалог через dispatcher
-  var scriptLabel = null;
+  // Шукаємо діалог (повертає entry або null)
+  var entry = null;
   if (typeof getDialogue === "function") {
-    scriptLabel = getDialogue(name);
+    entry = getDialogue(name);
   }
 
-  // Якщо діалог знайдено і зареєстрований — запустити
-  if (scriptLabel && SCRIPTS[scriptLabel]) {
-    runScript(scriptLabel);
+  // ═══ TITLES: меню привітань ═══
+  if (entry && entry.titles && entry.titles.length > 0) {
+    _showTitlesMenu(entry);
     return;
   }
 
-  // Fallback: шукаємо stub напряму за іменем
+  // ═══ LABEL (forced): запустити напряму ═══
+  if (entry && entry.label && SCRIPTS[entry.label]) {
+    _hideForDialogue();
+    if (typeof markDialogueSeen === "function") markDialogueSeen(entry.id);
+    runScript(entry.label);
+    return;
+  }
+
+  // Fallback: stub
+  _hideForDialogue();
   var stubLabel = _findRandomStub(name);
   if (stubLabel && SCRIPTS[stubLabel]) {
     runScript(stubLabel);
     return;
   }
-
-  // Останній fallback — generic_stub
   if (SCRIPTS["generic_stub"]) {
     runScript("generic_stub");
   } else {
-    // Зовсім нічого — повернутись до локації
     _returnToLocation();
+  }
+}
+
+
+// ─── Сховати UI для діалогу ───
+function _hideForDialogue() {
+  var choicesEl = document.querySelector(".choices");
+  if (choicesEl) choicesEl.style.display = "none";
+  _hideMapButton();
+  hideHUD();
+  if (typeof hidePager === "function") hidePager();
+}
+
+
+// ─── TITLES: показати привітання як меню ───
+function _showTitlesMenu(entry) {
+  var list = document.querySelector(".choices-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  // Бонусні опції (напр. "Хай, бро" від Квінсі)
+  if (typeof BONUS_OPTIONS !== "undefined") {
+    for (var b = 0; b < BONUS_OPTIONS.length; b++) {
+      var bo = BONUS_OPTIONS[b];
+      if (bo.who !== entry.who) continue;
+      if (bo.once && getFlag(bo.id + "_used")) continue;
+      if (!checkStableConditions(bo.conditions || {})) continue;
+      (function(bonus) {
+        var btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = bonus.text;
+        btn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          _hideForDialogue();
+          if (bonus.once) setFlag(bonus.id + "_used");
+          if (typeof markDialogueSeen === "function") markDialogueSeen(entry.id);
+          runScript(bonus.label);
+        });
+        list.appendChild(btn);
+      })(bo);
+    }
+  }
+
+  // Основні привітання
+  for (var i = 0; i < entry.titles.length; i++) {
+    (function(title) {
+      var btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = title.text;
+      btn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        _hideForDialogue();
+        if (typeof markDialogueSeen === "function") markDialogueSeen(entry.id);
+        if (title.chemistry) {
+          for (var cn in title.chemistry) addChemistry(cn, title.chemistry[cn]);
+        }
+        if (title.flag) setFlag(title.flag);
+        runScript(title.label);
+      });
+      list.appendChild(btn);
+    })(entry.titles[i]);
   }
 }
 

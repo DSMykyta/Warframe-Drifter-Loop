@@ -58,19 +58,60 @@
   z-index: 5;
 }
 
+/* Спрайти в сценах (не клікабельні) */
 .sprite {
   position: absolute;
-  bottom: 0;
-  height: 80%;
+  bottom: -80px;
+  height: 100%;
   transform: translateX(-50%);
-  pointer-events: auto;
-  cursor: pointer;
-  transition: filter 0.2s;
+  pointer-events: none;
+  cursor: default;
+  transition: filter 0.3s, transform 0.3s;
   image-rendering: auto;
 }
 
-.sprite:hover {
-  filter: brightness(1.2);
+/* Обгортка спрайту в локації (клікабельна) */
+.sprite-wrapper {
+  position: absolute;
+  bottom: -80px;
+  height: 100%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  cursor: default;
+}
+
+.sprite-wrapper .sprite-img {
+  height: 100%;
+  pointer-events: none;
+}
+
+.sprite-wrapper.clickable {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.sprite-wrapper.clickable:hover .sprite-img {
+  filter: brightness(1.3);
+  transform: scale(1.02);
+  transition: filter 0.3s, transform 0.3s;
+}
+
+/* Маркер діалогу ✦ — тепер на div, не на img */
+.sprite-wrapper.has-dialogue::after {
+  content: "✦";
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--accent);
+  font-size: 24px;
+  animation: dialogueMarker 1.5s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes dialogueMarker {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 1; transform: translateX(-50%) translateY(-6px); }
 }
 
 /* Діалог */
@@ -116,6 +157,7 @@
   align-items: center; justify-content: center;
   z-index: 20;
   font-family: var(--font-body);
+  pointer-events: none;
 }
 .choices-left { flex: 1; }
 .choices-list {
@@ -124,6 +166,7 @@
   gap: 62px; align-items: flex-start; justify-content: center;
 }
 .choice-btn {
+  pointer-events: auto;
   background: var(--black-50);
   border: none;
   padding: 8px 12px;
@@ -166,96 +209,165 @@
 
 
 /* ═══════════════════════════════════════════════════
-   ПЕЙДЖЕР (справа внизу)
+   ПЕЙДЖЕР (справа внизу) — з pager.png
    ═══════════════════════════════════════════════════ */
 
 .pager {
   position: absolute;
-  bottom: 24px;
-  right: 24px;
-  width: 200px;
-  height: 100px;
-  background: #1a1a2e;
-  border: 2px solid rgba(255,255,255,0.15);
-  border-radius: 8px;
-  z-index: 15;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
+  bottom: 12px;
+  right: 12px;
+  width: 320px;
+  height: 176px;
+  background: url('../assets/pager.png') no-repeat center/contain;
+  z-index: 90;
+  cursor: default;
+  user-select: none;
+}
+
+.pager-flash .pager-unread {
+  display: block !important;
+}
+
+/* LCD екран — 2 стани: idle (тьмяний) і active (яскравий) */
+.pager-lcd {
+  position: absolute;
+  left: 13.5%;
+  top: 19.5%;
+  width: 71.25%;
+  height: 39.1%;
+  background: #2a4010;
   overflow: hidden;
-  font-family: var(--font-body);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.pager:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 8px rgba(230,53,128,0.3);
-}
-
-.pager-flash {
-  animation: pagerFlash 0.8s ease infinite;
-}
-
-@keyframes pagerFlash {
-  0%   { border-color: rgba(255,255,255,0.15); box-shadow: none; }
-  50%  { border-color: #facc15; box-shadow: 0 0 12px rgba(250,204,21,0.5); }
-  100% { border-color: rgba(255,255,255,0.15); box-shadow: none; }
-}
-
-.pager-screen {
-  flex: 1;
-  padding: 8px 12px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  color: #1a2a0a;
+  font-weight: 700;
+  padding: 4px 6px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  transition: background 0.4s, color 0.4s;
 }
 
-.pager-status-time {
-  font-size: 22px;
-  font-weight: 700;
-  color: #4ade80;
-  letter-spacing: 2px;
-  font-family: 'Courier New', monospace;
+/* Активний стан — яскравий зелений */
+.pager.active .pager-lcd,
+.pager:hover .pager-lcd {
+  background: #477220;
+  color: #131f1f;
 }
 
-.pager-status-day {
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+/* Overlay ефект на LCD — сканлайни */
+.pager-lcd::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
 }
 
-.pager-status-loc {
-  font-size: 11px;
-  color: rgba(255,255,255,0.3);
+/* Статус: час + локація */
+.pager-lcd-loc {
+  font-size: 13px;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.pager-who {
-  font-size: 11px;
-  color: var(--accent);
+.pager-lcd-time {
+  font-size: 26px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  line-height: 1.1;
 }
 
-.pager-text {
+.pager-lcd-rep {
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  font-size: 13px;
+}
+
+.pager-lcd-hex {
+  position: absolute;
+  right: 24px;
+  bottom: 2px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Повідомлення */
+.pager-lcd-who {
   font-size: 12px;
-  color: rgba(255,255,255,0.8);
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pager-lcd-text {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
+.pager-lcd-counter {
+  position: absolute;
+  right: 6px;
+  bottom: 2px;
+  font-size: 12px;
+}
+
+/* Unread індикатор (червона точка) */
+.pager-unread {
+  position: absolute;
+  left: 85%;
+  top: 17.3%;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pagerBlink 1s ease infinite;
+}
+
+@keyframes pagerBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* 3 кнопки під екраном — координати з Ren'Py */
+.pager-btn {
+  position: absolute;
+  top: 63.2%;
+  height: 12.7%;
+  width: 20%;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 3px;
+}
+
+.pager-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.pager-btn:active {
+  background: rgba(255,255,255,0.25);
+}
+
+.pager-btn-left   { left: 15%; }
+.pager-btn-center { left: 38.25%; }
+.pager-btn-right  { left: 61.5%; }
+
 /* Popup повідомлення */
 .pager-popup {
   position: absolute;
-  bottom: 140px;
+  bottom: 200px;
   right: 24px;
   width: 280px;
   background: rgba(26,26,46,0.95);

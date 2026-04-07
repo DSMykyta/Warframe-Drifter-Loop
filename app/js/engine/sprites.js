@@ -129,7 +129,7 @@ function clearSceneSprites() {
   if (container) container.innerHTML = "";
 }
 
-// Відрендерити спрайти на екрані
+// Повний ре-рендер спрайтів (тільки при show/hide/scene)
 function renderSceneSprites(speakerName) {
   var container = document.getElementById("sprites-container");
   if (!container) return;
@@ -141,10 +141,7 @@ function renderSceneSprites(speakerName) {
   }
   if (entries.length === 0) return;
 
-  // Розрахувати позиції
   var placed = _sortForPlacement(entries);
-
-  // Сортувати для рендеру за zorder (нижчий рендериться першим = позаду)
   placed.sort(function(a, b) { return a.zorder - b.zorder; });
 
   for (var i = 0; i < placed.length; i++) {
@@ -155,34 +152,39 @@ function renderSceneSprites(speakerName) {
     img.src = "assets/sprites/" + ch.sprite + "/knee-test.png";
     img.style.left = entry.position + "%";
     img.style.zIndex = 5 + entry.zorder;
+    img.style.transition = "filter 0.3s ease";
     img.alt = ch.name;
-
-    // Затемнити тих хто не говорить
-    if (speakerName && ch.name !== speakerName) {
-      img.style.filter = "brightness(0.5)";
-      img.style.transition = "filter 0.3s ease";
-    } else if (speakerName) {
-      img.style.filter = "brightness(1)";
-      img.style.transition = "filter 0.3s ease";
-    }
-
+    img.setAttribute("data-name", ch.name);
     img.onerror = function() { this.style.display = "none"; };
     container.appendChild(img);
   }
+
+  if (speakerName) highlightSpeaker(speakerName);
 }
 
-// Auto-add: якщо персонаж говорить але його нема на сцені — додати з zorder 0
+// Підсвітити спікера — тільки CSS, без ре-рендеру
+function highlightSpeaker(speakerName) {
+  var container = document.getElementById("sprites-container");
+  if (!container) return;
+  var imgs = container.querySelectorAll(".sprite");
+  for (var i = 0; i < imgs.length; i++) {
+    var name = imgs[i].getAttribute("data-name");
+    imgs[i].style.filter = (name === speakerName) ? "brightness(1)" : "brightness(0.5)";
+  }
+}
+
+// Auto-add: якщо персонаж говорить але його нема на сцені — додати
 function ensureSpeakerVisible(who) {
   var charData = _resolveChar(who);
   if (!charData) return null;
 
-  // Вже на сцені — тільки підсвітити
   if (_sceneSprites[charData.name]) {
-    renderSceneSprites(charData.name);
+    // Вже на сцені — тільки підсвітити (без ре-рендеру)
+    highlightSpeaker(charData.name);
     return charData.name;
   }
 
-  // Додати з zorder 0
+  // Новий персонаж — повний ре-рендер
   _sceneSprites[charData.name] = {
     charData: charData,
     zorder: 0,

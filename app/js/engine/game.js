@@ -14,6 +14,19 @@ var _afterExplore = false; // Чи потрібно перейти в location l
 function startNewGame() {
   // Скинути весь стан
   resetState();
+  if (typeof clearSceneSprites === "function") clearSceneSprites();
+
+  // Відновити persistent дані при повторній петлі
+  if (typeof isLoopRestart === "function" && isLoopRestart()) {
+    setFlag("nickname_marty");
+    // Відновити insights з попередньої петлі
+    if (typeof getPreviousInsights === "function") {
+      var prevInsights = getPreviousInsights();
+      if (prevInsights.length > 0 && gameState.insights) {
+        gameState.insights.log = JSON.parse(JSON.stringify(prevInsights));
+      }
+    }
+  }
 
   // Початкові значення для першого дня
   gameState.time.day = 1;
@@ -89,6 +102,22 @@ function onSceneEnd() {
     return;
   }
 
+  // Defeat — зберегти persistent і перезапустити
+  if (getFlag("_trigger_loop_end")) {
+    clearFlag("_trigger_loop_end");
+    if (typeof onLoopEnd === "function") onLoopEnd(false);
+    startNewGame();
+    return;
+  }
+
+  // Victory — зберегти persistent
+  if (getFlag("_trigger_victory")) {
+    clearFlag("_trigger_victory");
+    if (typeof onLoopEnd === "function") onLoopEnd(true);
+    showScreen("title-screen");
+    return;
+  }
+
   // Звичайне завершення сцени — повернутись до локації
   _returnToLocation();
 }
@@ -97,7 +126,7 @@ function onSceneEnd() {
 // Почати основний цикл гри (exploration loop)
 function _startLocationLoop() {
   // Встановити локацію і час для першого дня
-  gameState.location.current = "backroom";
+  gameState.location.current = "info_desk";
   gameState.time.minutes = 660; // 11:00
 
   // Генерувати місії

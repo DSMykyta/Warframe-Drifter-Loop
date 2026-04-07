@@ -10,6 +10,7 @@ var DAILY_CHEMISTRY_CAP = 15;
 registerState("chemistry", { values: {}, gainedToday: {} });
 
 function addChemistry(name, amount) {
+  if (CAST[name]) name = CAST[name].name;
   if (amount <= 0) {
     gameState.chemistry.values[name] = Math.max(0, (gameState.chemistry.values[name] || 0) + amount);
     return amount;

@@ -6,7 +6,7 @@
 registerScript("intro", [
   // ─── Чорний екран ───
   { type: "bg", file: "bg_black.png" },
-  { type: "say", who: null, text: "..." },
+  { type: "think", text: "..." },
 
   // ─── Футкорт: всі 6 вже сидять навпроти ───
   { type: "bg", file: "bg_foodcourt.webp" },
@@ -28,19 +28,19 @@ registerScript("intro", [
     {
       text: "З Новим Роком.",
       flag: "intro_dark_humor",
-      chemistry: { "Квінсі": 2 },
+      chemistry: { "qu": 2 },
       label: "after_choice_1"
     },
     {
       text: "Я не прошу вірити. Перевірте.",
       flag: "intro_asked_to_verify",
-      chemistry: { "Артур": 2 },
+      chemistry: { "ar": 2 },
       label: "after_choice_1"
     },
     {
       text: "[Нічого не сказати.]",
       flag: "intro_stayed_silent",
-      chemistry: { "Артур": 1, "Квінсі": 1 },
+      chemistry: { "ar": 1, "qu": 1 },
       label: "intro_silent_reaction"
     }
   ]},
@@ -64,19 +64,19 @@ registerScript("intro", [
     {
       text: "Так точно.",
       flag: "intro_military_response",
-      chemistry: { "Артур": 2 },
+      chemistry: { "ar": 2 },
       label: "after_choice_2"
     },
     {
       text: "Поки мене не прив'язують до стільців — так.",
       flag: "intro_sarcastic_response",
-      chemistry: { "Квінсі": 2, "Амір": 1 },
+      chemistry: { "qu": 2, "am": 1 },
       label: "intro_sarcastic_reaction"
     },
     {
       text: "Обіцяю.",
       flag: "intro_promised",
-      chemistry: { "Елеонор": 2 },
+      chemistry: { "el": 2 },
       label: "after_choice_2"
     }
   ]},
@@ -93,7 +93,7 @@ registerScript("intro", [
   { type: "say", who: "lt", text: "Чисто. Між кістками. Жити будеш." },
   { type: "say", who: "lt", text: "На жаль." },
   { type: "set_flag", flag: "lettie_bandaged_hand" },
-  { type: "chemistry", values: { "Летті": 1 } },
+  { type: "chemistry", values: { "lt": 1 } },
 
   // ─── Аоі представляється ───
   { type: "say", who: "ao", text: "Я Аоі." },
@@ -102,17 +102,17 @@ registerScript("intro", [
   { type: "menu", choices: [
     {
       text: "Дріфтер. Відносно приємно.",
-      chemistry: { "Аоі": 2 },
+      chemistry: { "ao": 2 },
       label: "after_choice_3"
     },
     {
       text: "[Потиснути руку.]",
-      chemistry: { "Аоі": 1, "Артур": 1 },
+      chemistry: { "ao": 1, "ar": 1 },
       label: "intro_handshake_reaction"
     },
     {
       text: "Вибач за голову. Не було іншого способу.",
-      chemistry: { "Аоі": 1 },
+      chemistry: { "ao": 1 },
       label: "intro_apology_reaction"
     }
   ]},
@@ -132,7 +132,7 @@ registerScript("intro", [
   { type: "say", who: "am", text: "Якщо потрібно щось полагодити або... ну..." },
   { type: "say", who: "ar", text: "Амір." },
   { type: "say", who: "am", text: "Тихо. Так." },
-  { type: "chemistry", values: { "Амір": 1 } },
+  { type: "chemistry", values: { "am": 1 } },
 
   { type: "say", who: "qu", text: "Квінсі. Тир. Без стуку не заходь." },
   { type: "say", who: "ar", text: "Бекрум. Коридор, другі двері. Завтра о восьмій." },
@@ -140,13 +140,15 @@ registerScript("intro", [
   { type: "say", who: "am", text: "Ну, бувай, Марті." },
   { type: "say", who: "lt", text: "Рану промий вранці. Водою. Не спирт." },
 
-  // ─── Після допиту — Дріфтер в бекрумі ───
+  // ─── Після допиту — Дріфтер в бекрумі (тільки перша петля) ───
   { type: "scene", bg: "bg_backroom.webp" },
-  { type: "say", who: null, text: "Бекрум. Коридор, другі двері — як Артур сказав." },
-  { type: "say", who: null, text: "Кинув речі. Рука ниє, але пов'язка тримається." },
-  { type: "say", who: null, text: "Треба оглянути це місце." },
+  { type: "if", loop_restart: true, jump: "intro_flags" },
+  { type: "think", text: "Бекрум. Коридор, другі двері — як Артур сказав." },
+  { type: "think", text: "Кинув речі. Рука ниє, але пов'язка тримається." },
+  { type: "think", text: "Треба оглянути це місце." },
 
   // ─── Ініціалізація флагів ───
+  { type: "label", id: "intro_flags" },
   { type: "set_flag", flag: "intro_done" },
   { type: "set_flag", flag: "met_arthur" },
   { type: "set_flag", flag: "met_aoi" },
@@ -154,8 +156,10 @@ registerScript("intro", [
   { type: "set_flag", flag: "met_quincy" },
   { type: "set_flag", flag: "met_lettie" },
   { type: "set_flag", flag: "met_eleanor" },
+  // nickname_marty тільки перша петля
+  { type: "if", loop_restart: true, jump: "intro_end" },
   { type: "set_flag", flag: "nickname_marty" },
 
-  // ─── Кінець інтро — перехід до explore_mall ───
+  { type: "label", id: "intro_end" },
   { type: "end", text: "" }
 ]);

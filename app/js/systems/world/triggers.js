@@ -454,8 +454,9 @@ function getCharsAt(location) {
     }
   }
   // Діагностика (тимчасова)
-  if (location !== "mall") {
-    console.log("[getCharsAt]", location, "→", result.length, "chars.", "HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS));
+  if (result.length > 0 || location === "mall") {
+    console.log("[getCharsAt]", location, "→", result, "HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS),
+      "intro_done:", getFlag("intro_done"), "day:", gameState.time.day);
   }
   return result;
 }

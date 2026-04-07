@@ -299,7 +299,7 @@ function checkForcedDialogue(location) {
     var deck = gameState.dispatcher.daily_deck[name] || [];
     for (var i = 0; i < deck.length; i++) {
       var entry = deck[i];
-      if (!entry.forced) continue;
+      if (!entry.label) continue;
       if (gameState.dispatcher.seen_dialogues.indexOf(entry.id) >= 0) continue;
       if (!checkDynamicConditions(entry.conditions || {})) continue;
       return entry;
@@ -309,7 +309,7 @@ function checkForcedDialogue(location) {
 }
 
 
-// Головна функція: шукає в Daily Deck, повертає label або null.
+// Головна функція: шукає в Daily Deck, повертає entry (з titles або label) або null.
 function getDialogue(name) {
   var deck = gameState.dispatcher.daily_deck[name] || [];
   var eligible = [];
@@ -327,7 +327,7 @@ function getDialogue(name) {
     eligible.push(entry);
   }
 
-  if (eligible.length === 0) return getStub(name);
+  if (eligible.length === 0) return null;
 
   // Найвищий пріоритет
   var maxPri = -Infinity;
@@ -370,8 +370,8 @@ function getDialogue(name) {
     }
   }
 
-  if (passed.length === 0) return getStub(name);
-  return passed[Math.floor(Math.random() * passed.length)].label;
+  if (passed.length === 0) return null;
+  return passed[Math.floor(Math.random() * passed.length)];
 }
 
 

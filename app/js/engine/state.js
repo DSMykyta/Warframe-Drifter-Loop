@@ -43,15 +43,14 @@ function deserializeState(data) {
 var CAST = {};          // "ar" → { short: "ar", name: "Артур", full: "Артур Найтінгейл", abilities: [...] }
 var CAST_BY_NAME = {};  // "Артур" → те саме
 
-//                c(short, name, full, missions, romance, telepathy)
-function c(short, name, full, missions, romance, telepathy) {
+//                c(short, name, full, missions, romance)
+function c(short, name, full, missions, romance) {
   var data = {
     short: short,
     name: name,
     full: full,
     missions: missions,
     romance: romance,
-    telepathy: telepathy,
   };
   CAST[short] = data;
   CAST_BY_NAME[name] = data;

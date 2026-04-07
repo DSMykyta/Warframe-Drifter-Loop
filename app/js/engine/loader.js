@@ -7,7 +7,7 @@
 
 // Розібрати CSV текст в масив об'єктів
 function parseCSV(text) {
-  var lines = text.trim().split("\n");
+  var lines = text.replace(/\r/g, "").trim().split("\n");
   var headers = lines[0].split(",");
   var result = [];
   for (var i = 1; i < lines.length; i++) {
@@ -41,7 +41,7 @@ function loadCharacters(callback) {
   loadCSV("data/characters.csv", function(rows) {
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i];
-      c(r.short, r.name, r.full, r.missions, r.chemistry, r.telepathy);
+      c(r.short, r.name, r.full, r.missions, r.chemistry);
       if (CAST[r.short]) {
         CAST[r.short].sprite = r.sprite || null;
         CAST[r.short].home = r.home || "mall";

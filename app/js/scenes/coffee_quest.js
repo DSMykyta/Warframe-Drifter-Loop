@@ -26,7 +26,7 @@ function checkCoffeeExtractDeadline() {
   var deadline = gameState.flags.data["_coffee_extract_deadline"] || 0;
   if (gameState.time.day > deadline) {
     if (typeof sendPagerMessage === "function") {
-      sendPagerMessage("Аоі", "Ми ще йдемо за кавомашиною?");
+      sendPagerMessage("ao", "Ми ще йдемо за кавомашиною?");
     }
     setFlag("coffee_extract_reminded");
   }
@@ -38,7 +38,7 @@ function checkCoffeePartsPager() {
   if (!getFlag("coffee_parts_mission_pending")) return;
   if (gameState.time.minutes < 720) return;
   if (typeof sendPagerMessage === "function") {
-    sendPagerMessage("Амір", "Марті! Кавомашина майже готова. Потрібні деталі зі складів Скальдри.");
+    sendPagerMessage("am", "Марті! Кавомашина майже готова. Потрібні деталі зі складів Скальдри.");
   }
   setFlag("coffee_parts_pager_sent");
   setFlag("coffee_parts_mission_available");
@@ -54,7 +54,7 @@ function checkCoffeeAmirDiy() {
     setFlag("coffee_amir_found_parts");
     setFlag("coffee_parts_got");
     if (typeof sendPagerMessage === "function") {
-      sendPagerMessage("Амір", "МАРТІ! Я ЗНАЙШОВ ДЕТАЛІ! Кавомашина буде!!!");
+      sendPagerMessage("am", "МАРТІ! Я ЗНАЙШОВ ДЕТАЛІ! Кавомашина буде!!!");
     }
     if (typeof addJournalEntry === "function") {
       addJournalEntry("Амір знайшов деталі для кавомашини сам.", "event");
@@ -70,7 +70,7 @@ function checkCoffeeCafeOpen() {
   setFlag("coffee_machine_found");
   setFlag("coffee_group_scene_pending");
   if (typeof sendPagerMessage === "function") {
-    sendPagerMessage("Амір", "КАВ'ЯРНЯ ПРАЦЮЄ!!! ПРИХОДЬ!!!");
+    sendPagerMessage("am", "КАВ'ЯРНЯ ПРАЦЮЄ!!! ПРИХОДЬ!!!");
   }
   if (typeof addJournalEntry === "function") {
     addJournalEntry("Кав'ярня відкрита! Амір запустив кавомашину.", "event");
@@ -84,7 +84,7 @@ function checkCoffeeCafeFind() {
   setFlag("cafe_balcony_unlocked");
   setFlag("cafe_find_scene_available");
   if (typeof sendPagerMessage === "function") {
-    sendPagerMessage("Аоі", "Знайшла місце для кавомашини на другому поверсі біля балкону!");
+    sendPagerMessage("ao", "Знайшла місце для кавомашини на другому поверсі біля балкону!");
   }
   setFlag("cafe_find_pager_sent");
 }
@@ -96,10 +96,10 @@ function checkCoffeeCafeFind() {
 
 MISSION_DIALOGUE_ENTRIES.push({
   id: "coffee_find_machine",
-  who: "Амір",
+  who: "am",
   conditions: {
     flag_false: ["coffee_find_machine_done", "coffee_quest_started", "coffee_quest_refused"],
-    chemistry_min: ["Амір", 10]
+    chemistry_min: ["am", 10]
   },
   priority: 60,
   chance: 100,
@@ -108,10 +108,10 @@ MISSION_DIALOGUE_ENTRIES.push({
 
 MISSION_DIALOGUE_ENTRIES.push({
   id: "coffee_find_machine_q",
-  who: "Квінсі",
+  who: "qu",
   conditions: {
     flag_false: ["coffee_find_machine_done", "coffee_quest_started", "coffee_quest_refused"],
-    chemistry_min: ["Квінсі", 10]
+    chemistry_min: ["qu", 10]
   },
   priority: 60,
   chance: 100,
@@ -125,7 +125,7 @@ MISSION_DIALOGUE_ENTRIES.push({
 
 DIALOGUE_ENTRIES.push({
   id: "coffee_group_opening",
-  who: "Амір",
+  who: "am",
   conditions: {
     flag_true: ["coffee_group_scene_pending"],
     flag_false: ["coffee_group_scene_done"],
@@ -139,7 +139,7 @@ DIALOGUE_ENTRIES.push({
 
 DIALOGUE_ENTRIES.push({
   id: "coffee_cafe_find_scene",
-  who: "Аоі",
+  who: "ao",
   conditions: {
     flag_true: ["cafe_find_scene_available"],
     flag_false: ["cafe_location_found"],
@@ -159,7 +159,7 @@ DIALOGUE_ENTRIES.push({
 if (typeof BONUS_OPTIONS !== "undefined") {
   BONUS_OPTIONS.push({
     id: "coffee_tell_aoi",
-    who: "Аоі",
+    who: "ao",
     text: "Слухай, ми дещо знайшли на місії...",
     label: "coffee_tell_aoi_scene",
     conditions: {
@@ -171,7 +171,7 @@ if (typeof BONUS_OPTIONS !== "undefined") {
 
   BONUS_OPTIONS.push({
     id: "coffee_extract_remind",
-    who: "Аоі",
+    who: "ao",
     text: "Про ту кавомашину — ти ще готова?",
     label: "coffee_extract_remind_scene",
     conditions: {
@@ -183,7 +183,7 @@ if (typeof BONUS_OPTIONS !== "undefined") {
 
   BONUS_OPTIONS.push({
     id: "coffee_apology_amir",
-    who: "Амір",
+    who: "am",
     text: "Слухай, вибач що не дістав ті деталі...",
     label: "coffee_apology_amir_scene",
     conditions: {
@@ -195,7 +195,7 @@ if (typeof BONUS_OPTIONS !== "undefined") {
 
   BONUS_OPTIONS.push({
     id: "milk_quest_ask_amir",
-    who: "Амір",
+    who: "am",
     text: "Про молоко для кавомашини — я готовий.",
     label: "milk_quest_start_delayed",
     conditions: {
@@ -220,7 +220,7 @@ SPECIAL_MISSION_ENTRIES.push({
     flag_false: ["coffee_machine_extracted"]
   },
   chance: 100,
-  partner: "Аоі",
+  partner: "ao",
   reward: 50,
   rep: 1,
   label: "coffee_extract_scene"
@@ -263,12 +263,12 @@ SPECIAL_MISSION_ENTRIES.push({
 
 // Етап 1: Знахідка з Аміром
 registerScript("coffee_find_machine", [
-  {type: "say", who: "Амір", text: "Стій-стій-стій."},
-  {type: "say", who: "Амір", text: "Бач оте? Під балкою."},
+  {type: "say", who: "am", text: "Стій-стій-стій."},
+  {type: "say", who: "am", text: "Бач оте? Під балкою."},
   {type: "say", who: null, text: "Під завалом — щось хромоване."},
-  {type: "say", who: "Амір", text: "Це ж... ні. Це КАВОМАШИНА, Марті!"},
+  {type: "say", who: "am", text: "Це ж... ні. Це КАВОМАШИНА, Марті!"},
   {type: "say", who: null, text: "Амір штовхає балку. Не рухається."},
-  {type: "say", who: "Амір", text: "Затиснута. Тонна металу зверху."},
+  {type: "say", who: "am", text: "Затиснута. Тонна металу зверху."},
   {type: "menu", choices: [
     {text: "Це багато мороки. Потім.", label: "coffee_find_refuse"},
     {text: "О. Ідея є.", label: "coffee_find_accept"}
@@ -277,7 +277,7 @@ registerScript("coffee_find_machine", [
 
 registerScript("coffee_find_refuse", [
   {type: "say", who: null, text: "«Аміре, ми на місії. Потім.»"},
-  {type: "say", who: "Амір", text: "...Ну добре. Але я запам'ятаю де це."},
+  {type: "say", who: "am", text: "...Ну добре. Але я запам'ятаю де це."},
   {type: "set_flag", flag: "coffee_quest_refused"},
   {type: "set_flag", flag: "coffee_find_machine_done"},
   {type: "end"}
@@ -285,24 +285,24 @@ registerScript("coffee_find_refuse", [
 
 registerScript("coffee_find_accept", [
   {type: "say", who: null, text: "«Зачекай. Якщо підняти балку...»"},
-  {type: "say", who: "Амір", text: "Одному? Та вона вагу трьох людей."},
+  {type: "say", who: "am", text: "Одному? Та вона вагу трьох людей."},
   {type: "say", who: null, text: "«Не одному. Треба когось хто може метал зсунути.»"},
-  {type: "say", who: "Амір", text: "О! Аоі! Вона ж Маг — металом рухає як нічого!"},
-  {type: "say", who: "Амір", text: "Марті, ти ГЕНІЙ. Повернемось і розкажемо їй."},
+  {type: "say", who: "am", text: "О! Аоі! Вона ж Маг — металом рухає як нічого!"},
+  {type: "say", who: "am", text: "Марті, ти ГЕНІЙ. Повернемось і розкажемо їй."},
   {type: "set_flag", flag: "coffee_quest_started"},
   {type: "set_flag", flag: "coffee_find_machine_done"},
-  {type: "chemistry", who: "Амір", amount: 4},
+  {type: "chemistry", who: "am", amount: 4},
   {type: "end"}
 ]);
 
 // Етап 1: Знахідка з Квінсі
 registerScript("coffee_find_machine_quincy", [
   {type: "say", who: null, text: "Квінсі зупиняється."},
-  {type: "say", who: "Квінсі", text: "...hm."},
+  {type: "say", who: "qu", text: "...hm."},
   {type: "say", who: null, text: "Під завалом — хромований край."},
-  {type: "say", who: "Квінсі", text: "Looks like it."},
+  {type: "say", who: "qu", text: "Looks like it."},
   {type: "say", who: null, text: "Квінсі штовхає балку ногою. Ніяк."},
-  {type: "say", who: "Квінсі", text: "Важка. Треба когось, mate."},
+  {type: "say", who: "qu", text: "Важка. Треба когось, mate."},
   {type: "menu", choices: [
     {text: "Це багато мороки. Потім.", label: "coffee_find_refuse"},
     {text: "О. Ідея є.", label: "coffee_find_accept_q"}
@@ -311,24 +311,24 @@ registerScript("coffee_find_machine_quincy", [
 
 registerScript("coffee_find_accept_q", [
   {type: "say", who: null, text: "«Квінсі, якщо привести когось хто може метал зсунути...»"},
-  {type: "say", who: "Квінсі", text: "Аоі. Вона пів молу розібрала коли ми тут селились."},
-  {type: "say", who: "Квінсі", text: "Скажи їй. I don't do conversations."},
+  {type: "say", who: "qu", text: "Аоі. Вона пів молу розібрала коли ми тут селились."},
+  {type: "say", who: "qu", text: "Скажи їй. I don't do conversations."},
   {type: "set_flag", flag: "coffee_quest_started"},
   {type: "set_flag", flag: "coffee_find_machine_done"},
-  {type: "chemistry", who: "Квінсі", amount: 2},
+  {type: "chemistry", who: "qu", amount: 2},
   {type: "end"}
 ]);
 
 // Етап 2: Розмова з Аоі
 registerScript("coffee_tell_aoi_scene", [
-  {type: "say", who: "Аоі", text: "Що знайшли?"},
+  {type: "say", who: "ao", text: "Що знайшли?"},
   {type: "say", who: null, text: "«Кавомашину. Під завалами, на одній з ділянок.»"},
-  {type: "say", who: "Аоі", text: "...Кавомашину?"},
+  {type: "say", who: "ao", text: "...Кавомашину?"},
   {type: "say", who: null, text: "«Хромовану. Здається робочу. Але вона під купою металу.»"},
-  {type: "say", who: "Аоі", text: "Металеві балки?"},
+  {type: "say", who: "ao", text: "Металеві балки?"},
   {type: "say", who: null, text: "«Так. Тонна мінімум.»"},
-  {type: "say", who: "Аоі", text: "Я можу зсунути балки. Але мені потрібен хтось поруч — підстрахувати."},
-  {type: "say", who: "Аоі", text: "Підемо разом?"},
+  {type: "say", who: "ao", text: "Я можу зсунути балки. Але мені потрібен хтось поруч — підстрахувати."},
+  {type: "say", who: "ao", text: "Підемо разом?"},
   {type: "menu", choices: [
     {text: "Домовились.", label: "coffee_aoi_agree"},
     {text: "Це не небезпечно?", label: "coffee_aoi_careful"}
@@ -336,37 +336,37 @@ registerScript("coffee_tell_aoi_scene", [
 ]);
 
 registerScript("coffee_aoi_agree", [
-  {type: "say", who: "Аоі", text: "Добре. Я підготуюсь."},
+  {type: "say", who: "ao", text: "Добре. Я підготуюсь."},
   {type: "set_flag", flag: "coffee_aoi_agreed"},
   {type: "set_flag", flag: "coffee_extract_available"},
-  {type: "chemistry", who: "Аоі", amount: 3},
+  {type: "chemistry", who: "ao", amount: 3},
   {type: "end"}
 ]);
 
 registerScript("coffee_aoi_careful", [
-  {type: "say", who: "Аоі", text: "Я обережна. Завжди. Але вдвох — безпечніше."},
-  {type: "say", who: "Аоі", text: "Добре. Я підготуюсь."},
+  {type: "say", who: "ao", text: "Я обережна. Завжди. Але вдвох — безпечніше."},
+  {type: "say", who: "ao", text: "Добре. Я підготуюсь."},
   {type: "set_flag", flag: "coffee_aoi_agreed"},
   {type: "set_flag", flag: "coffee_extract_available"},
-  {type: "chemistry", who: "Аоі", amount: 2},
+  {type: "chemistry", who: "ao", amount: 2},
   {type: "end"}
 ]);
 
 // Етап 3: Спецмісія витягнення
 registerScript("coffee_extract_scene", [
   {type: "say", who: null, text: "Аоі вже на місці."},
-  {type: "say", who: "Аоі", text: "Бачиш? Три балки."},
+  {type: "say", who: "ao", text: "Бачиш? Три балки."},
   {type: "say", who: null, text: "Хромований край кавомашини під завалом."},
-  {type: "say", who: "Аоі", text: "Нижня — несуча. Зсуну верхні дві, нижня впаде сама."},
+  {type: "say", who: "ao", text: "Нижня — несуча. Зсуну верхні дві, нижня впаде сама."},
   {type: "say", who: null, text: "Аоі підносить руки. Метал стогне."},
   {type: "say", who: null, text: "Перша балка повільно зсувається вбік. Падає."},
-  {type: "say", who: "Аоі", text: "Одна."},
+  {type: "say", who: "ao", text: "Одна."},
   {type: "say", who: null, text: "Друга — заржавіла, вросла в стіну."},
   {type: "say", who: null, text: "Аоі стискає кулаки. Метал тріщить, гнеться..."},
   {type: "say", who: null, text: "Балка з'їжджає вбік."},
-  {type: "say", who: "Аоі", text: "Є."},
+  {type: "say", who: "ao", text: "Є."},
   {type: "say", who: null, text: "Під брудом — хромована кавомашина. Ціла."},
-  {type: "say", who: "Аоі", text: "...Вона ціла. Дивно. Все навколо зруйноване, а вона — ні."},
+  {type: "say", who: "ao", text: "...Вона ціла. Дивно. Все навколо зруйноване, а вона — ні."},
   {type: "menu", choices: [
     {text: "Ти молодець.", label: "coffee_extract_praise"},
     {text: "Амір буде в захваті.", label: "coffee_extract_amir"}
@@ -375,30 +375,30 @@ registerScript("coffee_extract_scene", [
 
 registerScript("coffee_extract_praise", [
   {type: "say", who: null, text: "«Ти молодець. Без тебе б не вийшло.»"},
-  {type: "say", who: "Аоі", text: "...Дякую."},
-  {type: "chemistry", who: "Аоі", amount: 4},
-  {type: "say", who: "Аоі", text: "Я віднесу Аміру. А ти... дякую. За те що покликав мене."},
+  {type: "say", who: "ao", text: "...Дякую."},
+  {type: "chemistry", who: "ao", amount: 4},
+  {type: "say", who: "ao", text: "Я віднесу Аміру. А ти... дякую. За те що покликав мене."},
   {type: "set_flag", flag: "coffee_machine_extracted"},
   {type: "set_flag", flag: "coffee_parts_mission_pending"},
-  {type: "chemistry", who: "Аоі", amount: 2},
+  {type: "chemistry", who: "ao", amount: 2},
   {type: "end"}
 ]);
 
 registerScript("coffee_extract_amir", [
-  {type: "say", who: "Аоі", text: "Він буде НЕСТЕРПНИЙ. Але... так. Я теж рада."},
-  {type: "chemistry", who: "Аоі", amount: 3},
-  {type: "say", who: "Аоі", text: "Я віднесу Аміру. А ти... дякую. За те що покликав мене."},
+  {type: "say", who: "ao", text: "Він буде НЕСТЕРПНИЙ. Але... так. Я теж рада."},
+  {type: "chemistry", who: "ao", amount: 3},
+  {type: "say", who: "ao", text: "Я віднесу Аміру. А ти... дякую. За те що покликав мене."},
   {type: "set_flag", flag: "coffee_machine_extracted"},
   {type: "set_flag", flag: "coffee_parts_mission_pending"},
-  {type: "chemistry", who: "Аоі", amount: 2},
+  {type: "chemistry", who: "ao", amount: 2},
   {type: "end"}
 ]);
 
 // Етап 4: Кафе знайдено
 registerScript("cafe_find_scene", [
-  {type: "say", who: "Аоі", text: "Ось. Дивись."},
+  {type: "say", who: "ao", text: "Ось. Дивись."},
   {type: "say", who: null, text: "Стійка, крісла під чохлами, вітрина."},
-  {type: "say", who: "Аоі", text: "Тут була кав'ярня. До всього цього. Я прибрала."},
+  {type: "say", who: "ao", text: "Тут була кав'ярня. До всього цього. Я прибрала."},
   {type: "menu", choices: [
     {text: "Затишно. Навіть з пилом.", label: "cafe_find_nice"},
     {text: "Ти сама все прибрала?", label: "cafe_find_impressed"},
@@ -407,25 +407,25 @@ registerScript("cafe_find_scene", [
 ]);
 
 registerScript("cafe_find_nice", [
-  {type: "say", who: "Аоі", text: "Правда? Ходила повз сто разів. А потім подумала — навіщо це пустує?"},
-  {type: "chemistry", who: "Аоі", amount: 3},
-  {type: "say", who: "Аоі", text: "Як тільки Амір запустить машину — тут буде кав'ярня. Справжня."},
+  {type: "say", who: "ao", text: "Правда? Ходила повз сто разів. А потім подумала — навіщо це пустує?"},
+  {type: "chemistry", who: "ao", amount: 3},
+  {type: "say", who: "ao", text: "Як тільки Амір запустить машину — тут буде кав'ярня. Справжня."},
   {type: "set_flag", flag: "cafe_location_found"},
   {type: "end"}
 ]);
 
 registerScript("cafe_find_impressed", [
-  {type: "say", who: "Аоі", text: "Ну... метал зсунула. Решту руками. Не хотіла чекати."},
-  {type: "chemistry", who: "Аоі", amount: 4},
-  {type: "say", who: "Аоі", text: "Як тільки Амір запустить машину — тут буде кав'ярня. Справжня."},
+  {type: "say", who: "ao", text: "Ну... метал зсунула. Решту руками. Не хотіла чекати."},
+  {type: "chemistry", who: "ao", amount: 4},
+  {type: "say", who: "ao", text: "Як тільки Амір запустить машину — тут буде кав'ярня. Справжня."},
   {type: "set_flag", flag: "cafe_location_found"},
   {type: "end"}
 ]);
 
 registerScript("cafe_find_rude", [
-  {type: "say", who: "Аоі", text: "...Я знаю. Я прибирала пів ночі."},
-  {type: "say", who: "Аоі", text: "Вибач. Я думала тобі сподобається."},
-  {type: "chemistry", who: "Аоі", amount: -3},
+  {type: "say", who: "ao", text: "...Я знаю. Я прибирала пів ночі."},
+  {type: "say", who: "ao", text: "Вибач. Я думала тобі сподобається."},
+  {type: "chemistry", who: "ao", amount: -3},
   {type: "set_flag", flag: "cafe_find_rude"},
   {type: "set_flag", flag: "cafe_location_found"},
   {type: "end"}
@@ -460,7 +460,7 @@ registerScript("coffee_wh_stealth_ok", [
   {type: "set_flag", flag: "coffee_parts_got"},
   {type: "set_flag", flag: "coffee_parts_stealth"},
   {type: "set_flag", flag: "coffee_parts_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 4},
+  {type: "chemistry", who: "am", amount: 4},
   {type: "end"}
 ]);
 
@@ -480,7 +480,7 @@ registerScript("coffee_wh_hide_ok", [
   {type: "say", who: null, text: "Деталі є. Але тебе бачили. Наступного разу буде складніше."},
   {type: "set_flag", flag: "coffee_parts_got"},
   {type: "set_flag", flag: "coffee_parts_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 3},
+  {type: "chemistry", who: "am", amount: 3},
   {type: "end"}
 ]);
 
@@ -489,7 +489,7 @@ registerScript("coffee_wh_run", [
   {type: "say", who: null, text: "Деталі є. Але тебе бачили."},
   {type: "set_flag", flag: "coffee_parts_got"},
   {type: "set_flag", flag: "coffee_parts_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 3},
+  {type: "chemistry", who: "am", amount: 3},
   {type: "end"}
 ]);
 
@@ -500,7 +500,7 @@ registerScript("coffee_wh_side", [
   {type: "set_flag", flag: "coffee_parts_got"},
   {type: "set_flag", flag: "coffee_parts_stealth"},
   {type: "set_flag", flag: "coffee_parts_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 4},
+  {type: "chemistry", who: "am", amount: 4},
   {type: "end"}
 ]);
 
@@ -512,37 +512,37 @@ registerScript("coffee_wh_roof", [
   {type: "set_flag", flag: "coffee_parts_got"},
   {type: "set_flag", flag: "coffee_parts_stealth"},
   {type: "set_flag", flag: "coffee_parts_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 4},
+  {type: "chemistry", who: "am", amount: 4},
   {type: "end"}
 ]);
 
 // Етап 5b: Вибачення
 registerScript("coffee_apology_amir_scene", [
-  {type: "say", who: "Амір", text: "Та стій, стій."},
-  {type: "say", who: "Амір", text: "Ти пішов. На склади. Один. Заради кавомашини."},
-  {type: "say", who: "Амір", text: "Це вже більше ніж треба було."},
-  {type: "say", who: "Амір", text: "Не парся, Марті. Ти зробив більше ніж будь-хто б зробив."},
+  {type: "say", who: "am", text: "Та стій, стій."},
+  {type: "say", who: "am", text: "Ти пішов. На склади. Один. Заради кавомашини."},
+  {type: "say", who: "am", text: "Це вже більше ніж треба було."},
+  {type: "say", who: "am", text: "Не парся, Марті. Ти зробив більше ніж будь-хто б зробив."},
   {type: "set_flag", flag: "coffee_apology_done"},
-  {type: "chemistry", who: "Амір", amount: 3},
+  {type: "chemistry", who: "am", amount: 3},
   {type: "end"}
 ]);
 
 // Етап 6: Групова сцена
 registerScript("coffee_group_scene", [
-  {type: "say", who: "Амір", text: "ВСЕ! ВСІМ ТИХО!"},
-  {type: "say", who: "Амір", text: "Дами і джентльмени. Квінсі."},
-  {type: "say", who: "Квінсі", text: "Wow. Hilarious."},
-  {type: "say", who: "Амір", text: "Дозвольте представити..."},
+  {type: "say", who: "am", text: "ВСЕ! ВСІМ ТИХО!"},
+  {type: "say", who: "am", text: "Дами і джентльмени. Квінсі."},
+  {type: "say", who: "qu", text: "Wow. Hilarious."},
+  {type: "say", who: "am", text: "Дозвольте представити..."},
   {type: "say", who: null, text: "Кавомашина. Хромована, вичищена."},
-  {type: "say", who: "Амір", text: "ТА-ДАМ! Робоча. Кавомашина. В нашому молі."},
-  {type: "say", who: "Артур", text: "Ти серйозно зібрав нас заради кавомашини."},
-  {type: "say", who: "Амір", text: "Артуре. КАВА. Справжня. Гаряча. Не та бурда з пакетиків."},
-  {type: "say", who: "Елеонор", text: "Насправді, я вражена. Хто її знайшов?"},
-  {type: "say", who: "Амір", text: "Марті знайшов! На місії. А Аоі витягла з-під завалів."},
-  {type: "say", who: "Летті", text: "Вона хоча б чиста?"},
-  {type: "say", who: "Амір", text: "Я промив тричі! Все стерильно!"},
-  {type: "say", who: "Летті", text: "...Прийнятно."},
-  {type: "say", who: "Амір", text: "ВІД ЛЕТТІ ЦЕ КОМПЛІМЕНТ!"},
+  {type: "say", who: "am", text: "ТА-ДАМ! Робоча. Кавомашина. В нашому молі."},
+  {type: "say", who: "ar", text: "Ти серйозно зібрав нас заради кавомашини."},
+  {type: "say", who: "am", text: "Артуре. КАВА. Справжня. Гаряча. Не та бурда з пакетиків."},
+  {type: "say", who: "el", text: "Насправді, я вражена. Хто її знайшов?"},
+  {type: "say", who: "am", text: "Марті знайшов! На місії. А Аоі витягла з-під завалів."},
+  {type: "say", who: "lt", text: "Вона хоча б чиста?"},
+  {type: "say", who: "am", text: "Я промив тричі! Все стерильно!"},
+  {type: "say", who: "lt", text: "...Прийнятно."},
+  {type: "say", who: "am", text: "ВІД ЛЕТТІ ЦЕ КОМПЛІМЕНТ!"},
   {type: "menu", choices: [
     {text: "А латте можна?", label: "coffee_group_milk"},
     {text: "Як вона працює?", label: "coffee_group_how"},
@@ -551,9 +551,9 @@ registerScript("coffee_group_scene", [
 ]);
 
 registerScript("coffee_group_milk", [
-  {type: "say", who: "Амір", text: "О-о-о. Молоко. Проблема. Машина може, але в нас нема молока."},
-  {type: "say", who: "Аоі", text: "Я бачила сухе молоко на складі поруч з консервами."},
-  {type: "say", who: "Амір", text: "Марті? Береш квест на молоко?"},
+  {type: "say", who: "am", text: "О-о-о. Молоко. Проблема. Машина може, але в нас нема молока."},
+  {type: "say", who: "ao", text: "Я бачила сухе молоко на складі поруч з консервами."},
+  {type: "say", who: "am", text: "Марті? Береш квест на молоко?"},
   {type: "menu", choices: [
     {text: "Беру.", label: "coffee_group_milk_yes"},
     {text: "Потім.", label: "coffee_group_milk_later"}
@@ -561,53 +561,53 @@ registerScript("coffee_group_milk", [
 ]);
 
 registerScript("coffee_group_milk_yes", [
-  {type: "say", who: "Амір", text: "КРАСАВА! Знайдеш молоко — лате, какао, капучіно, все буде!"},
+  {type: "say", who: "am", text: "КРАСАВА! Знайдеш молоко — лате, какао, капучіно, все буде!"},
   {type: "set_flag", flag: "milk_quest_started"},
-  {type: "chemistry", who: "Амір", amount: 2},
-  {type: "say", who: "Амір", text: "Ну все! Кав'ярня офіційно відкрита!"},
-  {type: "say", who: "Квінсі", text: "Nobody asked for a ceremony, mate."},
+  {type: "chemistry", who: "am", amount: 2},
+  {type: "say", who: "am", text: "Ну все! Кав'ярня офіційно відкрита!"},
+  {type: "say", who: "qu", text: "Nobody asked for a ceremony, mate."},
   {type: "set_flag", flag: "coffee_group_scene_done"},
   {type: "end"}
 ]);
 
 registerScript("coffee_group_milk_later", [
-  {type: "say", who: "Амір", text: "Теж варіант. Але якщо надумаєш — скажи."},
+  {type: "say", who: "am", text: "Теж варіант. Але якщо надумаєш — скажи."},
   {type: "set_flag", flag: "milk_quest_delayed"},
-  {type: "say", who: "Амір", text: "Ну все! Кав'ярня офіційно відкрита!"},
-  {type: "say", who: "Квінсі", text: "Nobody asked for a ceremony, mate."},
+  {type: "say", who: "am", text: "Ну все! Кав'ярня офіційно відкрита!"},
+  {type: "say", who: "qu", text: "Nobody asked for a ceremony, mate."},
   {type: "set_flag", flag: "coffee_group_scene_done"},
   {type: "end"}
 ]);
 
 registerScript("coffee_group_how", [
-  {type: "say", who: "Амір", text: "О! Натискаєш кнопку — зверху чорна кава. Міцна, гірка."},
-  {type: "say", who: "Амір", text: "Є ще еспресо — подвійний удар. Для справжніх людей."},
-  {type: "say", who: "Амір", text: "Ну все! Кав'ярня офіційно відкрита!"},
-  {type: "say", who: "Квінсі", text: "Nobody asked for a ceremony, mate."},
+  {type: "say", who: "am", text: "О! Натискаєш кнопку — зверху чорна кава. Міцна, гірка."},
+  {type: "say", who: "am", text: "Є ще еспресо — подвійний удар. Для справжніх людей."},
+  {type: "say", who: "am", text: "Ну все! Кав'ярня офіційно відкрита!"},
+  {type: "say", who: "qu", text: "Nobody asked for a ceremony, mate."},
   {type: "set_flag", flag: "coffee_group_scene_done"},
   {type: "end"}
 ]);
 
 registerScript("coffee_group_praise", [
-  {type: "say", who: "Амір", text: "НЕПОГАНО?! Це ШЕДЕВР!"},
-  {type: "say", who: "Артур", text: "Це кавомашина."},
-  {type: "say", who: "Артур", text: "Подвійний еспресо є?"},
-  {type: "say", who: "Амір", text: "...Є."},
-  {type: "say", who: "Артур", text: "Тоді нормально."},
-  {type: "chemistry", who: "Артур", amount: 1},
-  {type: "say", who: "Амір", text: "Ну все! Кав'ярня офіційно відкрита!"},
-  {type: "say", who: "Квінсі", text: "Nobody asked for a ceremony, mate."},
+  {type: "say", who: "am", text: "НЕПОГАНО?! Це ШЕДЕВР!"},
+  {type: "say", who: "ar", text: "Це кавомашина."},
+  {type: "say", who: "ar", text: "Подвійний еспресо є?"},
+  {type: "say", who: "am", text: "...Є."},
+  {type: "say", who: "ar", text: "Тоді нормально."},
+  {type: "chemistry", who: "ar", amount: 1},
+  {type: "say", who: "am", text: "Ну все! Кав'ярня офіційно відкрита!"},
+  {type: "say", who: "qu", text: "Nobody asked for a ceremony, mate."},
   {type: "set_flag", flag: "coffee_group_scene_done"},
   {type: "end"}
 ]);
 
 // Етап 5b: Молочний квест старт (відкладений)
 registerScript("milk_quest_start_delayed", [
-  {type: "say", who: "Амір", text: "О! Нарешті!"},
-  {type: "say", who: "Амір", text: "Місія на дошці. Сухе молоко — на складах біля консервів."},
-  {type: "say", who: "Амір", text: "Але якщо знайдеш щось краще — бери."},
+  {type: "say", who: "am", text: "О! Нарешті!"},
+  {type: "say", who: "am", text: "Місія на дошці. Сухе молоко — на складах біля консервів."},
+  {type: "say", who: "am", text: "Але якщо знайдеш щось краще — бери."},
   {type: "set_flag", flag: "milk_quest_started"},
-  {type: "chemistry", who: "Амір", amount: 2},
+  {type: "chemistry", who: "am", amount: 2},
   {type: "end"}
 ]);
 
@@ -627,7 +627,7 @@ registerScript("coffee_milk_dry", [
   {type: "set_flag", flag: "milk_type_dry"},
   {type: "set_flag", flag: "milk_drinks_unlocked"},
   {type: "set_flag", flag: "milk_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 2},
+  {type: "chemistry", who: "am", amount: 2},
   {type: "end"}
 ]);
 
@@ -646,7 +646,7 @@ registerScript("coffee_milk_pasteurized", [
   {type: "set_flag", flag: "milk_type_pasteurized"},
   {type: "set_flag", flag: "milk_drinks_unlocked"},
   {type: "set_flag", flag: "milk_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 3},
+  {type: "chemistry", who: "am", amount: 3},
   {type: "end"}
 ]);
 
@@ -666,13 +666,13 @@ registerScript("coffee_milk_fresh", [
   {type: "set_flag", flag: "milk_drinks_unlocked"},
   {type: "set_flag", flag: "milk_cappuccino_unlocked"},
   {type: "set_flag", flag: "milk_mission_done"},
-  {type: "chemistry", who: "Амір", amount: 4},
+  {type: "chemistry", who: "am", amount: 4},
   {type: "end"}
 ]);
 
 // Нагадування Аоі
 registerScript("coffee_extract_remind_scene", [
-  {type: "say", who: "Аоі", text: "Я завжди готова. Місія доступна. Коли скажеш."},
-  {type: "chemistry", who: "Аоі", amount: 1},
+  {type: "say", who: "ao", text: "Я завжди готова. Місія доступна. Коли скажеш."},
+  {type: "chemistry", who: "ao", amount: 1},
   {type: "end"}
 ]);

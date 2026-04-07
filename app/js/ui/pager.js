@@ -1,21 +1,51 @@
 // ═══════════════════════════════════════════════════
-// ПЕЙДЖЕР — віджет повідомлень
+// ПЕЙДЖЕР
 // ═══════════════════════════════════════════════════
 //
-// Показує: статус (час/локація) або повідомлення від NPC.
-// Клік — переключити режим.
-// Флешить коли нове повідомлення.
-// Випадкові повідомлення надсилаються під час гри.
+// Поведінка:
+//
+// ПОВІДОМЛЕННЯ:
+//   Приходить → LCD активний 5 сек → тьмяніє → статус.
+//   Центральна кнопка: перегляд повідомлень за сьогодні.
+//   Бокові: гортають повідомлення.
+//
+// ЗАПИТ НА ДОПОМОГУ:
+//   Приходить → LCD активний 5 сек → тьмяніє.
+//   Запит НЕ зникає — замінює статус, висить до:
+//     - гравець натисне ліву (так) або праву (ні)
+//     - або пройде 1 ігрова година
+//   Центральна: перегляд простих повідомлень (не чіпає запит).
+//
+// СТАНИ LCD:
+//   idle    — тьмяний, показує статус АБО pending запит
+//   active  — яскравий, показує повідомлення/запит (5 сек або перегляд)
 
-var PAGER_MESSAGES = [];       // Завантажені повідомлення з CSV
-var _pagerQueue = [];          // Черга непрочитаних
-var _pagerMode = "status";     // "status" або "message"
+var PAGER_MESSAGES = [];
 var _pagerVisible = false;
 var _pagerTimer = null;
-var _pagerFlashing = false;
+var _pagerInboxIndex = 0;
+
+registerState("pager", {
+  inbox: [],       // повідомлення за сьогодні — зберігаються до nextDay
+});
+
+// Запит
+var _pagerRequest = null;        // {who, text, arrivedAt} або null
+var _pagerRequestAcceptLabel = null;
+var _pagerRequestDeclineLabel = null;
+
+// Стан LCD
+var _pagerLcdMode = "idle";      // "idle" | "active"
+var _pagerView = "status";       // "status" | "message" | "request_flash"
+var _pagerFlashTimer = null;
+
+// Pending response (для dialogue engine)
+var _pagerResponse = null;
+var _pagerPendingLabel = null;
+var _pagerPendingWho = null;
 
 
-// ─── ЗАВАНТАЖЕННЯ ПОВІДОМЛЕНЬ З CSV ───
+// ─── ЗАВАНТАЖЕННЯ ───
 
 function loadPagerMessages(callback) {
   loadCSV("data/pager_messages.csv", function(rows) {
@@ -25,19 +55,65 @@ function loadPagerMessages(callback) {
 }
 
 
-// ─── ІНІЦІАЛІЗАЦІЯ ПЕЙДЖЕРА ───
+// ─── ІНІЦІАЛІЗАЦІЯ ───
 
 function initPager() {
-  var pager = document.querySelector(".pager");
-  if (!pager) return;
+  var btnLeft = document.querySelector(".pager-btn-left");
+  var btnCenter = document.querySelector(".pager-btn-center");
+  var btnRight = document.querySelector(".pager-btn-right");
 
-  // Клік на пейджер — переключити режим
-  pager.addEventListener("click", function(e) {
+  if (btnLeft) btnLeft.addEventListener("click", function(e) {
     e.stopPropagation();
-    togglePagerMode();
+    _pagerClickSound();
+    // Запит — прийняти
+    if (_pagerRequest) { _pagerAccept(); }
+    // Повідомлення — попереднє
+    else if (_pagerView === "message") {
+      _pagerInboxIndex = Math.max(0, _pagerInboxIndex - 1);
+      _renderLCD();
+    }
+    // Рушій чекає кнопку — повідомити ПІСЛЯ дії пейджера
+    if (typeof _waitingForPager !== "undefined" && _waitingForPager) {
+      onPagerButton("left");
+    }
   });
 
-  // Клік на popup — закрити
+  if (btnCenter) btnCenter.addEventListener("click", function(e) {
+    e.stopPropagation();
+    _pagerClickSound();
+    // Перемикання: статус ↔ повідомлення
+    if (_pagerView === "message") {
+      _pagerView = "status";
+      _pagerLcdMode = "idle";
+    } else if (gameState.pager.inbox.length > 0) {
+      _pagerView = "message";
+      _pagerLcdMode = "active";
+      _pagerInboxIndex = gameState.pager.inbox.length - 1;
+    }
+    if (!_pagerRequest) _renderLCD();
+    // Рушій чекає
+    if (typeof _waitingForPager !== "undefined" && _waitingForPager) {
+      onPagerButton("center");
+    }
+  });
+
+  if (btnRight) btnRight.addEventListener("click", function(e) {
+    e.stopPropagation();
+    _pagerClickSound();
+    // Запит — відхилити
+    if (_pagerRequest) { _pagerDecline(); }
+    // Повідомлення — наступне
+    else if (_pagerView === "message") {
+      _pagerInboxIndex = Math.min(gameState.pager.inbox.length - 1, _pagerInboxIndex + 1);
+      _renderLCD();
+    }
+    // Рушій чекає
+    if (typeof _waitingForPager !== "undefined" && _waitingForPager) {
+      onPagerButton("right");
+    }
+  });
+
+  // Popup клік — закрити
   var popup = document.querySelector(".pager-popup");
   if (popup) {
     popup.addEventListener("click", function(e) {
@@ -48,7 +124,7 @@ function initPager() {
 }
 
 
-// ─── ПОКАЗАТИ / СХОВАТИ ПЕЙДЖЕР ───
+// ─── ПОКАЗАТИ / СХОВАТИ ───
 
 function showPager() {
   var pager = document.querySelector(".pager");
@@ -56,9 +132,9 @@ function showPager() {
     if (pager) pager.style.display = "none";
     return;
   }
-  if (pager) pager.style.display = "flex";
+  if (pager) pager.style.display = "block";
   _pagerVisible = true;
-  updatePagerScreen();
+  _renderLCD();
   startPagerInterval();
 }
 
@@ -69,53 +145,56 @@ function hidePager() {
   stopPagerInterval();
 }
 
-
-// ─── ОНОВИТИ ЕКРАН ПЕЙДЖЕРА ───
-
 function updatePagerScreen() {
-  var screen = document.querySelector(".pager-screen");
-  if (!screen) return;
-
-  var hasPager = getFlag("has_pager");
-
-  if (_pagerQueue.length > 0) {
-    var msg = _pagerQueue[0];
-    screen.innerHTML = '<div class="pager-who">' + msg.who + '</div>' +
-      '<div class="pager-text">' + msg.text + '</div>';
-    _pagerMode = "message";
-  } else if (hasPager) {
-    // Пейджер є але немає повідомлень — порожній екран
-    _pagerMode = "status";
-    screen.innerHTML = '<div class="pager-status-time" style="font-size:14px;color:rgba(255,255,255,0.3);">Немає повідомлень</div>';
-  } else {
-    // Пейджер ще не отриманий — сховати
-    _pagerMode = "status";
-    screen.innerHTML = '';
-    var pager2 = document.querySelector(".pager");
-    if (pager2) pager2.style.display = "none";
-  }
+  _renderLCD();
 }
 
 
-// ─── ПЕРЕКЛЮЧИТИ РЕЖИМ ───
+// ─── РЕНДЕР LCD ───
 
-function togglePagerMode() {
-  if (_pagerMode === "status" && _pagerQueue.length > 0) {
-    _pagerMode = "message";
-    _pagerFlashing = false;
-    var pager = document.querySelector(".pager");
-    if (pager) pager.classList.remove("pager-flash");
-  } else if (_pagerMode === "message") {
-    // Прочитане — видалити зі черги
-    if (_pagerQueue.length > 0) _pagerQueue.shift();
-    if (_pagerQueue.length > 0) {
-      // Наступне повідомлення
-      _pagerMode = "message";
+function _renderLCD() {
+  var lcd = document.querySelector(".pager-lcd");
+  if (!lcd) return;
+  var pagerEl = document.querySelector(".pager");
+
+  // CSS клас active/idle
+  if (pagerEl) {
+    if (_pagerLcdMode === "active") {
+      pagerEl.classList.add("active");
     } else {
-      _pagerMode = "status";
+      pagerEl.classList.remove("active");
     }
   }
-  updatePagerScreen();
+
+  // Перегляд повідомлень
+  if (_pagerView === "message" && gameState.pager.inbox.length > 0) {
+    var idx = Math.min(_pagerInboxIndex, gameState.pager.inbox.length - 1);
+    var msg = gameState.pager.inbox[idx];
+    lcd.innerHTML =
+      '<div class="pager-lcd-who">' + msg.who + '</div>' +
+      '<div class="pager-lcd-text">' + msg.text + '</div>' +
+      '<div class="pager-lcd-counter">' + (idx + 1) + '/' + gameState.pager.inbox.length + '</div>';
+    return;
+  }
+
+  // Pending запит — замінює статус
+  if (_pagerRequest) {
+    lcd.innerHTML =
+      '<div class="pager-lcd-who">' + _pagerRequest.who + '</div>' +
+      '<div class="pager-lcd-text">' + _pagerRequest.text + '</div>';
+    return;
+  }
+
+  // Статус
+  var time = typeof getTimeString === "function" ? getTimeString() : "--:--";
+  var loc = typeof currentLocationName === "function" ? currentLocationName() : "???";
+  var rep = gameState.rank ? gameState.rank.hex_rep || 0 : 0;
+
+  lcd.innerHTML =
+    '<div class="pager-lcd-loc">' + loc + '</div>' +
+    '<div class="pager-lcd-time">' + time + '</div>' +
+    '<div class="pager-lcd-rep">' + rep + '</div>' +
+    '<img class="pager-lcd-hex" src="assets/icons/the-hex_pager.png" onerror="this.style.display=\'none\'">';
 }
 
 
@@ -124,25 +203,126 @@ function togglePagerMode() {
 function sendPagerMessage(who, text) {
   var charData = CAST_BY_NAME[who];
   var displayName = charData ? charData.name : who;
+  if (CAST[who]) displayName = CAST[who].name;
 
-  _pagerQueue.push({ who: displayName, text: text });
+  var msg = { who: displayName, text: text };
+  gameState.pager.inbox.push(msg);
 
-  // Флеш пейджера
-  _pagerFlashing = true;
-  var pager = document.querySelector(".pager");
-  if (pager) pager.classList.add("pager-flash");
+  // LCD активний 5 сек з повідомленням
+  _pagerView = "message";
+  _pagerLcdMode = "active";
+  _pagerInboxIndex = gameState.pager.inbox.length - 1;
+  _renderLCD();
 
-  // Показати popup
-  var popup = document.querySelector(".pager-popup");
-  if (popup) {
-    popup.innerHTML = '<div class="pager-popup-who">' + displayName + '</div>' +
-      '<div class="pager-popup-text">' + text + '</div>';
-    popup.style.display = "flex";
-    setTimeout(function() { popup.style.display = "none"; }, 4000);
+  _pagerBeepSound();
+
+  // Через 5 сек — тьмяніє, повертається до статусу
+  clearTimeout(_pagerFlashTimer);
+  _pagerFlashTimer = setTimeout(function() {
+    if (_pagerView === "message") {
+      _pagerView = "status";
+      _pagerLcdMode = "idle";
+      _renderLCD();
+    }
+  }, 5000);
+}
+
+
+// ─── НАДІСЛАТИ ЗАПИТ ───
+
+function sendPagerRequest(who, text, acceptLabel, declineLabel) {
+  _pagerRequest = {
+    who: who,
+    text: text,
+    arrivedAt: gameState.time.minutes
+  };
+  _pagerRequestAcceptLabel = acceptLabel || null;
+  _pagerRequestDeclineLabel = declineLabel || null;
+
+  // LCD активний 5 сек
+  _pagerView = "status"; // запит замінює статус
+  _pagerLcdMode = "active";
+  _renderLCD();
+
+  _pagerBeepSound();
+
+  // Через 5 сек — тьмяніє, але запит залишається
+  clearTimeout(_pagerFlashTimer);
+  _pagerFlashTimer = setTimeout(function() {
+    _pagerLcdMode = "idle";
+    _renderLCD();
+  }, 5000);
+}
+
+
+// ─── ACCEPT / DECLINE ───
+
+function _pagerAccept() {
+  if (!_pagerRequest) return;
+  _pagerResponse = "accept";
+  _pagerPendingLabel = _pagerRequestAcceptLabel;
+  _pagerPendingWho = _pagerRequest.who;
+  _clearRequest();
+}
+
+function _pagerDecline() {
+  if (!_pagerRequest) return;
+  _pagerResponse = "decline";
+  _pagerPendingLabel = _pagerRequestDeclineLabel;
+  _pagerPendingWho = _pagerRequest.who;
+  _clearRequest();
+}
+
+function _clearRequest() {
+  _pagerRequest = null;
+  _pagerRequestAcceptLabel = null;
+  _pagerRequestDeclineLabel = null;
+  _pagerLcdMode = "idle";
+  _pagerView = "status";
+  _renderLCD();
+}
+
+
+// ─── ПЕРЕВІРКА ТАЙМАУТУ ЗАПИТУ (1 ігрова година) ───
+
+function checkPagerRequestTimeout() {
+  if (!_pagerRequest) return;
+  if (gameState.time.minutes - _pagerRequest.arrivedAt >= 60) {
+    // Таймаут — запит зник, вважається ігнором
+    _pagerResponse = "decline";
+    _pagerPendingLabel = _pagerRequestDeclineLabel;
+    _pagerPendingWho = _pagerRequest.who;
+    _clearRequest();
   }
+}
 
-  // Оновити екран якщо видно
-  if (_pagerVisible) updatePagerScreen();
+
+// ─── PENDING RESPONSE (для dialogue engine) ───
+
+function hasPendingPager() {
+  return _pagerResponse !== null;
+}
+
+function consumePagerResponse() {
+  var resp = _pagerResponse;
+  var label = _pagerPendingLabel;
+  var who = _pagerPendingWho;
+  _pagerResponse = null;
+  _pagerPendingLabel = null;
+  _pagerPendingWho = null;
+  return { response: resp, label: label, who: who };
+}
+
+
+// ─── POPUP ───
+
+function _showPopup(who, text) {
+  var popup = document.querySelector(".pager-popup");
+  if (!popup) return;
+  popup.innerHTML = '<div class="pager-popup-who">' + who + '</div>' +
+    '<div class="pager-popup-text">' + text + '</div>';
+  popup.style.display = "flex";
+  setTimeout(function() { popup.style.display = "none"; }, 4000);
 }
 
 
@@ -151,47 +331,43 @@ function sendPagerMessage(who, text) {
 function _sendRandomPagerMessage() {
   if (!_pagerVisible) return;
   if (PAGER_MESSAGES.length === 0) return;
-
-  // 30% шанс кожного разу
   if (Math.random() > 0.3) return;
 
-  // Вибрати випадкове повідомлення
   var idx = Math.floor(Math.random() * PAGER_MESSAGES.length);
   var msg = PAGER_MESSAGES[idx];
-
-  // Конвертувати short в ім'я
-  var name = charName(msg.who);
-  if (name === msg.who && CAST[msg.who]) {
-    name = CAST[msg.who].name;
-  }
-
-  sendPagerMessage(name, msg.text);
+  sendPagerMessage(charName(msg.who), msg.text);
 }
-
-
-// ─── ІНТЕРВАЛ ПОВІДОМЛЕНЬ ───
 
 function startPagerInterval() {
   stopPagerInterval();
-  // Кожні 45 секунд реального часу — спроба надіслати повідомлення
-  _pagerTimer = setInterval(_sendRandomPagerMessage, 45000);
+  _pagerTimer = setInterval(function() {
+    _sendRandomPagerMessage();
+    checkPagerRequestTimeout();
+  }, 45000);
 }
 
 function stopPagerInterval() {
-  if (_pagerTimer) {
-    clearInterval(_pagerTimer);
-    _pagerTimer = null;
-  }
+  if (_pagerTimer) { clearInterval(_pagerTimer); _pagerTimer = null; }
 }
 
 
-// ─── ПЕРЕВІРКА HELP REQUEST ЧЕРЕЗ ПЕЙДЖЕР ───
+// ─── ЗВУКИ ───
+
+function _pagerBeepSound() {
+  try { var a = new Audio("assets/pager_beep.mp3"); a.volume = 0.4; a.play(); } catch(e) {}
+}
+
+function _pagerClickSound() {
+  try { var a = new Audio("assets/pager_click.mp3"); a.volume = 0.3; a.play(); } catch(e) {}
+}
+
+
+// ─── HELP REQUEST ───
 
 function checkPagerHelpRequest() {
+  if (typeof checkHelpRequests !== "function") return;
   var request = checkHelpRequests();
   if (request) {
-    sendPagerMessage(request.who, request.message);
-    // Зберегти активний запит
-    gameState._activeHelpRequest = request;
+    sendPagerRequest(request.who, request.message, request.acceptLabel || null, request.declineLabel || null);
   }
 }

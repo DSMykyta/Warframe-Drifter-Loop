@@ -140,10 +140,11 @@
 
       <!-- ПЕЙДЖЕР -->
       <div class="pager" style="display:none">
-        <div class="pager-screen">
-          <div class="pager-status-time">--:--</div>
-          <div class="pager-status-day">День 1</div>
-        </div>
+        <div class="pager-lcd"></div>
+        <div class="pager-unread" style="display:none"></div>
+        <div class="pager-btn pager-btn-left"></div>
+        <div class="pager-btn pager-btn-center"></div>
+        <div class="pager-btn pager-btn-right"></div>
       </div>
       <div class="pager-popup" style="display:none">
         <div class="pager-popup-who"></div>
@@ -313,6 +314,11 @@ window.addEventListener('resize', scale);
 <script src="js/scenes/pair_events.js"></script>
 <script src="js/scenes/metro_jacket.js"></script>
 <script src="js/scenes/finale.js"></script>
+<script src="js/scenes/finale_lose.js"></script>
+
+<!-- Автозавантажувач діалогів (шукає dialogues.json) -->
+<script src="js/engine/autoloader.js"></script>
+<script src="js/engine/keyboard.js"></script>
 
 <!-- Інтерфейс -->
 <script src="js/ui/title.js"></script>
@@ -345,6 +351,13 @@ loadLocations(function() {
   if (typeof loadPagerMessages === "function") {
     loadPagerMessages(function() {
       if (typeof initPager === "function") initPager();
+    });
+  }
+
+  // Автозавантаження діалогів з manifest
+  if (typeof loadDialogueManifest === "function") {
+    loadDialogueManifest(function() {
+      console.log("[init] Dialogues loaded. DIALOGUE_ENTRIES:", DIALOGUE_ENTRIES.length);
     });
   }
 
