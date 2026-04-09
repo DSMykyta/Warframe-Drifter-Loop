@@ -182,10 +182,12 @@
   font-size: 14px;
   color: var(--accent);
   opacity: 0;
-  animation: continueBounce 1.2s ease infinite;
   pointer-events: none;
 }
-.say-continue.visible { opacity: 1; }
+.say-continue.visible {
+  opacity: 1;
+  animation: continueBounce 1.2s ease infinite;
+}
 @keyframes continueBounce {
   0%, 100% { transform: translateY(0); opacity: 0.5; }
   50% { transform: translateY(4px); opacity: 1; }

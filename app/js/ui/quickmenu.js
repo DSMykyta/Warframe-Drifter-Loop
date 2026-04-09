@@ -50,6 +50,8 @@ function _createQuickMenu() {
 
 function showQuickMenu() {
   var qm = document.getElementById("quick-menu");
+  // Не показувати під час mission loading
+  if (document.getElementById("mission-loader") || document.getElementById("mission-report")) return;
   if (qm && !_uiHidden) qm.style.display = "flex";
 }
 
