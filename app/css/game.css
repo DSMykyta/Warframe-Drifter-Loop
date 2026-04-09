@@ -72,7 +72,8 @@
 }
 
 /* Діалоговий режим — спрайти більші (ближче до камери) */
-#sprites-container.dialogue-mode .sprite {
+#sprites-container.dialogue-mode .sprite,
+#sprites-container.dialogue-mode .sprite-wrapper {
   height: 150%;
   bottom: -520px;
 }
