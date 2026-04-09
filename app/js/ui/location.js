@@ -340,6 +340,19 @@ function _showTitlesMenu(entry) {
   if (!list) return;
   list.innerHTML = "";
 
+  // Перемкнути спрайти в діалоговий режим і прибрати клікабельність
+  var sc = document.getElementById("sprites-container");
+  if (sc) {
+    sc.classList.add("dialogue-mode");
+    var wrappers = sc.querySelectorAll(".sprite-wrapper.clickable");
+    for (var w = 0; w < wrappers.length; w++) {
+      wrappers[w].classList.remove("clickable");
+    }
+  }
+  hideHUD();
+  if (typeof hidePager === "function") hidePager();
+  if (typeof _hideMapButton === "function") _hideMapButton();
+
   // Бонусні опції (напр. "Хай, бро" від Квінсі)
   if (typeof BONUS_OPTIONS !== "undefined") {
     for (var b = 0; b < BONUS_OPTIONS.length; b++) {
