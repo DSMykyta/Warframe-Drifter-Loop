@@ -1,7 +1,7 @@
 // Stub: Артур — silence
 DIALOGUE_ENTRIES.push({
   id: "stub_ar_silence",
-  who: "Артур",
+  who: "ar",
   conditions: {},
   priority: 1,
   chance: 100,

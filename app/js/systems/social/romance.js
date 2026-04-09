@@ -22,7 +22,7 @@ function startDating(name) {
   gameState.romance.dating = name;
   setFlag("dating_" + charFlag(name));
   addJournalEntry(
-    "\u041c\u0438 \u0437 " + name + " \u0442\u0435\u043f\u0435\u0440 \u0440\u0430\u0437\u043e\u043c. \u0426\u0435... \u043d\u0435\u0441\u043f\u043e\u0434\u0456\u0432\u0430\u043d\u043e. \u0410\u043b\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e.",
+    "\u041c\u0438 \u0437 " + charName(name) + " \u0442\u0435\u043f\u0435\u0440 \u0440\u0430\u0437\u043e\u043c. \u0426\u0435... \u043d\u0435\u0441\u043f\u043e\u0434\u0456\u0432\u0430\u043d\u043e. \u0410\u043b\u0435 \u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e.",
     // Ми з {name} тепер разом. Це... несподівано. Але правильно.
     "romance"
   );
@@ -38,7 +38,7 @@ function breakUp(name) {
   setFlag("breakup_" + charFlag(name));
   addChemistry(name, -30);
   addJournalEntry(
-    "\u0420\u043e\u0437\u0440\u0438\u0432 \u0437 " + name + ". \u042f \u043d\u0435 \u0434\u0443\u043c\u0430\u0432 \u0449\u043e \u0431\u0443\u0434\u0435 \u0442\u0430\u043a \u0431\u043e\u043b\u044f\u0447\u0435.",
+    "\u0420\u043e\u0437\u0440\u0438\u0432 \u0437 " + charName(name) + ". \u042f \u043d\u0435 \u0434\u0443\u043c\u0430\u0432 \u0449\u043e \u0431\u0443\u0434\u0435 \u0442\u0430\u043a \u0431\u043e\u043b\u044f\u0447\u0435.",
     // Розрив з {name}. Я не думав що буде так боляче.
     "romance"
   );

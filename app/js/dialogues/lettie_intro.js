@@ -5,7 +5,7 @@
 
 DIALOGUE_ENTRIES.push({
   id: "lettie_intro",
-  who: "Летті",
+  who: "lt",
   conditions: { flag_false: ["lettie_intro_done"] },
   priority: 90,
   chance: 100,

@@ -201,9 +201,7 @@ function _renderLCD() {
 // ─── НАДІСЛАТИ ПОВІДОМЛЕННЯ ───
 
 function sendPagerMessage(who, text) {
-  var charData = CAST_BY_NAME[who];
-  var displayName = charData ? charData.name : who;
-  if (CAST[who]) displayName = CAST[who].name;
+  var displayName = charName(who);
 
   var msg = { who: displayName, text: text };
   gameState.pager.inbox.push(msg);
@@ -232,7 +230,7 @@ function sendPagerMessage(who, text) {
 
 function sendPagerRequest(who, text, acceptLabel, declineLabel) {
   _pagerRequest = {
-    who: who,
+    who: charName(who),
     text: text,
     arrivedAt: gameState.time.minutes
   };
@@ -322,7 +320,7 @@ function _showPopup(who, text) {
   popup.innerHTML = '<div class="pager-popup-who">' + who + '</div>' +
     '<div class="pager-popup-text">' + text + '</div>';
   popup.style.display = "flex";
-  setTimeout(function() { popup.style.display = "none"; }, 4000);
+  // Popup закривається тільки кліком (handler вже в initPager)
 }
 
 
@@ -343,7 +341,21 @@ function startPagerInterval() {
   _pagerTimer = setInterval(function() {
     _sendRandomPagerMessage();
     checkPagerRequestTimeout();
+    // Перевірити обіцянки (попередження за 30 хв)
+    _checkPromiseWarning();
   }, 45000);
+}
+
+// Перевірити чи є обіцянка за 30 хв — попередити через пейджер
+function _checkPromiseWarning() {
+  if (typeof promiseWarning !== "function") return;
+  var p = promiseWarning();
+  if (!p) return;
+  // Не дублювати — перевірити флаг
+  var warnFlag = "promise_warned_" + p.who + "_" + p.day;
+  if (typeof getFlag === "function" && getFlag(warnFlag)) return;
+  if (typeof setFlag === "function") setFlag(warnFlag);
+  sendPagerMessage(p.who, "Нагадування: зустріч через 30 хв.");
 }
 
 function stopPagerInterval() {
@@ -354,11 +366,11 @@ function stopPagerInterval() {
 // ─── ЗВУКИ ───
 
 function _pagerBeepSound() {
-  try { var a = new Audio("assets/pager_beep.mp3"); a.volume = 0.4; a.play(); } catch(e) {}
+  try { var a = new Audio("assets/pager/pager_beep.mp3"); a.volume = 0.4; a.play(); } catch(e) {}
 }
 
 function _pagerClickSound() {
-  try { var a = new Audio("assets/pager_click.mp3"); a.volume = 0.3; a.play(); } catch(e) {}
+  try { var a = new Audio("assets/pager/pager_click.mp3"); a.volume = 0.3; a.play(); } catch(e) {}
 }
 
 

@@ -21,27 +21,27 @@ var MISSION_DIALOGUE_ENTRIES = []; // Місійні міні-діалоги
 // ═══ ЗАГЛУШКИ — ТЕМИ ═══
 
 var STUB_TOPICS = {
-  "\u0410\u0440\u0442\u0443\u0440": [                    // Артур
+  "ar": [                    // ar
     "square_food", "keys", "danko", "sword_cleaning",
     "weather", "cooking", "drinks", "sleep", "silence", "quincy_annoying"
   ],
-  "\u0410\u043e\u0456": [                                 // Аоі
+  "ao": [                                 // ao
     "origami", "music", "bubbletea", "bikes", "sleep",
     "weather", "quincy_noise", "mall_stores", "dreams", "stars"
   ],
-  "\u0410\u043c\u0456\u0440": [                           // Амір
+  "am": [                           // am
     "games", "electronics", "future", "food", "sleep",
     "weather", "high_score", "mall_people", "energy", "jokes"
   ],
-  "\u041a\u0432\u0456\u043d\u0441\u0456": [               // Квінсі
+  "qu": [               // qu
     "weapons", "silence", "trolling", "training", "sleep",
     "weather", "amir_loud", "film", "accuracy", "boredom"
   ],
-  "\u041b\u0435\u0442\u0442\u0456": [                     // Летті
+  "lt": [                     // lt
     "rats", "coffee", "health", "sarcasm", "sleep",
     "weather", "patients", "silence", "research", "cynicism"
   ],
-  "\u0415\u043b\u0435\u043e\u043d\u043e\u0440": [         // Елеонор
+  "el": [         // el
     "philosophy", "observations", "writing", "plants", "sleep",
     "weather", "patterns", "books", "quiet", "riddles"
   ]
@@ -49,11 +49,11 @@ var STUB_TOPICS = {
 
 
 registerState("dispatcher", {
-  daily_deck: {},          // {"Артур": [entry1, ...]} — фільтрована колода на день
-  talked_today: [],        // ["Артур", "Аоі"] — з ким сьогодні говорили
+  daily_deck: {},          // {"ar": [entry1, ...]} — фільтрована колода на день
+  talked_today: [],        // ["ar", "ao"] — з ким сьогодні говорили
   seen_dialogues: [],      // ["arthur_middle_name", ...] — побачені діалоги
-  stub_pools: {},          // {"Артур": ["topic1", ...]} — пули заглушок
-  tags_used_today: {},     // {"Артур": ["heavy_lore"], ...} — cooldown теги
+  stub_pools: {},          // {"ar": ["topic1", ...]} — пули заглушок
+  tags_used_today: {},     // {"ar": ["heavy_lore"], ...} — cooldown теги
   expired_events: []       // ["arthur_eleanor_rooftop_fight", ...] — протухлі
 });
 
@@ -294,6 +294,7 @@ function getActiveDialogue(name) {
 // Перевіряє чи є forced діалог від NPC в локації.
 function checkForcedDialogue(location) {
   var charsHere = getCharsAt(location);
+  var eligible = [];
   for (var ci = 0; ci < charsHere.length; ci++) {
     var name = charsHere[ci];
     var deck = gameState.dispatcher.daily_deck[name] || [];
@@ -302,10 +303,21 @@ function checkForcedDialogue(location) {
       if (!entry.label) continue;
       if (gameState.dispatcher.seen_dialogues.indexOf(entry.id) >= 0) continue;
       if (!checkDynamicConditions(entry.conditions || {})) continue;
-      return entry;
+      eligible.push(entry);
     }
   }
-  return null;
+  if (eligible.length === 0) return null;
+  var maxPri = -Infinity;
+  for (var j = 0; j < eligible.length; j++) {
+    var p = eligible[j].priority !== undefined ? eligible[j].priority : 1;
+    if (p > maxPri) maxPri = p;
+  }
+  var top = [];
+  for (var k = 0; k < eligible.length; k++) {
+    var pp = eligible[k].priority !== undefined ? eligible[k].priority : 1;
+    if (pp === maxPri) top.push(eligible[k]);
+  }
+  return top[Math.floor(Math.random() * top.length)];
 }
 
 
@@ -497,10 +509,15 @@ function getPlayerState() {
 function getStub(name) {
   var pool = gameState.dispatcher.stub_pools[name];
 
-  // Якщо пул порожній — заповнити з STUB_TOPICS
+  // Якщо пул порожній — заповнити з STUB_TOPICS і перемішати
   if (!pool || pool.length === 0) {
     var topics = STUB_TOPICS[name] || [];
-    gameState.dispatcher.stub_pools[name] = topics.slice(); // копія
+    var shuffled = topics.slice();
+    for (var si = shuffled.length - 1; si > 0; si--) {
+      var sj = Math.floor(Math.random() * (si + 1));
+      var tmp = shuffled[si]; shuffled[si] = shuffled[sj]; shuffled[sj] = tmp;
+    }
+    gameState.dispatcher.stub_pools[name] = shuffled;
     pool = gameState.dispatcher.stub_pools[name];
   }
   if (!pool || pool.length === 0) return "generic_stub";

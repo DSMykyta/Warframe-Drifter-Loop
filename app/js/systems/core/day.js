@@ -68,16 +68,15 @@ function nextDay() {
   checkInjuriesHeal();
 
   // ═══ 7b. Скинути одноденні флаги ═══
-  var dailyFlags = [
-    "lettie_healed_today",
-    "amir_saw_bruises", "aoi_saw_injury", "arthur_saw_injury", "quincy_saw_injury",
-    "helped_someone_today",
-    "helped_lettie_today", "helped_amir_today", "helped_arthur_today",
-    "helped_aoi_today", "helped_quincy_today", "helped_eleanor_today",
-    "coffee_given_arthur_today", "coffee_given_eleanor_today",
-    "coffee_given_lettie_today", "coffee_given_amir_today",
-    "coffee_given_aoi_today", "coffee_given_quincy_today"
-  ];
+  var dailyFlags = ["helped_someone_today"];
+  for (var _ck in CAST) {
+    var _cf = charFlag(_ck);
+    dailyFlags.push("helped_" + _cf + "_today");
+    dailyFlags.push("coffee_given_" + _cf + "_today");
+    dailyFlags.push(_cf + "_saw_injury");
+    dailyFlags.push(_cf + "_saw_bruises");
+    dailyFlags.push(_cf + "_healed_today");
+  }
   for (var i = 0; i < dailyFlags.length; i++) {
     if (getFlag(dailyFlags[i])) {
       clearFlag(dailyFlags[i]);

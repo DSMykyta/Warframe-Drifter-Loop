@@ -1,7 +1,7 @@
 // Stub: Амір — future tech
 DIALOGUE_ENTRIES.push({
   id: "stub_am_futuretech",
-  who: "Амір",
+  who: "am",
   conditions: {},
   priority: 1,
   chance: 100,

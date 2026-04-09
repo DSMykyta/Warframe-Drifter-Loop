@@ -1,7 +1,7 @@
 // Stub: Летті — patients
 DIALOGUE_ENTRIES.push({
   id: "stub_lt_patients",
-  who: "Летті",
+  who: "lt",
   conditions: {},
   priority: 1,
   chance: 100,

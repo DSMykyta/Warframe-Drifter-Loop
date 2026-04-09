@@ -20,6 +20,7 @@ var persistent = {
   completed: false,
   all_friends: false,
   cg_unlocked: [],
+  endings_seen: [],      // ["victory_all_friends", "victory_partial", "defeat"]
   insights_log: [],
   previous_journal: [],
   romanced: {}           // {"Артур": true, "Аоі": true, ...}
@@ -113,6 +114,16 @@ function onLoopEnd(victory) {
       }
     }
     persistent.all_friends = allFriends;
+
+    // Трекер закінчень
+    var endingId = allFriends ? "victory_all_friends" : "victory_partial";
+    if (persistent.endings_seen.indexOf(endingId) < 0) {
+      persistent.endings_seen.push(endingId);
+    }
+  } else {
+    if (persistent.endings_seen.indexOf("defeat") < 0) {
+      persistent.endings_seen.push("defeat");
+    }
   }
 
   persistent.loop_count++;

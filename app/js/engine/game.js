@@ -10,8 +10,15 @@
 
 var _afterIntro = false;   // Чи потрібно запустити explore_mall після intro
 var _afterExplore = false; // Чи потрібно перейти в location loop після explore_mall
+var _helpRequestTimer = null; // Дебаунс для help request check
 
 function startNewGame() {
+  // Скинути auto/skip режими
+  if (typeof _disableAutoMode === "function") _disableAutoMode();
+  if (typeof _disableSkipToggle === "function") _disableSkipToggle();
+  // Очистити бекло́г
+  if (typeof _textHistory !== "undefined") _textHistory = [];
+
   // Скинути весь стан
   resetState();
   if (typeof clearSceneSprites === "function") clearSceneSprites();
@@ -50,6 +57,9 @@ function startNewGame() {
   _afterIntro = true;
   _afterExplore = false;
 
+  // Прелоадити спрайти персонажів
+  if (typeof preloadCharacterSprites === "function") preloadCharacterSprites();
+
   // Запустити інтро
   if (SCRIPTS["intro"]) {
     try {
@@ -67,6 +77,10 @@ function startNewGame() {
 
 // Викликається коли будь-яка сцена закінчується (end node + клік)
 function onSceneEnd() {
+  // Скинути auto/skip — сцена закінчилась
+  if (typeof _disableAutoMode === "function") _disableAutoMode();
+  if (typeof _disableSkipToggle === "function") _disableSkipToggle();
+
   if (_afterIntro) {
     _afterIntro = false;
 
@@ -118,6 +132,69 @@ function onSceneEnd() {
     return;
   }
 
+  // Перевірити pending mission result (місійний діалог завершився)
+  if (gameState.missions && gameState.missions._pendingMission) {
+    var pm = gameState.missions._pendingMission;
+    delete gameState.missions._pendingMission;
+
+    // Кидок на травму
+    var injuryResult = null;
+    var injuryMessages = [];
+    if (typeof rollMissionInjury === "function") {
+      injuryResult = rollMissionInjury(pm.m.level, pm.partner, pm.partner2);
+      if (injuryResult && typeof applyMissionInjuries === "function") {
+        var applied = applyMissionInjuries(injuryResult, pm.partner, pm.partner2);
+        injuryMessages = applied.messages || [];
+      }
+    }
+
+    // Нагороди
+    if (pm.m.reward > 0) addMoney(pm.m.reward);
+    if (pm.m.rep > 0 && typeof addHexRep === "function") addHexRep(pm.m.rep);
+
+    // Хімія з партнером
+    if (pm.partner) {
+      addChemistry(pm.partner, 3);
+      if (typeof resetInteraction === "function") resetInteraction(pm.partner);
+    }
+    if (pm.partner2) {
+      addChemistry(pm.partner2, 2);
+      if (typeof resetInteraction === "function") resetInteraction(pm.partner2);
+    }
+
+    // Скинути лічильник
+    if (typeof onMissionComplete === "function") onMissionComplete();
+
+    // Видалити місію
+    if (typeof refreshMissionSlot === "function") refreshMissionSlot(pm.index);
+    else gameState.missions.list.splice(pm.index, 1);
+
+    // Щоденник
+    var jText = "Місія: " + pm.m.name + ". Рівень " + pm.m.level + ".";
+    if (pm.m.reward > 0) jText += " +" + pm.m.reward + " крон.";
+    if (typeof addJournalEntry === "function") addJournalEntry(jText, "mission");
+
+    // Показати результат як діалог
+    var resultNodes = [];
+    resultNodes.push({type: "say", who: null, text: "Місія завершена: " + pm.m.name});
+    if (pm.m.reward > 0) {
+      resultNodes.push({type: "say", who: null, text: "Нагорода: +" + pm.m.reward + " крон."});
+    }
+    if (pm.m.rep > 0) {
+      resultNodes.push({type: "say", who: null, text: "Репутація: +" + pm.m.rep});
+    }
+    for (var mi = 0; mi < injuryMessages.length; mi++) {
+      resultNodes.push({type: "say", who: null, text: injuryMessages[mi]});
+    }
+    if (injuryMessages.length === 0 && pm.m.reward === 0 && pm.m.rep === 0) {
+      resultNodes.push({type: "say", who: null, text: "Без втрат."});
+    }
+    resultNodes.push({type: "end", text: ""});
+    registerScript("_mission_result", resultNodes);
+    runScript("_mission_result");
+    return;
+  }
+
   // Звичайне завершення сцени — повернутись до локації
   _returnToLocation();
 }
@@ -149,13 +226,22 @@ function _startLocationLoop() {
 
 // Повернутись до UI локації (після будь-якого діалогу)
 function _returnToLocation() {
+  // Скинути auto/skip при поверненні до локації
+  if (typeof _disableAutoMode === "function") _disableAutoMode();
+  if (typeof _disableSkipToggle === "function") _disableSkipToggle();
+  // Скинути діалоговий стан — ми більше не в діалозі
+  if (typeof _clearDialogueState === "function") _clearDialogueState();
   showHUD();
   updateHUD();
   if (typeof showPager === "function") showPager();
   showLocation();
 
-  // Перевірити help requests через пейджер
+  // Перевірити help requests через пейджер (з дебаунсом — один таймер)
   if (typeof checkPagerHelpRequest === "function") {
-    setTimeout(checkPagerHelpRequest, 3000);
+    if (_helpRequestTimer) clearTimeout(_helpRequestTimer);
+    _helpRequestTimer = setTimeout(function() {
+      _helpRequestTimer = null;
+      checkPagerHelpRequest();
+    }, 3000);
   }
 }

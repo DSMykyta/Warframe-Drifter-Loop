@@ -45,6 +45,9 @@ function loadCharacters(callback) {
       if (CAST[r.short]) {
         CAST[r.short].sprite = r.sprite || null;
         CAST[r.short].home = r.home || "mall";
+        CAST[r.short].flag_name = r.flag_name || r.short;
+        CAST[r.short].gossip_to = r.gossip_to || null;
+        CAST[r.short].coffee_pref = r.coffee_pref || null;
       }
     }
     if (callback) callback();

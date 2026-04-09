@@ -1,7 +1,7 @@
 // Stub: Квінсі — accuracy
 DIALOGUE_ENTRIES.push({
   id: "stub_qu_accuracy",
-  who: "Квінсі",
+  who: "qu",
   conditions: {},
   priority: 1,
   chance: 100,

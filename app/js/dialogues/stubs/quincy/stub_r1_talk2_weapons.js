@@ -1,7 +1,7 @@
 // Stub: Квінсі — weapons
 DIALOGUE_ENTRIES.push({
   id: "stub_qu_weapons",
-  who: "Квінсі",
+  who: "qu",
   conditions: {},
   priority: 1,
   chance: 100,

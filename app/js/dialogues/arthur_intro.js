@@ -6,7 +6,7 @@
 
 DIALOGUE_ENTRIES.push({
   id: "arthur_intro",
-  who: "Артур",
+  who: "ar",
   conditions: { flag_false: ["arthur_intro_done"] },
   priority: 90,
   chance: 100,
@@ -17,7 +17,7 @@ DIALOGUE_ENTRIES.push({
 
 BONUS_OPTIONS.push({
   id: "arthur_bro_greeting",
-  who: "Артур",
+  who: "ar",
   text: "Хай, бро.",
   label: "arthur_intro_bro",
   conditions: { flag_true: ["quincy_told_bro"], flag_false: ["arthur_intro_done"] },

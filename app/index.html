@@ -2,6 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Drifter Loop</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,15 +75,30 @@
           </div>
           <div class="settings-row">
             <span class="settings-label">Автопрокрутка</span>
-            <button class="settings-toggle" id="setting-auto" onclick="this.classList.toggle('active')"></button>
+            <button class="settings-toggle" id="setting-auto"></button>
+          </div>
+        </div>
+        <!-- Пропуск -->
+        <div class="settings-group">
+          <div class="settings-group-title">Пропуск</div>
+          <div class="settings-row">
+            <span class="settings-label">Режим пропуску</span>
+            <button class="settings-toggle" id="setting-skipmode" title="Увімк: тільки прочитане / Вимк: все"></button>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label" style="font-size:13px; opacity:0.4" id="skipmode-hint">Пропускати все</span>
           </div>
         </div>
         <!-- Екран -->
         <div class="settings-group">
           <div class="settings-group-title">Екран</div>
           <div class="settings-row">
-            <span class="settings-label">Скринжоти</span>
-            <button class="settings-toggle" id="setting-screenshots" onclick="this.classList.toggle('active')"></button>
+            <span class="settings-label">Повний екран</span>
+            <button class="settings-toggle" id="setting-fullscreen"></button>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Прозорість тексту</span>
+            <input type="range" class="settings-slider" id="setting-textbox-opacity" min="10" max="100" value="70">
           </div>
         </div>
       </main>
@@ -111,6 +127,19 @@
       </footer>
     </div>
 
+    <!-- ЕКРАН ДЕРЕВА КВЕСТІВ -->
+    <div id="quest-tree-screen" class="screen" style="display:none">
+      <header>
+        <h1 class="chromatic" data-word="ДЕРЕВО КВЕСТІВ">&lt;DRIFTER_LOOP/&gt;</h1>
+      </header>
+      <main>
+        <div id="quest-tree-container"></div>
+      </main>
+      <footer>
+        <button class="btn" onclick="goBack('quest-tree-screen','game-screen')">НАЗАД</button>
+      </footer>
+    </div>
+
     <!-- ІГРОВИЙ ЕКРАН -->
     <div id="game-screen" style="display:none">
       <div class="game-bg"></div>
@@ -124,6 +153,7 @@
         <div class="hud-center">
           <button class="hud-btn" id="hud-map">КАРТА</button>
           <button class="hud-btn" id="hud-journal">ЩОДЕННИК</button>
+          <button class="hud-btn" id="hud-quests">КВЕСТИ</button>
           <button class="hud-btn" id="hud-inventory">ІНВЕНТАР</button>
           <button class="hud-btn" id="hud-insights">ДУМКИ</button>
         </div>
@@ -134,6 +164,9 @@
           <button class="hud-btn" id="hud-menu">МЕНЮ</button>
         </div>
       </div>
+
+      <!-- Toast сповіщення -->
+      <div id="toast-container"></div>
 
       <!-- Спрайти NPC -->
       <div id="sprites-container"></div>
@@ -231,6 +264,17 @@
         </footer>
       </div>
 
+      <!-- ОВЕРЛЕЙ: ІСТОРІЯ (БЕКЛО́Г) -->
+      <div id="overlay-backlog" class="overlay" style="display:none">
+        <header>
+          <h1 class="chromatic" data-word="ІСТОРІЯ">&lt;DRIFTER_LOOP/&gt;</h1>
+        </header>
+        <main></main>
+        <footer>
+          <button class="btn" onclick="hideBacklog()">НАЗАД</button>
+        </footer>
+      </div>
+
       <div class="choices" style="display:none">
         <div class="choices-left"></div>
         <div class="choices-list"></div>
@@ -239,6 +283,7 @@
       <div class="dialogue" style="display:none">
         <div class="name-frame"><div class="say-name"></div></div>
         <div class="text-frame"><div class="say-text"></div></div>
+        <div class="say-continue">▼</div>
       </div>
     </div>
 
@@ -262,6 +307,8 @@ window.addEventListener('resize', scale);
 <script src="js/engine/sprites.js"></script>
 <script src="js/engine/audio.js"></script>
 <script src="js/engine/transitions.js"></script>
+<script src="js/engine/effects.js"></script>
+<script src="js/engine/preloader.js"></script>
 <script src="js/engine/dialogue.js"></script>
 <script src="js/engine/game.js"></script>
 
@@ -306,21 +353,31 @@ window.addEventListener('resize', scale);
 <!-- Завантажувач -->
 <script src="js/engine/loader.js"></script>
 
-<!-- Сцени -->
+<!-- Сцени (діалоги вимкнені, фінал потрібен для демо тесту) -->
+<!--
 <script src="js/scenes/intro.js"></script>
 <script src="js/scenes/explore_mall.js"></script>
 <script src="js/scenes/stubs.js"></script>
 <script src="js/scenes/coffee_quest.js"></script>
 <script src="js/scenes/pair_events.js"></script>
 <script src="js/scenes/metro_jacket.js"></script>
+-->
 <script src="js/scenes/finale.js"></script>
 <script src="js/scenes/finale_lose.js"></script>
 
-<!-- Автозавантажувач діалогів (шукає dialogues.json) -->
-<script src="js/engine/autoloader.js"></script>
+<!-- ДЕМО -->
+<script src="js/demo/demo_dialogues.js"></script>
+<script src="js/demo/demo_systems.js"></script>
+<script src="js/demo/demo_missions.js"></script>
+<script src="js/demo/demo_init.js"></script>
+
+<!-- Автозавантажувач діалогів (вимкнений під час демо) -->
+<!--<script src="js/engine/autoloader.js"></script>-->
 <script src="js/engine/keyboard.js"></script>
+<script src="js/engine/seen.js"></script>
 
 <!-- Інтерфейс -->
+<script src="js/ui/confirm.js"></script>
 <script src="js/ui/title.js"></script>
 <script src="js/ui/screens.js"></script>
 <script src="js/ui/hud.js"></script>
@@ -329,6 +386,10 @@ window.addEventListener('resize', scale);
 <script src="js/ui/overlays.js"></script>
 <script src="js/ui/gallery.js"></script>
 <script src="js/ui/loadscreen.js"></script>
+<script src="js/ui/settings.js"></script>
+<script src="js/ui/backlog.js"></script>
+<script src="js/ui/quickmenu.js"></script>
+<script src="js/ui/questtree.js"></script>
 
 <!-- Запуск -->
 <script>
@@ -342,10 +403,9 @@ loadLocations(function() {
   // Зареєструвати бонусні опції кави
   if (typeof _registerCoffeeBonusOptions === "function") _registerCoffeeBonusOptions();
 
-  // Заповнити HOME_LOCATIONS з CAST
-  for (var _k in CAST) {
-    if (CAST[_k].home) HOME_LOCATIONS[CAST[_k].name] = CAST[_k].home;
-  }
+  // Побудувати динамічні дикти з CAST metadata
+  if (typeof _buildGossipRoutes === "function") _buildGossipRoutes();
+  if (typeof _buildCoffeePreferences === "function") _buildCoffeePreferences();
 
   // Завантажити повідомлення пейджера
   if (typeof loadPagerMessages === "function") {
@@ -361,14 +421,27 @@ loadLocations(function() {
     });
   }
 
-  document.getElementById("btn-new").addEventListener("click", startNewGame);
+  document.getElementById("btn-new").addEventListener("click", function() {
+    confirmDialog("Почати нову петлю? Незбережений прогрес буде втрачено.", startNewGame);
+  });
   document.getElementById("game-screen").addEventListener("click", advance);
 
-  // Продовжити — завантажити останнє збереження
+  // Продовжити — завантажити найновіше збереження (з будь-якого слоту)
   document.getElementById("btn-continue").addEventListener("click", function() {
-    if (load("auto")) {
+    var latest = getLatestSave();
+    if (!latest) return;
+    if (typeof _disableAutoMode === "function") _disableAutoMode();
+    if (typeof _disableSkipToggle === "function") _disableSkipToggle();
+    if (load(latest.slot)) {
       showScreen("game-screen");
-      showLocation();
+      if (gameState.dialogue_engine && gameState.dialogue_engine.scriptName && currentScript) {
+        showHUD();
+        updateHUD();
+        if (typeof showPager === "function") showPager();
+        execute(pc);
+      } else {
+        showLocation();
+      }
     }
   });
 
@@ -404,6 +477,12 @@ loadLocations(function() {
     showOverlay("inventory");
   });
 
+  document.getElementById("hud-quests").addEventListener("click", function(e) {
+    e.stopPropagation();
+    showScreen("quest-tree-screen");
+    if (typeof renderQuestTree === "function") renderQuestTree();
+  });
+
   document.getElementById("hud-insights").addEventListener("click", function(e) {
     e.stopPropagation();
     showOverlay("insights");
@@ -415,16 +494,20 @@ loadLocations(function() {
     var slot = findFreeSlot();
     if (slot) {
       save(slot, "День " + gameState.time.day + " / " + getTimeString());
+      if (typeof showToast === "function") showToast("Збережено (слот " + slot + ")", "save");
     } else {
       autoSave();
+      if (typeof showToast === "function") showToast("Автозбереження (всі слоти зайняті)", "save");
     }
   });
 
   document.getElementById("hud-menu").addEventListener("click", function(e) {
     e.stopPropagation();
-    autoSave();
-    if (typeof hidePager === "function") hidePager();
-    showScreen("main-menu");
+    confirmDialog("Повернутись до головного меню?", function() {
+      autoSave();
+      if (typeof hidePager === "function") hidePager();
+      showScreen("main-menu");
+    });
   });
 
   // Показати "Продовжити" якщо є збереження

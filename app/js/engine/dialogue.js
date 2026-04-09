@@ -16,6 +16,128 @@ var _typeTimer = null;
 var _fullText = "";
 var _waitingForPager = false;
 var _waitPagerLabels = null;
+var _inputLocked = false;
+var TEXT_SPEED_MS = 22;
+
+// ═══ СТАН ДІАЛОГУ ДЛЯ SAVE/LOAD ═══
+
+registerState("dialogue_engine", {
+  scriptName: null,
+  pc: 0,
+  callStack: [],
+  sceneSprites: {},
+  showOrder: 0,
+  currentMusic: null,
+  currentBg: null,
+  afterIntro: false,
+  afterExplore: false,
+  waitingForPager: false,
+  waitPagerLabels: null
+});
+
+// Зворотній пошук ключа SCRIPTS за масивом
+function _findScriptName(scriptRef) {
+  if (!scriptRef) return null;
+  for (var key in SCRIPTS) {
+    if (SCRIPTS[key] === scriptRef) return key;
+  }
+  return null;
+}
+
+// Синхронізувати глобальні змінні → gameState (перед save)
+function _syncDialogueToState() {
+  var ds = gameState.dialogue_engine;
+  ds.scriptName = _findScriptName(currentScript);
+  ds.pc = pc;
+  // callStack: конвертувати посилання на масиви в імена
+  ds.callStack = callStack.map(function(entry) {
+    return { scriptName: _findScriptName(entry.script), pc: entry.pc };
+  });
+  // sceneSprites: зберегти тільки серіалізовані дані
+  ds.sceneSprites = {};
+  for (var name in _sceneSprites) {
+    var s = _sceneSprites[name];
+    ds.sceneSprites[name] = {
+      short: s.charData ? s.charData.short : null,
+      zorder: s.zorder,
+      order: s.order
+    };
+  }
+  ds.showOrder = _showOrder;
+  ds.currentMusic = _currentMusic;
+  // Зберегти поточний фон
+  var bgEl = document.querySelector(".game-bg");
+  if (bgEl) {
+    var bgStyle = bgEl.style.background;
+    ds.currentBg = bgStyle || null;
+  }
+  ds.afterIntro = _afterIntro;
+  ds.afterExplore = _afterExplore;
+  ds.waitingForPager = _waitingForPager;
+  ds.waitPagerLabels = _waitPagerLabels;
+}
+
+// Відновити глобальні змінні з gameState (після load)
+function _syncStateToDialogue() {
+  var ds = gameState.dialogue_engine;
+  // Відновити скрипт
+  if (ds.scriptName && SCRIPTS[ds.scriptName]) {
+    currentScript = SCRIPTS[ds.scriptName];
+    pc = ds.pc || 0;
+  } else {
+    currentScript = null;
+    pc = 0;
+  }
+  // Відновити callStack
+  callStack = (ds.callStack || []).map(function(entry) {
+    return { script: SCRIPTS[entry.scriptName] || null, pc: entry.pc };
+  }).filter(function(entry) { return entry.script !== null; });
+  // Відновити спрайти
+  _sceneSprites = {};
+  _showOrder = ds.showOrder || 0;
+  for (var name in (ds.sceneSprites || {})) {
+    var saved = ds.sceneSprites[name];
+    var charData = _resolveChar(saved.short);
+    if (charData) {
+      _sceneSprites[name] = {
+        charData: charData,
+        zorder: saved.zorder || 0,
+        order: saved.order || 0,
+        position: 50
+      };
+    }
+  }
+  if (Object.keys(_sceneSprites).length > 0) {
+    renderSceneSprites(null);
+  }
+  // Відновити фон
+  if (ds.currentBg) {
+    var bgEl = document.querySelector(".game-bg");
+    if (bgEl) bgEl.style.background = ds.currentBg;
+  }
+  // Відновити музику
+  if (ds.currentMusic && typeof playAudio === "function") {
+    playAudio("music", ds.currentMusic, true, 500);
+  }
+  // Відновити flow flags
+  _afterIntro = ds.afterIntro || false;
+  _afterExplore = ds.afterExplore || false;
+  _waitingForPager = ds.waitingForPager || false;
+  _waitPagerLabels = ds.waitPagerLabels || null;
+}
+
+// Скинути діалоговий стан (при поверненні до локації)
+function _clearDialogueState() {
+  gameState.dialogue_engine.scriptName = null;
+  gameState.dialogue_engine.pc = 0;
+  gameState.dialogue_engine.callStack = [];
+  gameState.dialogue_engine.sceneSprites = {};
+  gameState.dialogue_engine.showOrder = 0;
+  gameState.dialogue_engine.afterIntro = false;
+  gameState.dialogue_engine.afterExplore = false;
+  gameState.dialogue_engine.waitingForPager = false;
+  gameState.dialogue_engine.waitPagerLabels = null;
+}
 
 
 // ═══ РЕЄСТРАЦІЯ ТА ЗАПУСК ═══
@@ -44,6 +166,7 @@ function typewrite(text, el) {
   clearInterval(_typeTimer);
   _fullText = text;
   typing = true;
+  _hideContinueIndicator();
   var i = 0;
   el.textContent = "";
   _typeTimer = setInterval(function() {
@@ -52,10 +175,11 @@ function typewrite(text, el) {
       el.textContent = text;
       typing = false;
       clearInterval(_typeTimer);
+      _showContinueIndicator();
     } else {
       el.textContent = text.slice(0, i);
     }
-  }, 22);
+  }, TEXT_SPEED_MS);
 }
 
 function skipType() {
@@ -63,6 +187,17 @@ function skipType() {
   var el = document.querySelector(".say-text");
   if (el) el.textContent = _fullText;
   typing = false;
+  _showContinueIndicator();
+}
+
+function _showContinueIndicator() {
+  var ind = document.querySelector(".say-continue");
+  if (ind) ind.classList.add("visible");
+}
+
+function _hideContinueIndicator() {
+  var ind = document.querySelector(".say-continue");
+  if (ind) ind.classList.remove("visible");
 }
 
 
@@ -83,6 +218,7 @@ function execute(index) {
 
   var node = currentScript[index];
 
+  try {
   switch (node.type) {
 
     // ─── show: показати спрайт ───
@@ -109,11 +245,12 @@ function execute(index) {
       if (node.text) {
         var title = document.querySelector(".scene-title");
         if (title) {
+          _inputLocked = true;
           title.querySelector("span").textContent = node.text;
           title.classList.add("visible");
           setTimeout(function() {
             title.classList.remove("visible");
-            setTimeout(function() { pc = index + 1; execute(pc); }, 600);
+            setTimeout(function() { _inputLocked = false; pc = index + 1; execute(pc); }, 600);
           }, 2000);
         }
       } else {
@@ -123,6 +260,15 @@ function execute(index) {
 
     // ─── say: діалог ───
     case "say":
+      // Прелоадити наступні ассети (look-ahead)
+      if (typeof preloadScriptAssets === "function") {
+        preloadScriptAssets(currentScript, index + 1);
+      }
+      // Трекінг прочитаних нод
+      if (typeof markSeen === "function") {
+        markSeen(_findScriptName(currentScript), index);
+        if (typeof _scheduleSaveSeen === "function") _scheduleSaveSeen();
+      }
       var nameEl = document.querySelector(".say-name");
       var textEl = document.querySelector(".say-text");
       var dlg = document.querySelector(".dialogue");
@@ -132,42 +278,66 @@ function execute(index) {
         // Гравець — без плашки з іменем
         highlightSpeaker(null);
         nameEl.style.visibility = "hidden";
+        nameEl.removeAttribute("data-char");
         textEl.className = "say-text";
       } else if (node.who) {
         ensureSpeakerVisible(node.who);
         nameEl.style.visibility = "visible";
         nameEl.textContent = charName(node.who);
+        // Встановити data-char для кольору імені
+        var _charShort = CAST[node.who] ? node.who : null;
+        if (!_charShort) {
+          for (var _cs in CAST) { if (CAST[_cs].name === node.who) { _charShort = _cs; break; } }
+        }
+        nameEl.setAttribute("data-char", _charShort || "");
         textEl.className = "say-text";
       } else {
         highlightSpeaker(null);
         nameEl.style.visibility = "hidden";
+        nameEl.removeAttribute("data-char");
         textEl.className = "say-text narrator";
       }
       typewrite(node.text, textEl);
+      if (typeof pushToHistory === "function") pushToHistory(node.who, node.text, "say");
       if (node.flag) setFlag(node.flag);
       if (node.chemistry) {
         for (var n in node.chemistry) addChemistry(n, node.chemistry[n]);
       }
       if (node.time) advanceTime(node.time);
+      // Авто-режим: запланувати advance після завершення typewrite
+      if (typeof _autoMode !== "undefined" && _autoMode && typeof _tryAutoAdvance === "function") {
+        _tryAutoAdvance();
+      }
       break;
 
     // ─── menu: вибір ───
     case "menu":
+      _hideContinueIndicator();
       var dlg2 = document.querySelector(".dialogue");
       if (dlg2) dlg2.style.display = "none";
       var choices = document.querySelector(".choices");
       var list = document.querySelector(".choices-list");
       list.innerHTML = "";
       node.choices.forEach(function(ch) {
+        var isLocked = false;
         if (ch.condition) {
-          if (ch.condition.flag && !getFlag(ch.condition.flag)) return;
-          if (ch.condition.flag_false && getFlag(ch.condition.flag_false)) return;
+          if (ch.condition.flag && !getFlag(ch.condition.flag)) isLocked = true;
+          if (ch.condition.flag_false && getFlag(ch.condition.flag_false)) isLocked = true;
         }
+        // Показати заблоковані вибори (сірими), замість ховання
         var btn = document.createElement("button");
-        btn.className = "choice-btn" + (ch.bonus ? " bonus" : "");
-        btn.textContent = ch.text;
+        var isSeen = ch.flag && getFlag(ch.flag);
+        btn.className = "choice-btn" + (ch.bonus ? " bonus" : "") +
+          (isSeen ? " seen-choice" : "") +
+          (isLocked ? " locked-choice" : "");
+        btn.textContent = isLocked ? ch.text : ch.text;
+        if (isLocked) {
+          list.appendChild(btn);
+          return; // Не додаємо click handler
+        }
         btn.addEventListener("click", function(e) {
           e.stopPropagation();
+          if (typeof pushToHistory === "function") pushToHistory(null, "\u25b8 " + ch.text, "choice");
           if (ch.flag) setFlag(ch.flag);
           if (ch.chemistry) {
             for (var cn in ch.chemistry) addChemistry(cn, ch.chemistry[cn]);
@@ -186,6 +356,10 @@ function execute(index) {
             }
           } else {
             pc++; execute(pc);
+          }
+          // Відновити auto-advance після вибору
+          if (typeof _autoMode !== "undefined" && _autoMode && typeof _tryAutoAdvance === "function") {
+            setTimeout(_tryAutoAdvance, 200);
           }
         });
         list.appendChild(btn);
@@ -251,6 +425,7 @@ function execute(index) {
 
     // ─── telepathy/think ───
     case "telepathy":
+      if (typeof markSeen === "function") { markSeen(_findScriptName(currentScript), index); if (typeof _scheduleSaveSeen === "function") _scheduleSaveSeen(); }
       var dlg3 = document.querySelector(".dialogue");
       if (dlg3) dlg3.style.display = "none";
       var tel = document.querySelector(".telepathy-overlay");
@@ -264,9 +439,11 @@ function execute(index) {
         tel.appendChild(span);
       }
       tel.style.display = "flex";
+      if (typeof pushToHistory === "function") pushToHistory(node.who || "Елеонор", node.text, "telepathy");
       break;
 
     case "think":
+      if (typeof markSeen === "function") { markSeen(_findScriptName(currentScript), index); if (typeof _scheduleSaveSeen === "function") _scheduleSaveSeen(); }
       var dlg4 = document.querySelector(".dialogue");
       if (dlg4) dlg4.style.display = "none";
       var think = document.querySelector(".telepathy-overlay");
@@ -274,6 +451,7 @@ function execute(index) {
       think.textContent = "";
       think.style.display = "flex";
       typewrite(node.text, think);
+      if (typeof pushToHistory === "function") pushToHistory(null, node.text, "think");
       break;
 
     // ─── game state ───
@@ -358,15 +536,48 @@ function execute(index) {
       }
       break;
 
+    // ─── effect: екранні ефекти ───
+    case "effect":
+      if (typeof applyEffect === "function") {
+        _inputLocked = true;
+        applyEffect(node.name, node, function() {
+          _inputLocked = false;
+          pc = index + 1; execute(pc);
+        });
+      } else {
+        pc = index + 1; execute(pc);
+      }
+      break;
+
     default:
       pc = index + 1; execute(pc);
+  }
+  } catch(e) {
+    var scriptName = _findScriptName(currentScript) || "unknown";
+    console.error("[dialogue execute] Error at " + scriptName + ":" + index, e);
+    _inputLocked = false;
+    if (typeof showToast === "function") showToast("Помилка в сцені, пропущено крок", "error");
+    pc = index + 1;
+    execute(pc);
   }
 }
 
 
 // ═══ КЛІК — НАСТУПНА КОМАНДА ═══
 
+// Перевірка чи можна пропустити поточну ноду (для skip-read-only)
+function canSkipCurrentNode() {
+  if (!currentScript) return false;
+  // Якщо skip-read-only вимкнений — пропускаємо все
+  if (!settings || !settings.skipReadOnly) return true;
+  // Перевіряємо чи нода прочитана
+  var scriptName = _findScriptName(currentScript);
+  if (typeof isSeen === "function" && isSeen(scriptName, pc)) return true;
+  return false;
+}
+
 function advance() {
+  if (_inputLocked) return;
   if (!currentScript) return;
   if (_waitingForPager) return; // Чекаємо кнопку пейджера
   var choices = document.querySelector(".choices");
@@ -377,7 +588,8 @@ function advance() {
   if (tel && tel.style.display === "flex") { tel.style.display = "none"; }
   if (typing) { skipType(); return; }
 
-  if (pc >= currentScript.length - 1 && currentScript[pc] && currentScript[pc].type === "end") {
+  if (currentScript[pc] && currentScript[pc].type === "end" && !currentScript[pc].text) {
+    // Кінець сцени — текст порожній, фінальний клік
     currentScript = null;
     clearSceneSprites();
     onSceneEnd();

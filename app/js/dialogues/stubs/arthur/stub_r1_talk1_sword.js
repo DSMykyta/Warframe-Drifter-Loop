@@ -1,7 +1,7 @@
 // Stub: Артур — sword cleaning
 DIALOGUE_ENTRIES.push({
   id: "stub_ar_sword",
-  who: "Артур",
+  who: "ar",
   conditions: {},
   priority: 1,
   chance: 100,

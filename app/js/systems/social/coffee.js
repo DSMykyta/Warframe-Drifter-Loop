@@ -26,15 +26,17 @@ var COFFEE_MENU_MILK = [
 ];
 
 
-// Хто що любить
-var COFFEE_PREFERENCES = {
-  "\u0410\u0440\u0442\u0443\u0440":   "coffee_espresso",   // Артур
-  "\u041b\u0435\u0442\u0442\u0456":   "coffee_latte",      // Летті
-  "\u0410\u043e\u0456":     "coffee_cocoa",      // Аоі
-  "\u0410\u043c\u0456\u0440":    "coffee_espresso",   // Амір
-  "\u041a\u0432\u0456\u043d\u0441\u0456":  "coffee_black",      // Квінсі
-  "\u0415\u043b\u0435\u043e\u043d\u043e\u0440": "coffee_latte"       // Елеонор
-};
+// Хто що любить: генерується автоматично з CAST.coffee_pref
+var COFFEE_PREFERENCES = {};
+
+function _buildCoffeePreferences() {
+  COFFEE_PREFERENCES = {};
+  for (var id in CAST) {
+    if (CAST[id].coffee_pref) {
+      COFFEE_PREFERENCES[id] = CAST[id].coffee_pref;
+    }
+  }
+}
 
 
 // Стан кави зберігається в inventory.items (кава = предмет інвентарю)

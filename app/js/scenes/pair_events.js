@@ -10,7 +10,7 @@
 BANTER_ENTRIES.push({
   id: "amir_aoi_arcade",
   location: "comp_club",
-  chars: ["Аоі", "Амір"],
+  chars: ["ao", "am"],
   conditions: {
     flag_false: ["pair_amir_aoi_arcade_seen"]
   },
@@ -19,13 +19,13 @@ BANTER_ENTRIES.push({
 });
 
 registerScript("amir_aoi_arcade", [
-  {type: "say", who: "Амір", text: "Аоі! Один раунд. Я знайшов нову комбо."},
-  {type: "say", who: "Аоі", text: "Твоя остання 'нова комбо' тривала дві секунди."},
-  {type: "say", who: "Амір", text: "Ця — три! Прогрес!"},
-  {type: "say", who: "Аоі", text: "...Добре. Один раунд."},
+  {type: "say", who: "am", text: "Аоі! Один раунд. Я знайшов нову комбо."},
+  {type: "say", who: "ao", text: "Твоя остання 'нова комбо' тривала дві секунди."},
+  {type: "say", who: "am", text: "Ця — три! Прогрес!"},
+  {type: "say", who: "ao", text: "...Добре. Один раунд."},
   {type: "say", who: null, text: "Через хвилину Амір програє."},
-  {type: "say", who: "Амір", text: "Як. ЯК."},
-  {type: "say", who: "Аоі", text: "Ти завжди атакуєш першим. Це передбачувано."},
+  {type: "say", who: "am", text: "Як. ЯК."},
+  {type: "say", who: "ao", text: "Ти завжди атакуєш першим. Це передбачувано."},
   {type: "set_flag", flag: "pair_amir_aoi_arcade_seen"},
   {type: "end"}
 ]);
@@ -36,7 +36,7 @@ registerScript("amir_aoi_arcade", [
 BANTER_ENTRIES.push({
   id: "aoi_lettie_medbay",
   location: "medbay",
-  chars: ["Аоі", "Летті"],
+  chars: ["ao", "lt"],
   conditions: {
     flag_false: ["pair_aoi_lettie_medbay_seen"]
   },
@@ -45,13 +45,13 @@ BANTER_ENTRIES.push({
 });
 
 registerScript("aoi_lettie_medbay", [
-  {type: "say", who: "Аоі", text: "Летті. Я принесла чай."},
-  {type: "say", who: "Летті", text: "Чай? Ти знаєш, що я п'ю тільки каву."},
-  {type: "say", who: "Аоі", text: "Знаю. Тому принесла чай. Тобі потрібен сон, а не черговий кофеїн."},
-  {type: "say", who: "Летті", text: "..."},
-  {type: "say", who: "Летті", text: "Нахабна. Але... дякую."},
-  {type: "say", who: "Аоі", text: "Будь ласка."},
-  {type: "say", who: "Летті", text: "Тільки нікому не кажи, що я це випила."},
+  {type: "say", who: "ao", text: "Летті. Я принесла чай."},
+  {type: "say", who: "lt", text: "Чай? Ти знаєш, що я п'ю тільки каву."},
+  {type: "say", who: "ao", text: "Знаю. Тому принесла чай. Тобі потрібен сон, а не черговий кофеїн."},
+  {type: "say", who: "lt", text: "..."},
+  {type: "say", who: "lt", text: "Нахабна. Але... дякую."},
+  {type: "say", who: "ao", text: "Будь ласка."},
+  {type: "say", who: "lt", text: "Тільки нікому не кажи, що я це випила."},
   {type: "set_flag", flag: "pair_aoi_lettie_medbay_seen"},
   {type: "end"}
 ]);
@@ -62,7 +62,7 @@ registerScript("aoi_lettie_medbay", [
 BANTER_ENTRIES.push({
   id: "arthur_quincy_rooftop",
   location: "rooftop",
-  chars: ["Артур", "Квінсі"],
+  chars: ["ar", "qu"],
   conditions: {
     flag_false: ["pair_arthur_quincy_rooftop_seen"]
   },
@@ -71,12 +71,12 @@ BANTER_ENTRIES.push({
 });
 
 registerScript("arthur_quincy_rooftop", [
-  {type: "say", who: "Артур", text: "Квінсі. Доповідай по периметру."},
-  {type: "say", who: "Квінсі", text: "Чисто. Як завжди. Ти щоразу питаєш."},
-  {type: "say", who: "Артур", text: "І буду питати. Це протокол."},
-  {type: "say", who: "Квінсі", text: "Протокол для загону з шести людей у покинутому молі?"},
-  {type: "say", who: "Артур", text: "Особливо для загону з шести людей у покинутому молі."},
-  {type: "say", who: "Квінсі", text: "...Справедливо."},
+  {type: "say", who: "ar", text: "Квінсі. Доповідай по периметру."},
+  {type: "say", who: "qu", text: "Чисто. Як завжди. Ти щоразу питаєш."},
+  {type: "say", who: "ar", text: "І буду питати. Це протокол."},
+  {type: "say", who: "qu", text: "Протокол для загону з шести людей у покинутому молі?"},
+  {type: "say", who: "ar", text: "Особливо для загону з шести людей у покинутому молі."},
+  {type: "say", who: "qu", text: "...Справедливо."},
   {type: "set_flag", flag: "pair_arthur_quincy_rooftop_seen"},
   {type: "end"}
 ]);
@@ -87,7 +87,7 @@ registerScript("arthur_quincy_rooftop", [
 BANTER_ENTRIES.push({
   id: "eleanor_lettie_info",
   location: "security_desk",
-  chars: ["Елеонор", "Летті"],
+  chars: ["el", "lt"],
   conditions: {
     flag_false: ["pair_eleanor_lettie_info_seen"]
   },
@@ -96,14 +96,14 @@ BANTER_ENTRIES.push({
 });
 
 registerScript("eleanor_lettie_info", [
-  {type: "say", who: "Елеонор", text: "Летті, у мене питання. Суто професійне."},
-  {type: "say", who: "Летті", text: "Якщо про здоров'я — прийди в медпункт. Якщо про щось інше — я не зацікавлена."},
-  {type: "say", who: "Елеонор", text: "Про записи. Ти ведеш медичний журнал?"},
-  {type: "say", who: "Летті", text: "Так. Чому?"},
-  {type: "say", who: "Елеонор", text: "Мені цікаво порівняти наші нотатки. Я бачу закономірності у поведінці людей, ти — у їхньому здоров'ї."},
-  {type: "say", who: "Летті", text: "Хочеш сказати, що поведінка і здоров'я пов'язані? Яке відкриття."},
-  {type: "say", who: "Елеонор", text: "Хочу сказати, що разом ми побачимо більше."},
-  {type: "say", who: "Летті", text: "...Може. Поговоримо пізніше."},
+  {type: "say", who: "el", text: "Летті, у мене питання. Суто професійне."},
+  {type: "say", who: "lt", text: "Якщо про здоров'я — прийди в медпункт. Якщо про щось інше — я не зацікавлена."},
+  {type: "say", who: "el", text: "Про записи. Ти ведеш медичний журнал?"},
+  {type: "say", who: "lt", text: "Так. Чому?"},
+  {type: "say", who: "el", text: "Мені цікаво порівняти наші нотатки. Я бачу закономірності у поведінці людей, ти — у їхньому здоров'ї."},
+  {type: "say", who: "lt", text: "Хочеш сказати, що поведінка і здоров'я пов'язані? Яке відкриття."},
+  {type: "say", who: "el", text: "Хочу сказати, що разом ми побачимо більше."},
+  {type: "say", who: "lt", text: "...Може. Поговоримо пізніше."},
   {type: "set_flag", flag: "pair_eleanor_lettie_info_seen"},
   {type: "end"}
 ]);

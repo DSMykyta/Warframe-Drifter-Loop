@@ -1,7 +1,7 @@
 // Stub: Амір — electronics
 DIALOGUE_ENTRIES.push({
   id: "stub_am_electronics",
-  who: "Амір",
+  who: "am",
   conditions: {},
   priority: 1,
   chance: 100,

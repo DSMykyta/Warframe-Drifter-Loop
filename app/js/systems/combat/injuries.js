@@ -157,7 +157,7 @@ function rollMissionInjury(missionLevel, partnerName, partner2Name) {
   if (partner2Name) participants.push(partner2Name);
 
   // Летті на місії — повна імунність + лікування
-  var lettiePresent = participants.indexOf("\u041b\u0435\u0442\u0442\u0456") >= 0; // Летті
+  var lettiePresent = participants.indexOf("lt") >= 0;
   if (lettiePresent) {
     for (var lp = 0; lp < participants.length; lp++) {
       if (getInjuryStacks(participants[lp]) > 0) {
@@ -346,17 +346,9 @@ function checkInjuriesHeal() {
 }
 
 
-// Допоміжна функція — charFlag (латинський ID для флагів)
-// Визначена в state.js як глобальна утиліта
+// Допоміжна функція — charFlag (повне латинське ім'я для флагів)
+// Приймає short ID (ar, el, lt...), повертає flag_name (arthur, eleanor, lettie...)
 function charFlag(name) {
-  // Маппінг кирилиця -> латиниця
-  var map = {
-    "\u0410\u0440\u0442\u0443\u0440": "arthur",       // Артур
-    "\u0415\u043b\u0435\u043e\u043d\u043e\u0440": "eleanor",     // Елеонор
-    "\u041b\u0435\u0442\u0442\u0456": "lettie",       // Летті
-    "\u0410\u043c\u0456\u0440": "amir",         // Амір
-    "\u0410\u043e\u0456": "aoi",           // Аоі
-    "\u041a\u0432\u0456\u043d\u0441\u0456": "quincy"        // Квінсі
-  };
-  return map[name] || name.toLowerCase();
+  if (CAST[name]) return CAST[name].flag_name || name;
+  return name.toLowerCase();
 }

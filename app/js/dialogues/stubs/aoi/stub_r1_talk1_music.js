@@ -1,7 +1,7 @@
 // Stub: Аоі — music
 DIALOGUE_ENTRIES.push({
   id: "stub_ao_music",
-  who: "Аоі",
+  who: "ao",
   conditions: {},
   priority: 1,
   chance: 100,

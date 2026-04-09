@@ -29,6 +29,8 @@ function clearFlag(name) {
 // Оновити весь UI після зміни флагу.
 // Кожен елемент сам перевіряє свої флаги (has_pager, has_map, тощо).
 function _refreshUI() {
+  var gs = document.getElementById("game-screen");
+  if (!gs || gs.style.display === "none") return;
   if (typeof showPager === "function") showPager();
   if (typeof updatePagerScreen === "function") updatePagerScreen();
   if (typeof _showMapButton === "function" && getFlag("has_map")) _showMapButton();

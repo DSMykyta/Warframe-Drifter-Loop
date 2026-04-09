@@ -102,7 +102,7 @@ function generateMissions() {
   var allNames = Object.keys(CAST);
   var pool = [];
   for (var pi = 0; pi < allNames.length; pi++) {
-    var castName = CAST[allNames[pi]].name;
+    var castName = allNames[pi];
     if (!isNpcInRecovery(castName)) {
       pool.push(castName);
     }
@@ -180,11 +180,14 @@ function generateMissions() {
     gameState.missions.list.push(mission);
   }
 
+  // Зберегти пул для подальшого оновлення слотів
+  gameState.missions._remainingPool = pool.slice();
+
   // ═══ 3. АВАРІЙНА МІСІЯ — якщо neglect критичний ═══
   if (gameState.missions.days_without_mission >= 5) {
     // Перший персонаж з касту як напарник
     var firstKey = Object.keys(CAST)[0];
-    var redemptionPartner = firstKey ? CAST[firstKey].name : null;
+    var redemptionPartner = firstKey ? firstKey : null;
 
     gameState.missions.list.push({
       name: "\u0410\u0412\u0410\u0420\u0406\u0419\u041d\u0410 \u041e\u041f\u0415\u0420\u0410\u0426\u0406\u042f", // АВАРІЙНА ОПЕРАЦІЯ
@@ -197,4 +200,46 @@ function generateMissions() {
       is_redemption: true
     });
   }
+}
+
+
+// Оновити слот після виконання місії — нова назва, новий напарник.
+// Слот залишається, місія не зникає.
+function refreshMissionSlot(index) {
+  var mission = gameState.missions.list[index];
+  if (!mission) return;
+
+  // Спецмісії не оновлюються — видаляються
+  if (mission.is_special || mission.is_redemption) {
+    gameState.missions.list.splice(index, 1);
+    return;
+  }
+
+  // Нова назва
+  var names = _shuffleArray(MISSION_NAMES_POOL);
+  mission.name = names[0];
+
+  // Повернути старого напарника в пул
+  var pool = gameState.missions._remainingPool || [];
+  if (mission.partner) pool.push(mission.partner);
+  if (mission.partner2) pool.push(mission.partner2);
+  pool = _shuffleArray(pool);
+
+  // Новий напарник з пулу
+  mission.partner = pool.length > 0 ? pool.shift() : null;
+  mission.partner2 = null;
+  mission.partner_count = mission.partner ? 1 : 0;
+
+  // 15% парна (рівень 3+)
+  if (mission.partner && mission.level >= 3 && pool.length > 0) {
+    if (Math.floor(Math.random() * 100) + 1 <= 15) {
+      mission.partner2 = pool.shift();
+      mission.partner_count = 2;
+      if (mission.name.indexOf("[ПАРНА]") < 0) {
+        mission.name += " [ПАРНА]";
+      }
+    }
+  }
+
+  gameState.missions._remainingPool = pool;
 }

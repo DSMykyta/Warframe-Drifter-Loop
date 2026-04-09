@@ -1,7 +1,7 @@
 // Stub: Аоі — origami
 DIALOGUE_ENTRIES.push({
   id: "stub_ao_origami",
-  who: "Аоі",
+  who: "ao",
   conditions: {},
   priority: 1,
   chance: 100,

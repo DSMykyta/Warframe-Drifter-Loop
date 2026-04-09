@@ -1,7 +1,7 @@
 // Stub: Елеонор — writing
 DIALOGUE_ENTRIES.push({
   id: "stub_el_writing",
-  who: "Елеонор",
+  who: "el",
   conditions: {},
   priority: 1,
   chance: 100,
@@ -11,8 +11,8 @@ DIALOGUE_ENTRIES.push({
 registerScript("stub_el_writing", [
   { type: "show", who: "el", zorder: 1 },
   { type: "say", who: "mc", text: "Знову пишеш?" },
-  { type: "say", who: "el", text: "Записую. Не плутай." },
-  { type: "say", who: "el", text: "Письменник вигадує. Журналіст фіксує. Я — фіксую." },
-  { type: "say", who: "el", text: "Хтось має пам'ятати те, що відбувається тут. Навіть якщо ніхто не прочитає." },
+  { type: "telepathy", text: "Записую. Не плутай." },
+  { type: "telepathy", text: "Письменник вигадує. Журналіст фіксує. Я — фіксую." },
+  { type: "telepathy", text: "Хтось має пам'ятати те, що відбувається тут. Навіть якщо ніхто не прочитає." },
   { type: "end", text: "" }
 ]);

@@ -1,7 +1,7 @@
 // Stub: Артур — discipline
 DIALOGUE_ENTRIES.push({
   id: "stub_ar_discipline",
-  who: "Артур",
+  who: "ar",
   conditions: {},
   priority: 1,
   chance: 100,

@@ -40,7 +40,8 @@
   transition: opacity 0.15s ease, background 0.15s ease;
 }
 
-.screen footer .btn:hover {
+.screen footer .btn:hover,
+.screen footer .btn:active {
   opacity: 1;
 }
 
@@ -78,7 +79,8 @@
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.load-slot:hover {
+.load-slot:hover,
+.load-slot:active {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.12);
 }
@@ -162,7 +164,8 @@
   color: #00c864;
 }
 
-.load-actions .btn-load:hover {
+.load-actions .btn-load:hover,
+.load-actions .btn-load:active {
   background: rgba(0, 200, 100, 0.15);
 }
 
@@ -171,7 +174,8 @@
   color: #e63580;
 }
 
-.load-actions .btn-delete:hover {
+.load-actions .btn-delete:hover,
+.load-actions .btn-delete:active {
   background: rgba(230, 53, 128, 0.15);
 }
 
@@ -295,7 +299,8 @@
   transition: all 0.15s ease;
 }
 
-.gallery-tab:hover {
+.gallery-tab:hover,
+.gallery-tab:active {
   color: rgba(255, 255, 255, 0.7);
   border-color: rgba(255, 255, 255, 0.15);
 }
@@ -324,7 +329,8 @@
   overflow: hidden;
 }
 
-.gallery-item:hover {
+.gallery-item:hover,
+.gallery-item:active {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -387,7 +393,8 @@
   opacity: 0.7;
 }
 
-.overlay footer .btn:hover {
+.overlay footer .btn:hover,
+.overlay footer .btn:active {
   opacity: 1;
 }
 
@@ -466,14 +473,17 @@
   max-width: 100%;
 }
 
-.map-room:hover {
+.map-room:hover,
+.map-room:active {
   border-color: rgba(0, 180, 220, 0.5);
   color: var(--white);
 }
 
 /* Hover з превʼю фону */
 .map-room:hover .map-room-name,
-.map-room:hover .map-room-chars {
+.map-room:active .map-room-name,
+.map-room:hover .map-room-chars,
+.map-room:active .map-room-chars {
   position: relative;
   z-index: 2;
   text-shadow: 0 1px 4px rgba(0,0,0,0.9);
@@ -496,7 +506,8 @@
   border-style: dashed;
 }
 
-.map-room.locked:hover {
+.map-room.locked:hover,
+.map-room.locked:active {
   background: rgba(0, 180, 220, 0.06);
   border-color: rgba(0, 180, 220, 0.25);
   color: rgba(255, 255, 255, 0.7);
@@ -574,7 +585,8 @@
   transition: border-color 0.15s ease;
 }
 
-.inventory-item:hover {
+.inventory-item:hover,
+.inventory-item:active {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -653,7 +665,8 @@
   font-style: italic;
 }
 
-.raw-thought:hover {
+.raw-thought:hover,
+.raw-thought:active {
   color: rgba(216, 180, 254, 0.9);
   background: rgba(216, 180, 254, 0.06);
   border-left-color: rgba(216, 180, 254, 0.6);
@@ -696,7 +709,8 @@
   cursor: pointer;
 }
 
-.mission-card:hover {
+.mission-card:hover,
+.mission-card:active {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -787,7 +801,8 @@
   transition: all 0.15s ease;
 }
 
-.shop-tab:hover {
+.shop-tab:hover,
+.shop-tab:active {
   color: rgba(255, 255, 255, 0.7);
   border-color: rgba(255, 255, 255, 0.15);
 }
@@ -816,7 +831,8 @@
   transition: all 0.15s ease;
 }
 
-.shop-item:hover {
+.shop-item:hover,
+.shop-item:active {
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
 }
@@ -885,7 +901,8 @@
   transition: all 0.15s ease;
 }
 
-.coffee-item:hover {
+.coffee-item:hover,
+.coffee-item:active {
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
 }
@@ -945,4 +962,481 @@
 
 .coffee-inv-qty {
   color: rgba(255, 255, 255, 0.4);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   БЕКЛО́Г (ТЕКСТОВА ІСТОРІЯ)
+   ═══════════════════════════════════════════════════ */
+
+#overlay-backlog {
+  z-index: 110;
+}
+
+.backlog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 0 40px;
+}
+
+.backlog-entry {
+  padding: 8px 0 8px 20px;
+  border-left: 2px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.5;
+}
+
+.backlog-entry.backlog-telepathy {
+  border-left-color: #d8b4fe;
+}
+
+.backlog-entry.backlog-think {
+  border-left-color: rgba(255, 255, 255, 0.15);
+}
+
+.backlog-entry.backlog-say {
+  border-left-color: rgba(0, 180, 220, 0.5);
+}
+
+.backlog-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.backlog-text {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.backlog-empty {
+  font-size: 18px;
+  opacity: 0.3;
+  font-style: italic;
+  padding-top: 40px;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   QUICK MENU — панель під час діалогу
+   ═══════════════════════════════════════════════════ */
+
+#quick-menu {
+  position: absolute;
+  bottom: 240px;
+  right: 24px;
+  display: none;
+  flex-direction: row;
+  gap: 4px;
+  z-index: 21;
+}
+
+.qm-btn {
+  font-family: var(--font-body);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.qm-btn:hover,
+.qm-btn:active {
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.qm-btn.qm-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(230, 53, 128, 0.15);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   КОНТЕКСТНЕ МЕНЮ (RIGHT-CLICK)
+   ═══════════════════════════════════════════════════ */
+
+
+
+/* ═══════════════════════════════════════════════════
+   ДІАЛОГ ПІДТВЕРДЖЕННЯ
+   ═══════════════════════════════════════════════════ */
+
+#confirm-dialog {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-box {
+  background: rgba(10, 10, 20, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 40px 48px;
+  min-width: 360px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+}
+
+.confirm-message {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--white);
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.confirm-yes {
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 10px 32px;
+  border: 1px solid #00c864;
+  color: #00c864;
+  background: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: background 0.15s ease;
+}
+
+.confirm-yes:hover,
+.confirm-yes:active {
+  background: rgba(0, 200, 100, 0.15);
+}
+
+.confirm-no {
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 10px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  background: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: background 0.15s ease;
+}
+
+.confirm-no:hover,
+.confirm-no:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ДОВІДКА ПО КЛАВІШАХ
+   ═══════════════════════════════════════════════════ */
+
+#help-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-box {
+  background: rgba(10, 10, 20, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 40px 48px;
+  min-width: 400px;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.help-title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+}
+
+.help-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.help-key {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  min-width: 160px;
+}
+
+.help-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.help-close {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 8px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  background: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  align-self: center;
+  margin-top: 8px;
+  transition: all 0.15s ease;
+}
+
+.help-close:hover,
+.help-close:active {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   ДЕРЕВО КВЕСТІВ
+   ═══════════════════════════════════════════════════ */
+
+#quest-tree-screen main {
+  padding: 0 60px;
+  overflow-y: auto;
+}
+
+#quest-tree-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 20px 0 60px;
+}
+
+/* Квест (одна лінія) */
+.qt-quest {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qt-quest-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qt-icon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+  color: var(--accent);
+}
+
+.qt-quest-name {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+}
+
+.qt-progress {
+  margin-left: auto;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 1px;
+}
+
+/* Таймлайн */
+.qt-timeline {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding: 8px 0 12px;
+}
+
+/* Етап */
+.qt-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  max-width: 140px;
+  padding: 8px 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.qt-stage.locked {
+  filter: blur(3px);
+  opacity: 0.25;
+  pointer-events: none;
+  user-select: none;
+}
+
+.qt-stage.completed {
+  opacity: 1;
+}
+
+.qt-stage.current {
+  opacity: 1;
+}
+
+/* Точка */
+.qt-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.qt-stage.locked .qt-dot {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: transparent;
+}
+
+.qt-stage.completed .qt-dot {
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  color: var(--white);
+  box-shadow: 0 0 12px rgba(230, 53, 128, 0.4);
+}
+
+.qt-stage.current .qt-dot {
+  background: transparent;
+  border: 2px solid rgba(0, 180, 220, 0.6);
+  color: rgba(0, 180, 220, 0.8);
+  box-shadow: 0 0 8px rgba(0, 180, 220, 0.3);
+  animation: qtPulse 2s ease infinite;
+}
+
+@keyframes qtPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 180, 220, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(0, 180, 220, 0.5); }
+}
+
+/* Інфо етапу */
+.qt-stage-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qt-stage-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}
+
+.qt-stage.locked .qt-stage-name {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.qt-stage.current .qt-stage-name {
+  color: rgba(0, 180, 220, 0.9);
+}
+
+.qt-stage-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+  max-width: 130px;
+}
+
+.qt-stage.current .qt-stage-desc {
+  color: rgba(0, 180, 220, 0.6);
+}
+
+/* З'єднувальна лінія */
+.qt-connector {
+  width: 32px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-top: 22px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.qt-connector.completed {
+  background: var(--accent);
+  box-shadow: 0 0 4px rgba(230, 53, 128, 0.3);
+}
+
+/* Гілки (розгалуження) */
+.qt-branches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 8px;
+  border-left: 2px solid rgba(255, 255, 255, 0.06);
+  margin-left: 16px;
+  margin-top: 4px;
+}
+
+.qt-branch {
+  flex-direction: row;
+  min-width: auto;
+  max-width: none;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.qt-branch .qt-dot {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  margin-bottom: 0;
+}
+
+.qt-branch .qt-stage-info {
+  text-align: left;
+}
+
+.qt-branch .qt-stage-name {
+  font-size: 11px;
+}
+
+.qt-branch .qt-stage-desc {
+  font-size: 10px;
 }

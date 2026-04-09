@@ -93,8 +93,7 @@ var LOCATION_NAMES = {
   "video_rental":   "\u0412\u0456\u0434\u0435\u043e\u043f\u0440\u043e\u043a\u0430\u0442",
   "electronics":    "\u0415\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u0456\u043a\u0430 / \u0442\u0435\u0445\u043d\u0456\u043a\u0430",
   "jewelry":        "\u042e\u0432\u0435\u043b\u0456\u0440\u043d\u0438\u0439",
-  "bookshop":       "\u041a\u043d\u0438\u0433\u0430\u0440\u043d\u044f",
-  "room_2":         "\u041a\u0456\u043c\u043d\u0430\u0442\u0430 2"
+  "bookshop":       "\u041a\u043d\u0438\u0433\u0430\u0440\u043d\u044f"
 };
 
 // Домашні локації (заповнюються з CAST)
@@ -172,7 +171,7 @@ var LOCATION_TRIGGERS = [
   // Артур на даху після сварки з Елеонор
   {
     id: "arthur_rooftop_fight",
-    chars: ["\u0410\u0440\u0442\u0443\u0440"],
+    chars: ["ar"],
     location: "rooftop",
     condition: function() {
       return getFlag("arthur_eleanor_fight_active") && !getFlag("arthur_fight_resolved");
@@ -182,7 +181,7 @@ var LOCATION_TRIGGERS = [
   // Елеонор в бекрумі після сварки
   {
     id: "eleanor_backroom_fight",
-    chars: ["\u0415\u043b\u0435\u043e\u043d\u043e\u0440"],
+    chars: ["el"],
     location: "backroom",
     condition: function() {
       return getFlag("arthur_eleanor_fight_active") && !getFlag("arthur_fight_resolved");
@@ -190,33 +189,33 @@ var LOCATION_TRIGGERS = [
   },
 
   // Травмовані NPC (1-2 стаки) — в медвідділі
-  {id: "arthur_injured_medbay",  chars: ["\u0410\u0440\u0442\u0443\u0440"],  location: "medbay",
-    condition: function() { return getInjuryStacks("\u0410\u0440\u0442\u0443\u0440") >= 1 && !isNpcInRecovery("\u0410\u0440\u0442\u0443\u0440"); }},
-  {id: "eleanor_injured_medbay", chars: ["\u0415\u043b\u0435\u043e\u043d\u043e\u0440"], location: "medbay",
-    condition: function() { return getInjuryStacks("\u0415\u043b\u0435\u043e\u043d\u043e\u0440") >= 1 && !isNpcInRecovery("\u0415\u043b\u0435\u043e\u043d\u043e\u0440"); }},
-  {id: "amir_injured_medbay",    chars: ["\u0410\u043c\u0456\u0440"],    location: "medbay",
-    condition: function() { return getInjuryStacks("\u0410\u043c\u0456\u0440") >= 1 && !isNpcInRecovery("\u0410\u043c\u0456\u0440"); }},
-  {id: "aoi_injured_medbay",     chars: ["\u0410\u043e\u0456"],     location: "medbay",
-    condition: function() { return getInjuryStacks("\u0410\u043e\u0456") >= 1 && !isNpcInRecovery("\u0410\u043e\u0456"); }},
-  {id: "quincy_injured_medbay",  chars: ["\u041a\u0432\u0456\u043d\u0441\u0456"],  location: "medbay",
-    condition: function() { return getInjuryStacks("\u041a\u0432\u0456\u043d\u0441\u0456") >= 1 && !isNpcInRecovery("\u041a\u0432\u0456\u043d\u0441\u0456"); }},
+  {id: "arthur_injured_medbay",  chars: ["ar"],  location: "medbay",
+    condition: function() { return getInjuryStacks("ar") >= 1 && !isNpcInRecovery("ar"); }},
+  {id: "eleanor_injured_medbay", chars: ["el"], location: "medbay",
+    condition: function() { return getInjuryStacks("el") >= 1 && !isNpcInRecovery("el"); }},
+  {id: "amir_injured_medbay",    chars: ["am"],    location: "medbay",
+    condition: function() { return getInjuryStacks("am") >= 1 && !isNpcInRecovery("am"); }},
+  {id: "aoi_injured_medbay",     chars: ["ao"],     location: "medbay",
+    condition: function() { return getInjuryStacks("ao") >= 1 && !isNpcInRecovery("ao"); }},
+  {id: "quincy_injured_medbay",  chars: ["qu"],  location: "medbay",
+    condition: function() { return getInjuryStacks("qu") >= 1 && !isNpcInRecovery("qu"); }},
 
   // Критично травмовані (3 стаки) — в палаті
-  {id: "arthur_recovery",  chars: ["\u0410\u0440\u0442\u0443\u0440"],  location: "recovery_room",
-    condition: function() { return isNpcInRecovery("\u0410\u0440\u0442\u0443\u0440"); }},
-  {id: "eleanor_recovery", chars: ["\u0415\u043b\u0435\u043e\u043d\u043e\u0440"], location: "recovery_room",
-    condition: function() { return isNpcInRecovery("\u0415\u043b\u0435\u043e\u043d\u043e\u0440"); }},
-  {id: "amir_recovery",    chars: ["\u0410\u043c\u0456\u0440"],    location: "recovery_room",
-    condition: function() { return isNpcInRecovery("\u0410\u043c\u0456\u0440"); }},
-  {id: "aoi_recovery",     chars: ["\u0410\u043e\u0456"],     location: "recovery_room",
-    condition: function() { return isNpcInRecovery("\u0410\u043e\u0456"); }},
-  {id: "quincy_recovery",  chars: ["\u041a\u0432\u0456\u043d\u0441\u0456"],  location: "recovery_room",
-    condition: function() { return isNpcInRecovery("\u041a\u0432\u0456\u043d\u0441\u0456"); }},
+  {id: "arthur_recovery",  chars: ["ar"],  location: "recovery_room",
+    condition: function() { return isNpcInRecovery("ar"); }},
+  {id: "eleanor_recovery", chars: ["el"], location: "recovery_room",
+    condition: function() { return isNpcInRecovery("el"); }},
+  {id: "amir_recovery",    chars: ["am"],    location: "recovery_room",
+    condition: function() { return isNpcInRecovery("am"); }},
+  {id: "aoi_recovery",     chars: ["ao"],     location: "recovery_room",
+    condition: function() { return isNpcInRecovery("ao"); }},
+  {id: "quincy_recovery",  chars: ["qu"],  location: "recovery_room",
+    condition: function() { return isNpcInRecovery("qu"); }},
 
   // Аоі шукає інгредієнти на футкорті
   {
     id: "aoi_foodcourt",
-    chars: ["\u0410\u043e\u0456"],
+    chars: ["ao"],
     location: "foodcourt",
     condition: function() { return getFlag("aoi_ingredients_active"); }
   },
@@ -224,7 +223,7 @@ var LOCATION_TRIGGERS = [
   // Квінсі злий — пішов на дах
   {
     id: "quincy_rooftop_angry",
-    chars: ["\u041a\u0432\u0456\u043d\u0441\u0456"],
+    chars: ["qu"],
     location: "rooftop",
     condition: function() { return getFlag("quincy_angry_active"); }
   },
@@ -232,7 +231,7 @@ var LOCATION_TRIGGERS = [
   // Обідній час: Амір на футкорті
   {
     id: "lunch_foodcourt",
-    chars: ["\u0410\u043c\u0456\u0440"],
+    chars: ["am"],
     location: "foodcourt",
     condition: function() {
       return gameState.time.minutes >= 720 && gameState.time.minutes < 840 && gameState.time.day > 1;
@@ -248,10 +247,10 @@ function initTriggerData() {
   var allNames = [];
   for (var i = 0; i < castKeys.length; i++) {
     var ch = CAST[castKeys[i]];
-    allNames.push(ch.name);
+    allNames.push(castKeys[i]);
     // Заповнити HOME_LOCATIONS з CAST
     if (ch.home) {
-      HOME_LOCATIONS[ch.name] = ch.home;
+      HOME_LOCATIONS[castKeys[i]] = ch.home;
     }
   }
 
@@ -406,7 +405,7 @@ function getCharLocation(name) {
   var allNames = Object.keys(CAST);
   var others = [];
   for (var i = 0; i < allNames.length; i++) {
-    var otherName = CAST[allNames[i]].name;
+    var otherName = allNames[i];
     if (otherName !== name && _getRawLocation(otherName) === loc) {
       others.push(otherName);
     }
@@ -447,16 +446,11 @@ function getCharsAt(location) {
   var result = [];
   var allNames = Object.keys(CAST);
   for (var i = 0; i < allNames.length; i++) {
-    var name = CAST[allNames[i]].name;
+    var name = allNames[i];
     var charLoc = getCharLocation(name);
     if (charLoc === location) {
       result.push(name);
     }
-  }
-  // Діагностика (тимчасова)
-  if (result.length > 0 || location === "mall") {
-    console.log("[getCharsAt]", location, "→", result, "HOME_LOCATIONS:", JSON.stringify(HOME_LOCATIONS),
-      "intro_done:", getFlag("intro_done"), "day:", gameState.time.day);
   }
   return result;
 }

@@ -5,7 +5,7 @@
 
 DIALOGUE_ENTRIES.push({
   id: "amir_intro",
-  who: "Амір",
+  who: "am",
   conditions: { flag_false: ["amir_intro_done"] },
   priority: 90,
   chance: 100,
@@ -53,11 +53,11 @@ registerScript("amir_intro_main", [
   { type: "say", who: "am", text: "Типу... о, дивись!" },
 
   // Тестові повідомлення
-  { type: "pager", who: "Аоі", text: "Я знайшла новий дист On-lyne!" },
+  { type: "pager", who: "ao", text: "Я знайшла новий дист On-lyne!" },
 
   { type: "say", who: "am", text: "Бач? Аоі вже щось написала. І Артур теж — як завжди." },
 
-  { type: "pager", who: "Артур", text: "Не смій вмикати на весь торгівельний центр." },
+  { type: "pager", who: "ar", text: "Не смій вмикати на весь торгівельний центр." },
 
   { type: "say", who: "am", text: "Натисни центральну кнопку — побачиш повідомлення. Давай, спробуй." },
 
@@ -84,7 +84,7 @@ registerScript("amir_intro_main", [
   { type: "say", who: "am", text: "А тепер дивись. Іноді приходить не просто повідомлення, а запит на допомогу." },
   { type: "say", who: "am", text: "Треба відповісти: так чи ні." },
 
-  { type: "pager_request", who: "Летті", text: "Допоможи перенести коробки медикаментів?" },
+  { type: "pager_request", who: "lt", text: "Допоможи перенести коробки медикаментів?" },
 
   { type: "say", who: "am", text: "О! Летті просить допомогти перенести коробки." },
   { type: "say", who: "am", text: "Зелена кнопка зліва — прийняти. Червона справа — відхилити." },

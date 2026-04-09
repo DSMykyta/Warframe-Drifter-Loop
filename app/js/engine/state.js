@@ -55,10 +55,10 @@ function c(short, name, full, missions, romance) {
   CAST[short] = data;
   CAST_BY_NAME[name] = data;
 
-  // Якщо має хімію — додати автоматично
+  // Якщо має хімію — додати автоматично (ключ = short ID)
   if ((missions || romance) && gameState.chemistry) {
-    gameState.chemistry.values[name] = gameState.chemistry.values[name] || 0;
-    gameState.chemistry.gainedToday[name] = gameState.chemistry.gainedToday[name] || 0;
+    gameState.chemistry.values[short] = gameState.chemistry.values[short] || 0;
+    gameState.chemistry.gainedToday[short] = gameState.chemistry.gainedToday[short] || 0;
   }
 }
 
@@ -76,11 +76,11 @@ function charCan(who, ability) {
   return false;
 }
 
-// Список всіх хто має здатність
+// Список всіх хто має здатність (повертає short ID)
 function charsWith(ability) {
   var result = [];
   for (var short in CAST) {
-    if (CAST[short][ability]) result.push(CAST[short].name);
+    if (CAST[short][ability]) result.push(short);
   }
   return result;
 }

@@ -11,10 +11,10 @@
 var HELP_REQUEST_ENTRIES = [
   {
     id: "lettie_help_meds",
-    who: "\u041b\u0435\u0442\u0442\u0456",   // Летті
+    who: "lt",
     conditions: {
       flag_false: ["helped_lettie_today"],
-      chemistry_min: ["\u041b\u0435\u0442\u0442\u0456", 10],
+      chemistry_min: ["lt", 10],
       time_min: 600,
       time_max: 1320
     },
@@ -25,10 +25,10 @@ var HELP_REQUEST_ENTRIES = [
   },
   {
     id: "amir_help_arcade",
-    who: "\u0410\u043c\u0456\u0440",    // Амір
+    who: "am",
     conditions: {
       flag_false: ["helped_amir_today"],
-      chemistry_min: ["\u0410\u043c\u0456\u0440", 10],
+      chemistry_min: ["am", 10],
       time_min: 600,
       time_max: 1320
     },
@@ -39,10 +39,10 @@ var HELP_REQUEST_ENTRIES = [
   },
   {
     id: "arthur_help_reports",
-    who: "\u0410\u0440\u0442\u0443\u0440",   // Артур
+    who: "ar",
     conditions: {
       flag_false: ["helped_arthur_today"],
-      chemistry_min: ["\u0410\u0440\u0442\u0443\u0440", 10],
+      chemistry_min: ["ar", 10],
       time_min: 600,
       time_max: 1320
     },
@@ -53,10 +53,10 @@ var HELP_REQUEST_ENTRIES = [
   },
   {
     id: "aoi_help_records",
-    who: "\u0410\u043e\u0456",     // Аоі
+    who: "ao",
     conditions: {
       flag_false: ["helped_aoi_today"],
-      chemistry_min: ["\u0410\u043e\u0456", 10],
+      chemistry_min: ["ao", 10],
       time_min: 600,
       time_max: 1320
     },
@@ -67,10 +67,10 @@ var HELP_REQUEST_ENTRIES = [
   },
   {
     id: "quincy_help_range",
-    who: "\u041a\u0432\u0456\u043d\u0441\u0456",  // Квінсі
+    who: "qu",
     conditions: {
       flag_false: ["helped_quincy_today"],
-      chemistry_min: ["\u041a\u0432\u0456\u043d\u0441\u0456", 10],
+      chemistry_min: ["qu", 10],
       time_min: 600,
       time_max: 1320
     },
@@ -80,10 +80,10 @@ var HELP_REQUEST_ENTRIES = [
   },
   {
     id: "eleanor_help_notes",
-    who: "\u0415\u043b\u0435\u043e\u043d\u043e\u0440", // Елеонор
+    who: "el",
     conditions: {
       flag_false: ["helped_eleanor_today"],
-      chemistry_min: ["\u0415\u043b\u0435\u043e\u043d\u043e\u0440", 10],
+      chemistry_min: ["el", 10],
       time_min: 600,
       time_max: 1320
     },

@@ -23,6 +23,9 @@ function showLocation() {
   var bg = document.querySelector(".game-bg");
   if (bg) _setLocationBg(bg, locId);
 
+  // Прелоадити фони сусідніх локацій
+  if (typeof preloadNearbyBackgrounds === "function") preloadNearbyBackgrounds(locId);
+
   // HUD
   showHUD();
   updateHUD();
@@ -33,6 +36,13 @@ function showLocation() {
 
   // Спрайти NPC
   showSprites(locId);
+
+  // День 30: попередження незалежно від позиції Артура
+  if (gameState.time.day >= 30 && !getFlag("day30_warning_done") && SCRIPTS["day30_warning"]) {
+    _hideForDialogue();
+    runScript("day30_warning");
+    return;
+  }
 
   // Перевірити forced діалог при вході в локацію
   if (typeof checkForcedDialogue === "function") {
@@ -98,7 +108,10 @@ function showSprites(locId) {
 function clearSprites() {
   if (typeof clearSceneSprites === "function") clearSceneSprites();
   var container = document.getElementById("sprites-container");
-  if (container) container.innerHTML = "";
+  if (container) {
+    container.innerHTML = "";
+    container.classList.remove("dialogue-mode");
+  }
 }
 
 
@@ -113,12 +126,10 @@ function getCharsHere(locId) {
     if (typeof getCharsAt === "function") {
       var charNames = getCharsAt(locId);
       for (var i = 0; i < charNames.length; i++) {
-        for (var short in CAST) {
-          if (CAST[short].name === charNames[i] && !seen[short]) {
-            seen[short] = true;
-            result.push(CAST[short]);
-            break;
-          }
+        var charId = charNames[i];
+        if (CAST[charId] && !seen[charId]) {
+          seen[charId] = true;
+          result.push(CAST[charId]);
         }
       }
     }
@@ -267,18 +278,18 @@ function _hideMapButton() {
 // ─── РОЗМОВА З NPC ───
 
 function _talkToNPC(ch) {
-  var name = ch.name;
+  var id = ch.short;
 
   // Позначити що говорили сьогодні
-  if (typeof markTalkedToday === "function") markTalkedToday(name);
-  if (typeof resetInteraction === "function") resetInteraction(name);
-  if (typeof addChemistry === "function") addChemistry(name, 1);
+  if (typeof markTalkedToday === "function") markTalkedToday(id);
+  if (typeof resetInteraction === "function") resetInteraction(id);
+  if (typeof addChemistry === "function") addChemistry(id, 1);
   advanceTime(15);
 
   // Шукаємо діалог (повертає entry або null)
   var entry = null;
   if (typeof getDialogue === "function") {
-    entry = getDialogue(name);
+    entry = getDialogue(id);
   }
 
   // ═══ TITLES: меню привітань ═══
@@ -297,7 +308,7 @@ function _talkToNPC(ch) {
 
   // Fallback: stub
   _hideForDialogue();
-  var stubLabel = _findRandomStub(name);
+  var stubLabel = _findRandomStub(id);
   if (stubLabel && SCRIPTS[stubLabel]) {
     runScript(stubLabel);
     return;
@@ -317,6 +328,9 @@ function _hideForDialogue() {
   _hideMapButton();
   hideHUD();
   if (typeof hidePager === "function") hidePager();
+  // Спрайти в діалоговий режим (більші)
+  var sc = document.getElementById("sprites-container");
+  if (sc) sc.classList.add("dialogue-mode");
 }
 
 
@@ -373,12 +387,32 @@ function _showTitlesMenu(entry) {
 
 // Знайти випадковий stub для NPC за іменем
 function _findRandomStub(name) {
+  // Спробувати за повним ім'ям
   var prefix = "stub_" + name + "_";
   var candidates = [];
 
   for (var key in SCRIPTS) {
     if (key.indexOf(prefix) === 0) {
       candidates.push(key);
+    }
+  }
+
+  // Якщо не знайдено — спробувати за коротким ім'ям (charFlag)
+  if (candidates.length === 0) {
+    var shortName = typeof charFlag === "function" ? charFlag(name) : name.toLowerCase();
+    prefix = "stub_" + shortName + "_";
+    for (var key2 in SCRIPTS) {
+      if (key2.indexOf(prefix) === 0) {
+        candidates.push(key2);
+      }
+    }
+  }
+
+  // Якщо не знайдено — спробувати через dispatcher.getStub
+  if (candidates.length === 0 && typeof getStub === "function") {
+    var stubLabel = getStub(name);
+    if (stubLabel && stubLabel !== "generic_stub" && SCRIPTS[stubLabel]) {
+      return stubLabel;
     }
   }
 
@@ -401,9 +435,8 @@ function _goToSleep() {
     var bg = document.querySelector(".game-bg");
     if (bg) bg.style.background = "#000";
 
-    // Зберегти persistent дані
+    // Визначити перемога чи поразка (persistent зберігається після фінального скрипту в onSceneEnd)
     var victory = (typeof checkAllFriends === "function") && checkAllFriends();
-    if (typeof onLoopEnd === "function") onLoopEnd(victory);
 
     // Запустити фінальну сцену
     if (victory && SCRIPTS["finale_victory"]) {
@@ -453,16 +486,18 @@ function _goToSleep() {
       textEl2.textContent = "День " + gameState.time.day + ". " + getTimeString() + ".";
     }
 
-    // Клік — повернутись до гри
-    var _sleepHandler = function() {
-      document.getElementById("game-screen").removeEventListener("click", _sleepHandler);
-      if (dlg2) dlg2.style.display = "none";
-      _returnToLocation();
-    };
+    // Побудувати тимчасовий скрипт для переходу сну
+    // Це уникає конфлікту з advance() на game-screen
+    var sleepNodes = [
+      { type: "say", who: null, text: "День " + gameState.time.day + ". " + getTimeString() + "." },
+      { type: "end", text: "" }
+    ];
+    registerScript("_sleep_transition", sleepNodes);
 
-    // Затримка перед слуханням кліків
+    // Невелика затримка щоб гравець побачив текст
     setTimeout(function() {
-      document.getElementById("game-screen").addEventListener("click", _sleepHandler);
+      if (dlg2) dlg2.style.display = "none";
+      runScript("_sleep_transition");
     }, 500);
   }, 1000);
 }

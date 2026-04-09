@@ -5,7 +5,7 @@
 
 DIALOGUE_ENTRIES.push({
   id: "quincy_intro",
-  who: "Квінсі",
+  who: "qu",
   conditions: { flag_false: ["quincy_intro_done"] },
   priority: 90,
   chance: 100,

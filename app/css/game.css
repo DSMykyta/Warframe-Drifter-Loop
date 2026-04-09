@@ -66,8 +66,20 @@
   transform: translateX(-50%);
   pointer-events: none;
   cursor: default;
-  transition: filter 0.3s, transform 0.3s;
+  transition: filter 0.3s, opacity 0.4s ease;
   image-rendering: auto;
+  animation: spriteEnter 0.4s ease;
+}
+
+/* Діалоговий режим — спрайти більші (ближче до камери) */
+#sprites-container.dialogue-mode .sprite {
+  height: 150%;
+  bottom: -520px;
+}
+
+@keyframes spriteEnter {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 /* Обгортка спрайту в локації (клікабельна) */
@@ -90,7 +102,12 @@
   cursor: pointer;
 }
 
-.sprite-wrapper.clickable:hover .sprite-img {
+.sprite-wrapper.clickable {
+  animation: spriteEnter 0.5s ease;
+}
+
+.sprite-wrapper.clickable:hover .sprite-img,
+.sprite-wrapper.clickable:active .sprite-img {
   filter: brightness(1.3);
   transform: scale(1.02);
   transition: filter 0.3s, transform 0.3s;
@@ -135,12 +152,20 @@
   white-space: nowrap;
 }
 .say-name::after { content: " :"; }
+
+/* Кольори імен персонажів */
+.say-name[data-char="ar"] { color: #c9a96e; } /* Артур — золотий/бронзовий */
+.say-name[data-char="el"] { color: #d8b4fe; } /* Елеонор — лавандовий */
+.say-name[data-char="lt"] { color: #86efac; } /* Летті — м'ятний */
+.say-name[data-char="am"] { color: #67e8f9; } /* Амір — блакитний */
+.say-name[data-char="ao"] { color: #fca5a5; } /* Аоі — рожевий */
+.say-name[data-char="qu"] { color: #fbbf24; } /* Квінсі — жовтий */
 .text-frame {
   flex: 1; min-width: 0;
   display: flex; flex-direction: column; align-items: flex-start;
 }
 .say-text {
-  background: var(--black-50);
+  background: rgba(0, 0, 0, var(--textbox-opacity, 0.5));
   padding: 4px 8px;
   font-size: 32px; color: var(--white);
   line-height: normal;
@@ -148,6 +173,63 @@
 }
 .say-text.narrator { color: rgba(255,255,255,0.7); font-style: italic; }
 .say-text.telepathy { color: #d8b4fe; font-style: italic; }
+
+/* Індикатор продовження (▼) — з'являється коли текст надрукований */
+.say-continue {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 14px;
+  color: var(--accent);
+  opacity: 0;
+  animation: continueBounce 1.2s ease infinite;
+  pointer-events: none;
+}
+.say-continue.visible { opacity: 1; }
+@keyframes continueBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+
+/* ═══ TOAST СПОВІЩЕННЯ ═══ */
+#toast-container {
+  position: absolute;
+  top: 80px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 150;
+  pointer-events: none;
+}
+
+.toast {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: var(--white);
+  background: rgba(10, 10, 20, 0.9);
+  border-left: 3px solid var(--accent);
+  animation: toastIn 0.3s ease, toastOut 0.4s ease 2.6s forwards;
+  max-width: 320px;
+  letter-spacing: 0.5px;
+}
+
+.toast.toast-save { border-left-color: #00c864; }
+.toast.toast-chemistry { border-left-color: #00b4dc; }
+.toast.toast-chemistry.negative { border-left-color: #ef4444; }
+.toast.toast-item { border-left-color: #facc15; }
+.toast.toast-rank { border-left-color: #d8b4fe; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateY(-10px); }
+}
 
 /* Вибір */
 .choices {
@@ -177,9 +259,35 @@
   pointer-events: auto;
   max-width: 800px;
 }
-.choice-btn:hover { background: var(--accent); }
+.choice-btn:hover, .choice-btn:active { background: var(--accent); }
 .choice-btn.bonus { background: #ffc32b; color: var(--black); }
-.choice-btn.bonus:hover { background: #ffce4a; }
+.choice-btn.bonus:hover, .choice-btn.bonus:active { background: #ffce4a; }
+.choice-btn.seen-choice { border-left: 3px solid rgba(255,255,255,0.15); opacity: 0.7; }
+.choice-btn.locked-choice { opacity: 0.3; cursor: default; pointer-events: none; }
+.choice-btn.locked-choice::after { content: " (заблоковано)"; font-size: 0.7em; color: rgba(255,255,255,0.3); }
+.choice-btn.choice-focused { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Backlog: вибори гравця */
+.backlog-choice .backlog-text { color: var(--accent); font-style: italic; }
+
+/* Mode indicator (ПРОПУСК / АВТО) */
+#mode-indicator {
+  position: absolute;
+  top: 16px; left: 16px;
+  z-index: 100;
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: modePulse 1.5s ease infinite;
+  display: none;
+}
+@keyframes modePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
 
 /* ═══════════════════════════════════════════════════
    КНОПКА КАРТИ (зліва внизу)
@@ -202,7 +310,8 @@
   transition: all 0.15s ease;
 }
 
-.map-btn-fixed:hover {
+.map-btn-fixed:hover,
+.map-btn-fixed:active {
   background: var(--accent);
   border-color: var(--accent);
 }
@@ -218,7 +327,7 @@
   right: 12px;
   width: 320px;
   height: 176px;
-  background: url('../assets/pager.png') no-repeat center/contain;
+  background: url('../assets/pager/pager.png') no-repeat center/contain;
   z-index: 90;
   cursor: default;
   user-select: none;
@@ -250,7 +359,8 @@
 
 /* Активний стан — яскравий зелений */
 .pager.active .pager-lcd,
-.pager:hover .pager-lcd {
+.pager:hover .pager-lcd,
+.pager:active .pager-lcd {
   background: #477220;
   color: #131f1f;
 }
@@ -341,28 +451,44 @@
   50% { opacity: 0.3; }
 }
 
-/* 3 кнопки під екраном — координати з Ren'Py */
+/* 3 кнопки під екраном — PNG зображення, координати з pager.png (1000x550) */
 .pager-btn {
   position: absolute;
-  top: 63.2%;
-  height: 12.7%;
-  width: 20%;
+  top: 61%;
+  height: 18%;
   cursor: pointer;
-  background: transparent;
+  border: none;
   border-radius: 3px;
+  pointer-events: auto;
+  z-index: 2;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  transition: filter 0.15s ease, transform 0.15s ease;
+  touch-action: manipulation;
 }
 
-.pager-btn:hover {
-  background: rgba(255,255,255,0.15);
+.pager-btn:hover, .pager-btn:active {
+  filter: brightness(1.3);
+  transform: scale(1.02);
 }
 
-.pager-btn:active {
-  background: rgba(255,255,255,0.25);
+.pager-btn-left {
+  left: 12%;
+  width: 24%;
+  background-image: url('../assets/pager/pager-left-btn.png');
 }
-
-.pager-btn-left   { left: 15%; }
-.pager-btn-center { left: 38.25%; }
-.pager-btn-right  { left: 61.5%; }
+.pager-btn-center {
+  left: 37%;
+  width: 22%;
+  background-image: url('../assets/pager/pager-central-btn.png');
+}
+.pager-btn-right {
+  left: 60%;
+  width: 24%;
+  background-image: url('../assets/pager/pager-right-btn.png');
+}
 
 /* Popup повідомлення */
 .pager-popup {

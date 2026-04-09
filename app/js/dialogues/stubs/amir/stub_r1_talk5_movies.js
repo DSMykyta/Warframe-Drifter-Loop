@@ -1,7 +1,7 @@
 // Stub: Амір — movies
 DIALOGUE_ENTRIES.push({
   id: "stub_am_movies",
-  who: "Амір",
+  who: "am",
   conditions: {},
   priority: 1,
   chance: 100,

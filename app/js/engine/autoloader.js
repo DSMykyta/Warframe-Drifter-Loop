@@ -55,7 +55,7 @@ function _loadDialogueFiles(callback) {
 
   for (var i = 0; i < _dialogueManifest.length; i++) {
     var script = document.createElement("script");
-    script.src = "js/dialogues/" + _dialogueManifest[i];
+    script.src = "js/dialogues/" + _dialogueManifest[i] + "?v=" + Date.now();
     script.onload = function() {
       _dialoguesLoaded++;
       if (_dialoguesLoaded >= _dialoguesTotal) {

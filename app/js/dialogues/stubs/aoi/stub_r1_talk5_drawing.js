@@ -1,7 +1,7 @@
 // Stub: Аоі — drawing
 DIALOGUE_ENTRIES.push({
   id: "stub_ao_drawing",
-  who: "Аоі",
+  who: "ao",
   conditions: {},
   priority: 1,
   chance: 100,

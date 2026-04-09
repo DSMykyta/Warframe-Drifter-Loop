@@ -1,7 +1,7 @@
 // Stub: Аоі — bubble tea
 DIALOGUE_ENTRIES.push({
   id: "stub_ao_bubbletea",
-  who: "Аоі",
+  who: "ao",
   conditions: {},
   priority: 1,
   chance: 100,

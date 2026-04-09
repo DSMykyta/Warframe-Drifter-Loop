@@ -74,11 +74,11 @@ function _registerCoffeeBonusOptions() {
   // Ця функція викликається після завантаження CAST
   var castKeys = Object.keys(CAST);
   for (var i = 0; i < castKeys.length; i++) {
-    var castName = CAST[castKeys[i]].name;
-    var castId = charFlag(castName);
+    var castShort = castKeys[i];
+    var castId = charFlag(castShort);
     BONUS_OPTIONS.push({
       id: "coffee_give_" + castId,
-      who: castName,
+      who: castShort,
       text: "\u0422\u0440\u0438\u043c\u0430\u0439. \u041f\u0440\u0438\u043d\u0456\u0441 \u043a\u0430\u0432\u0443.",  // Тримай. Приніс каву.
       label: "coffee_give_scene",
       conditions: {

@@ -110,6 +110,15 @@ function contemplate(thoughtId) {
   advanceTime(30);
   setFlag(thoughtId);
 
+  // Знайти текст думки перед видаленням
+  var thoughtText = "...";
+  for (var t = 0; t < gameState.insights.raw_thoughts.length; t++) {
+    if (gameState.insights.raw_thoughts[t].id === thoughtId) {
+      thoughtText = gameState.insights.raw_thoughts[t].text;
+      break;
+    }
+  }
+
   // Видалити з необдуманих
   var remaining = [];
   for (var i = 0; i < gameState.insights.raw_thoughts.length; i++) {
@@ -119,13 +128,16 @@ function contemplate(thoughtId) {
   }
   gameState.insights.raw_thoughts = remaining;
 
-  // Додати в лог як зв'язок
+  // Додати в лог як зв'язок (з реальним текстом)
   gameState.insights.log.push({
     id: thoughtId,
-    text: "...",
+    text: thoughtText,
     day: gameState.time.day,
     type: "connection"
   });
+
+  // Записати в щоденник
+  addJournalEntry(thoughtText, "insight");
 }
 
 

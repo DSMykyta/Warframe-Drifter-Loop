@@ -22,7 +22,7 @@ function applyDecay() {
 
   var names = Object.keys(CAST);
   for (var i = 0; i < names.length; i++) {
-    var name = CAST[names[i]].name;
+    var name = names[i];
     var d = gameState.decay.days_since_interaction[name] || 0;
 
     if (d >= 14) {
@@ -55,7 +55,7 @@ function checkMissionNeglect() {
     // Критичний ігнор — штраф всім NPC
     var names = Object.keys(CAST);
     for (var i = 0; i < names.length; i++) {
-      addChemistry(CAST[names[i]].name, -3);
+      addChemistry(names[i], -3);
     }
     setFlag("mission_neglect_critical");
     gameState.missions.days_without_mission = 0;  // Ресет — новий цикл
@@ -63,7 +63,7 @@ function checkMissionNeglect() {
     // Попередження — м'якший штраф
     var names2 = Object.keys(CAST);
     for (var j = 0; j < names2.length; j++) {
-      addChemistry(CAST[names2[j]].name, -2);
+      addChemistry(names2[j], -2);
     }
     setFlag("mission_neglect_warning");
   }

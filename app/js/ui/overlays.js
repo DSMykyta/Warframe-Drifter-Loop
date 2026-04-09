@@ -469,8 +469,8 @@ function renderMissions() {
     html += '<span class="mission-meta-level">Рівень ' + m.level + '</span>';
 
     if (m.partner) {
-      var partners = m.partner;
-      if (m.partner2) partners += ', ' + m.partner2;
+      var partners = charName(m.partner);
+      if (m.partner2) partners += ', ' + charName(m.partner2);
       html += '<span class="mission-meta-partner">Напарник: ' + _escapeHtml(partners) + '</span>';
     }
 
@@ -573,8 +573,9 @@ function _executeMission(m, index) {
   // Скинути лічильник днів без місій
   if (typeof onMissionComplete === "function") onMissionComplete();
 
-  // Видалити виконану місію зі списку
-  gameState.missions.list.splice(index, 1);
+  // Оновити слот — нова місія замість виконаної
+  if (typeof refreshMissionSlot === "function") refreshMissionSlot(index);
+  else gameState.missions.list.splice(index, 1);
 
   // Щоденник
   var journalText = "Місія: " + m.name + ". Рівень " + m.level + ".";

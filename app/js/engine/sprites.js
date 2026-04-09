@@ -14,7 +14,7 @@
 // Без zorder = 0. Вищий zorder = ближче до гравця.
 // При однаковому zorder — хто першим show, той пріоритетніший.
 
-var _sceneSprites = {};   // { "Артур": {charData, zorder, order} }
+var _sceneSprites = {};   // { "ar": {charData, zorder, order} }
 var _showOrder = 0;       // лічильник порядку show
 
 // Стандартні слоти для N персонажів
@@ -101,7 +101,7 @@ function showSceneSprite(name, at, zorder) {
   var charData = _resolveChar(name);
   if (!charData || !charData.sprite) return;
 
-  _sceneSprites[charData.name] = {
+  _sceneSprites[charData.short] = {
     charData: charData,
     zorder: zorder || 0,
     order: _showOrder++,
@@ -114,7 +114,7 @@ function showSceneSprite(name, at, zorder) {
 function hideSceneSprite(name) {
   var charData = _resolveChar(name);
   if (charData) {
-    delete _sceneSprites[charData.name];
+    delete _sceneSprites[charData.short];
   } else {
     delete _sceneSprites[name];
   }
@@ -134,6 +134,7 @@ function renderSceneSprites(speakerName) {
   var container = document.getElementById("sprites-container");
   if (!container) return;
   container.innerHTML = "";
+  container.classList.add("dialogue-mode");
 
   var entries = [];
   for (var name in _sceneSprites) {
@@ -162,14 +163,14 @@ function renderSceneSprites(speakerName) {
   if (speakerName) highlightSpeaker(speakerName);
 }
 
-// Підсвітити спікера — тільки CSS, без ре-рендеру
+// Підсвітити спікера — тільки brightness, без зміни розміру
 function highlightSpeaker(speakerName) {
   var container = document.getElementById("sprites-container");
   if (!container) return;
   var imgs = container.querySelectorAll(".sprite");
   for (var i = 0; i < imgs.length; i++) {
     var name = imgs[i].getAttribute("data-name");
-    imgs[i].style.filter = (name === speakerName) ? "brightness(1)" : "brightness(0.5)";
+    imgs[i].style.filter = (speakerName && name === speakerName) ? "brightness(1)" : "brightness(0.5)";
   }
 }
 
@@ -178,14 +179,14 @@ function ensureSpeakerVisible(who) {
   var charData = _resolveChar(who);
   if (!charData) return null;
 
-  if (_sceneSprites[charData.name]) {
+  if (_sceneSprites[charData.short]) {
     // Вже на сцені — тільки підсвітити (без ре-рендеру)
     highlightSpeaker(charData.name);
     return charData.name;
   }
 
   // Новий персонаж — повний ре-рендер
-  _sceneSprites[charData.name] = {
+  _sceneSprites[charData.short] = {
     charData: charData,
     zorder: 0,
     order: _showOrder++,

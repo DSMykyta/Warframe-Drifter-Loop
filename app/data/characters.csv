@@ -1,7 +1,7 @@
-short,name,full,faction,missions,chemistry,sprite,home
-ar,Артур,Артур Найтінгейл,Hex,1,1,Arthur,security_desk
-el,Елеонор,Елеонор Найтінгейл,Hex,1,1,Eleanor,furniture
-lt,Летті,Летіція Гарсіа,Hex,1,1,Lettie,medbay
-am,Амір,Амір Бекетт,Hex,1,1,Amir,arcade
-ao,Аоі,Аоі Морохоші,Hex,1,1,Aoi,music_shop
-qu,Квінсі,Квінсі Айзекс,Hex,1,1,Quincy,range
+short,name,full,faction,missions,chemistry,sprite,home,flag_name,gossip_to,coffee_pref
+ar,Артур,Артур Найтінгейл,Hex,1,1,Arthur,security_desk,arthur,el,coffee_espresso
+el,Елеонор,Елеонор Найтінгейл,Hex,1,1,Eleanor,furniture,eleanor,ar,coffee_latte
+lt,Летті,Летіція Гарсіа,Hex,1,1,Lettie,medbay,lettie,ao,coffee_latte
+am,Амір,Амір Бекетт,Hex,1,1,Amir,arcade,amir,qu,coffee_espresso
+ao,Аоі,Аоі Морохоші,Hex,1,1,Aoi,music_shop,aoi,lt,coffee_cocoa
+qu,Квінсі,Квінсі Айзекс,Hex,1,1,Quincy,range,quincy,am,coffee_black

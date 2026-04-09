@@ -126,9 +126,9 @@ function _selectSaveSlot(slot) {
     html += '<div class="detail-row"><span class="detail-label">День</span>' +
       '<span class="detail-value">' + (data.time.day || '?') + '</span></div>';
   }
-  if (data.location && data.location.current && LOCATIONS[data.location.current]) {
+  if (data.location && data.location.current && LOCATION_NAMES[data.location.current]) {
     html += '<div class="detail-row"><span class="detail-label">Локація</span>' +
-      '<span class="detail-value">' + LOCATIONS[data.location.current].name + '</span></div>';
+      '<span class="detail-value">' + LOCATION_NAMES[data.location.current] + '</span></div>';
   }
   if (data.money) {
     html += '<div class="detail-row"><span class="detail-label">Крони</span>' +
@@ -154,9 +154,31 @@ function _selectSaveSlot(slot) {
 // Завантажити обраний слот
 function _loadSelectedSlot() {
   if (_selectedSlot === null) return;
-  if (load(_selectedSlot)) {
-    showScreen("game-screen");
-    showLocation();
+
+  function _doLoad() {
+    // Скинути auto/skip та бекло́г перед завантаженням
+    if (typeof _disableAutoMode === "function") _disableAutoMode();
+    if (typeof _disableSkipToggle === "function") _disableSkipToggle();
+    if (typeof _textHistory !== "undefined") _textHistory = [];
+    if (load(_selectedSlot)) {
+      showScreen("game-screen");
+      // Перевірити чи був діалог — якщо так, відновити сцену
+      if (gameState.dialogue_engine && gameState.dialogue_engine.scriptName && currentScript) {
+        showHUD();
+        updateHUD();
+        if (typeof showPager === "function") showPager();
+        execute(pc);
+      } else {
+        showLocation();
+      }
+    }
+  }
+
+  // Якщо гра активна — підтвердження
+  if (typeof _isGameActive === "function" && _isGameActive() && typeof confirmDialog === "function") {
+    confirmDialog("Завантажити? Незбережений прогрес буде втрачено.", _doLoad);
+  } else {
+    _doLoad();
   }
 }
 
@@ -164,12 +186,27 @@ function _loadSelectedSlot() {
 // Видалити обраний слот
 function _deleteSelectedSlot() {
   if (_selectedSlot === null) return;
-  deleteSave(_selectedSlot);
-  renderLoadScreen();
+  if (_selectedSlot === "auto") return; // Автозбереження не можна видалити
+  if (typeof confirmDialog === "function") {
+    confirmDialog("Видалити це збереження?", function() {
+      deleteSave(_selectedSlot);
+      renderLoadScreen();
+    });
+  } else {
+    deleteSave(_selectedSlot);
+    renderLoadScreen();
+  }
 }
 
 
 // Доповнення нулем
 function _padZero(n) {
   return n < 10 ? '0' + n : '' + n;
+}
+
+// Екранування HTML (захист від XSS)
+function _escapeHtml(str) {
+  var div = document.createElement("div");
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
 }

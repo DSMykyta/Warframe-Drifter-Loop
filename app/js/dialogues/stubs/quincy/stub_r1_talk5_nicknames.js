@@ -1,7 +1,7 @@
 // Stub: Квінсі — nicknames
 DIALOGUE_ENTRIES.push({
   id: "stub_qu_nicknames",
-  who: "Квінсі",
+  who: "qu",
   conditions: {},
   priority: 1,
   chance: 100,

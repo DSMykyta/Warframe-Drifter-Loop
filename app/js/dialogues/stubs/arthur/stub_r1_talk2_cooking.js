@@ -1,7 +1,7 @@
 // Stub: Артур — cooking
 DIALOGUE_ENTRIES.push({
   id: "stub_ar_cooking",
-  who: "Артур",
+  who: "ar",
   conditions: {},
   priority: 1,
   chance: 100,
