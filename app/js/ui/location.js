@@ -48,8 +48,7 @@ function showLocation() {
   if (typeof checkForcedDialogue === "function") {
     var forced = checkForcedDialogue(locId);
     if (forced && forced.label && SCRIPTS[forced.label]) {
-      hideHUD();
-      if (typeof hidePager === "function") hidePager();
+      _enterDialogueMode();
       if (typeof markDialogueSeen === "function") markDialogueSeen(forced.id);
       runScript(forced.label);
       return;
@@ -60,8 +59,7 @@ function showLocation() {
   if (typeof getBanter === "function") {
     var banter = getBanter(locId);
     if (banter && banter.label && SCRIPTS[banter.label]) {
-      hideHUD();
-      if (typeof hidePager === "function") hidePager();
+      _enterDialogueMode();
       runScript(banter.label);
       return;
     }
@@ -78,30 +76,28 @@ function showSprites(locId) {
   var container = document.getElementById("sprites-container");
   if (!container) return;
   container.innerHTML = "";
+  container.classList.remove("dialogue-mode");
 
   var charsHere = getCharsHere(locId);
   var positions = getPositions(charsHere.length);
 
   charsHere.forEach(function(ch, i) {
     var spritePath = "assets/sprites/" + (ch.sprite || ch.short) + "/knee-test.png";
-    var wrapper = document.createElement("div");
-    wrapper.className = "sprite-wrapper clickable";
-    wrapper.style.left = positions[i] + "%";
-    wrapper.alt = ch.name;
-    wrapper.setAttribute("data-name", ch.name);
-
     var img = document.createElement("img");
-    img.className = "sprite-img";
+    img.className = "sprite location-sprite";
     img.src = spritePath;
+    img.style.left = positions[i] + "%";
+    img.style.cursor = "pointer";
+    img.style.pointerEvents = "auto";
     img.alt = ch.name;
-    img.onerror = function() { this.parentElement.style.display = "none"; };
-
-    wrapper.appendChild(img);
-    wrapper.addEventListener("click", function(e) {
+    img.setAttribute("data-name", ch.name);
+    img.setAttribute("data-short", ch.short);
+    img.onerror = function() { this.style.display = "none"; };
+    img.addEventListener("click", function(e) {
       e.stopPropagation();
       _talkToNPC(ch);
     });
-    container.appendChild(wrapper);
+    container.appendChild(img);
   });
 }
 
@@ -178,17 +174,16 @@ function showLocationUI() {
   left.innerHTML = "";
   list.innerHTML = "";
 
-  // NPC кнопки НЕ потрібні — спрайти самі клікабельні (showSprites).
   // Підсвітити спрайти з діалогом (зірочка над головою)
   var charsHere = getCharsHere(locId);
   var container = document.getElementById("sprites-container");
   if (container) {
-    var sprites = container.querySelectorAll(".sprite-wrapper");
+    var sprites = container.querySelectorAll(".location-sprite");
     for (var si = 0; si < sprites.length; si++) {
-      var spriteName = sprites[si].getAttribute("data-name");
+      var spriteId = sprites[si].getAttribute("data-short");
       var hasSpecial = false;
       if (typeof getActiveDialogue === "function") {
-        hasSpecial = getActiveDialogue(spriteName) !== null;
+        hasSpecial = getActiveDialogue(spriteId) !== null;
       }
       if (hasSpecial) {
         sprites[si].classList.add("has-dialogue");
@@ -321,17 +316,28 @@ function _talkToNPC(ch) {
 }
 
 
-// ─── Сховати UI для діалогу ───
-function _hideForDialogue() {
+// ─── Перемкнути в діалоговий режим ───
+// Одна функція для всіх випадків: titles, forced, banter, stub, клік
+function _enterDialogueMode() {
   var choicesEl = document.querySelector(".choices");
   if (choicesEl) choicesEl.style.display = "none";
   _hideMapButton();
   hideHUD();
   if (typeof hidePager === "function") hidePager();
-  // Спрайти в діалоговий режим (більші)
+  // Спрайти стають більшими, кліки блокуються
   var sc = document.getElementById("sprites-container");
-  if (sc) sc.classList.add("dialogue-mode");
+  if (sc) {
+    sc.classList.add("dialogue-mode");
+    var clickables = sc.querySelectorAll(".location-sprite");
+    for (var i = 0; i < clickables.length; i++) {
+      clickables[i].style.pointerEvents = "none";
+      clickables[i].style.cursor = "default";
+    }
+  }
 }
+
+// Зберігаємо старе ім'я для сумісності
+var _hideForDialogue = _enterDialogueMode;
 
 
 // ─── TITLES: показати привітання як меню ───
@@ -340,18 +346,8 @@ function _showTitlesMenu(entry) {
   if (!list) return;
   list.innerHTML = "";
 
-  // Перемкнути спрайти в діалоговий режим і прибрати клікабельність
-  var sc = document.getElementById("sprites-container");
-  if (sc) {
-    sc.classList.add("dialogue-mode");
-    var wrappers = sc.querySelectorAll(".sprite-wrapper.clickable");
-    for (var w = 0; w < wrappers.length; w++) {
-      wrappers[w].classList.remove("clickable");
-    }
-  }
-  hideHUD();
-  if (typeof hidePager === "function") hidePager();
-  if (typeof _hideMapButton === "function") _hideMapButton();
+  // Перемкнути в діалоговий режим (спрайти стають більшими, кліки заблоковані)
+  _enterDialogueMode();
 
   // Бонусні опції (напр. "Хай, бро" від Квінсі)
   if (typeof BONUS_OPTIONS !== "undefined") {

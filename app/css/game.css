@@ -72,8 +72,7 @@
 }
 
 /* Діалоговий режим — спрайти більші (ближче до камери) */
-#sprites-container.dialogue-mode .sprite,
-#sprites-container.dialogue-mode .sprite-wrapper {
+#sprites-container.dialogue-mode .sprite {
   height: 150%;
   bottom: -520px;
 }
@@ -83,39 +82,20 @@
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Обгортка спрайту в локації (клікабельна) */
-.sprite-wrapper {
-  position: absolute;
-  bottom: -80px;
-  height: 100%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  cursor: default;
-}
-
-.sprite-wrapper .sprite-img {
-  height: 100%;
-  pointer-events: none;
-}
-
-.sprite-wrapper.clickable {
+/* Локаційні спрайти — hover ефект */
+.sprite.location-sprite {
   pointer-events: auto;
   cursor: pointer;
-}
-
-.sprite-wrapper.clickable {
   animation: spriteEnter 0.5s ease;
 }
 
-.sprite-wrapper.clickable:hover .sprite-img,
-.sprite-wrapper.clickable:active .sprite-img {
+.sprite.location-sprite:hover,
+.sprite.location-sprite:active {
   filter: brightness(1.3);
-  transform: scale(1.02);
-  transition: filter 0.3s, transform 0.3s;
 }
 
-/* Маркер діалогу ✦ — тепер на div, не на img */
-.sprite-wrapper.has-dialogue::after {
+/* Маркер діалогу ✦ */
+.sprite.has-dialogue::after {
   content: "✦";
   position: absolute;
   top: 5%;

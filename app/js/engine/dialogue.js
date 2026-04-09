@@ -156,9 +156,6 @@ function runScript(name) {
   pc = 0;
   callStack = [];
   _sceneSprites = {};
-  // Спрайти одразу в діалоговий режим
-  var sc = document.getElementById("sprites-container");
-  if (sc) sc.classList.add("dialogue-mode");
   execute(pc);
 }
 
