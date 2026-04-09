@@ -185,6 +185,8 @@ function _returnToLocation() {
   if (typeof _disableSkipToggle === "function") _disableSkipToggle();
   // Скинути діалоговий стан — ми більше не в діалозі
   if (typeof _clearDialogueState === "function") _clearDialogueState();
+  // Сховати continue indicator
+  if (typeof _hideContinueIndicator === "function") _hideContinueIndicator();
   showHUD();
   updateHUD();
   if (typeof showPager === "function") showPager();

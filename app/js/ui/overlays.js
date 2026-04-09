@@ -501,10 +501,12 @@ function _selectMission(index) {
   var m = missions[index];
   gameState.missions.selected = index;
 
-  // Закрити оверлей
+  // Закрити все UI
   hideOverlay();
   hideHUD();
   if (typeof hidePager === "function") hidePager();
+  if (typeof hideQuickMenu === "function") hideQuickMenu();
+  if (typeof _hideMapButton === "function") _hideMapButton();
 
   // Fade out → виконати місію → fade in з результатом
   if (typeof applyTransition === "function") {
@@ -576,7 +578,7 @@ function _executeMission(m, index) {
     if (eventLabel && SCRIPTS[eventLabel]) hasEvent = true;
   }
 
-  // ═══ ФАЗА 1: LOADING (4 сек) ═══
+  // ═══ ФАЗА 1: LOADING (4 сек) — чорний екран, нічого зайвого ═══
   var bg = document.querySelector(".game-bg");
   if (bg) bg.style.background = "#000";
   var dlg = document.querySelector(".dialogue");
@@ -584,6 +586,8 @@ function _executeMission(m, index) {
   var choices = document.querySelector(".choices");
   if (choices) choices.style.display = "none";
   if (typeof clearSceneSprites === "function") clearSceneSprites();
+  if (typeof _hideContinueIndicator === "function") _hideContinueIndicator();
+  if (typeof hideQuickMenu === "function") hideQuickMenu();
 
   _showMissionLoader();
 
