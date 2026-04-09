@@ -12,6 +12,7 @@ DIALOGUE_ENTRIES.push({
   who: "ar",
   conditions: { flag_true: ["demo_engine_passed"] },
   priority: 50,
+  repeatable: true,
   titles: [
     {text: "Привіт, Артуре.", label: "demo_ar_greet", chemistry: {"ar": 2}},
     {text: "Як справи?", label: "demo_ar_howru"},

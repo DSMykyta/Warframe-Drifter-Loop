@@ -132,66 +132,20 @@ function onSceneEnd() {
     return;
   }
 
-  // Перевірити pending mission result (місійний діалог завершився)
-  if (gameState.missions && gameState.missions._pendingMission) {
-    var pm = gameState.missions._pendingMission;
-    delete gameState.missions._pendingMission;
-
-    // Кидок на травму
-    var injuryResult = null;
-    var injuryMessages = [];
-    if (typeof rollMissionInjury === "function") {
-      injuryResult = rollMissionInjury(pm.m.level, pm.partner, pm.partner2);
-      if (injuryResult && typeof applyMissionInjuries === "function") {
-        var applied = applyMissionInjuries(injuryResult, pm.partner, pm.partner2);
-        injuryMessages = applied.messages || [];
+  // Перевірити pending mission report (місійний івент-діалог завершився)
+  if (gameState.missions && gameState.missions._pendingReport) {
+    var pr = gameState.missions._pendingReport;
+    delete gameState.missions._pendingReport;
+    // Показати loading 4 сек → звіт
+    if (typeof _showMissionLoader === "function") _showMissionLoader();
+    setTimeout(function() {
+      if (typeof _hideMissionLoader === "function") _hideMissionLoader();
+      if (typeof _showMissionReport === "function") {
+        _showMissionReport(pr.m, pr.injuryMessages, pr.oldRep, pr.newRep, pr.oldMoney, pr.newMoney);
+      } else {
+        _returnToLocation();
       }
-    }
-
-    // Нагороди
-    if (pm.m.reward > 0) addMoney(pm.m.reward);
-    if (pm.m.rep > 0 && typeof addHexRep === "function") addHexRep(pm.m.rep);
-
-    // Хімія з партнером
-    if (pm.partner) {
-      addChemistry(pm.partner, 3);
-      if (typeof resetInteraction === "function") resetInteraction(pm.partner);
-    }
-    if (pm.partner2) {
-      addChemistry(pm.partner2, 2);
-      if (typeof resetInteraction === "function") resetInteraction(pm.partner2);
-    }
-
-    // Скинути лічильник
-    if (typeof onMissionComplete === "function") onMissionComplete();
-
-    // Видалити місію
-    if (typeof refreshMissionSlot === "function") refreshMissionSlot(pm.index);
-    else gameState.missions.list.splice(pm.index, 1);
-
-    // Щоденник
-    var jText = "Місія: " + pm.m.name + ". Рівень " + pm.m.level + ".";
-    if (pm.m.reward > 0) jText += " +" + pm.m.reward + " крон.";
-    if (typeof addJournalEntry === "function") addJournalEntry(jText, "mission");
-
-    // Показати результат як діалог
-    var resultNodes = [];
-    resultNodes.push({type: "say", who: null, text: "Місія завершена: " + pm.m.name});
-    if (pm.m.reward > 0) {
-      resultNodes.push({type: "say", who: null, text: "Нагорода: +" + pm.m.reward + " крон."});
-    }
-    if (pm.m.rep > 0) {
-      resultNodes.push({type: "say", who: null, text: "Репутація: +" + pm.m.rep});
-    }
-    for (var mi = 0; mi < injuryMessages.length; mi++) {
-      resultNodes.push({type: "say", who: null, text: injuryMessages[mi]});
-    }
-    if (injuryMessages.length === 0 && pm.m.reward === 0 && pm.m.rep === 0) {
-      resultNodes.push({type: "say", who: null, text: "Без втрат."});
-    }
-    resultNodes.push({type: "end", text: ""});
-    registerScript("_mission_result", resultNodes);
-    runScript("_mission_result");
+    }, 4000);
     return;
   }
 

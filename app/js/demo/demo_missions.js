@@ -20,6 +20,35 @@ SPECIAL_MISSION_ENTRIES.push({
   chance: 100
 });
 
+// ─── НЕБЕЗПЕЧНА МІСІЯ (гарантована травма для тесту) ───
+// Рівень 6 + вже є стаки = дуже високий шанс
+// Щоб гарантувати — тимчасово підмінимо INJURY_CHANCE
+SPECIAL_MISSION_ENTRIES.push({
+  id: "demo_dangerous_mission",
+  name: "СМЕРТЕЛЬНА РОЗВІДКА (ТЕСТ ТРАВМ)",
+  level: 6,
+  reward: 100,
+  rep: 1,
+  partner: "am",
+  partner_count: 1,
+  conditions: {
+    flag_true: ["demo_engine_passed"],
+    flag_false: ["demo_dangerous_done"]
+  },
+  chance: 100
+});
+
+// Хук: перед цією місією ставимо шанс 100%
+var _origInjuryChance6 = null;
+var _demoDangerousCheck = setInterval(function() {
+  // Ставимо 100% шанс травми для level 6
+  if (getFlag("demo_engine_passed") && !_origInjuryChance6) {
+    _origInjuryChance6 = INJURY_CHANCE[6];
+    INJURY_CHANCE[6] = 100;
+    clearInterval(_demoDangerousCheck);
+  }
+}, 1000);
+
 registerScript("demo_special_mission_dialogue", [
   {type: "show", who: "ar", at: "left"},
   {type: "show", who: "lt", at: "right"},

@@ -780,6 +780,118 @@
 }
 
 
+/* ─── ЕКРАН МІСІЇ: LOADER ─── */
+#mission-loader {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  z-index: 100;
+}
+
+.mission-loader-icon {
+  width: 64px;
+  height: 64px;
+  animation: missionSpin 1.5s linear infinite;
+  filter: brightness(0.8);
+}
+
+@keyframes missionSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── ЕКРАН МІСІЇ: ЗВІТ ─── */
+#mission-report {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  animation: reportFadeIn 0.5s ease;
+}
+
+@keyframes reportFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mission-report-status {
+  font-family: var(--font-title);
+  font-size: 64px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.mission-report-status.success {
+  color: #4ade80;
+}
+
+.mission-report-status.failed {
+  color: #ef4444;
+}
+
+.mission-report-name {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.mission-report-injuries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.mission-report-injury {
+  font-size: 20px;
+  color: #fbbf24;
+  text-align: center;
+}
+
+.mission-report-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+  width: 400px;
+}
+
+.mission-report-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 28px;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 160px;
+}
+
+.stat-dots {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 4px;
+  overflow: hidden;
+}
+
+.stat-value {
+  color: var(--white);
+  font-weight: 700;
+  font-family: var(--font-title);
+  min-width: 80px;
+  text-align: right;
+}
+
+
 /* ─── МАГАЗИН ─── */
 
 .shop-tabs {

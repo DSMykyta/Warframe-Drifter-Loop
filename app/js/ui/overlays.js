@@ -506,18 +506,20 @@ function _selectMission(index) {
   hideHUD();
   if (typeof hidePager === "function") hidePager();
 
-  // Запустити виконання місії
-  _executeMission(m, index);
+  // Fade out → виконати місію → fade in з результатом
+  if (typeof applyTransition === "function") {
+    applyTransition("fade", 800, function() {
+      _executeMission(m, index);
+    });
+  } else {
+    _executeMission(m, index);
+  }
 }
 
 
-// Виконати місію: час, нагороди, травми, результат
+// Виконати місію: loading → івент? → екран звіту з анімацією
 function _executeMission(m, index) {
-  // Час на місію: 60-120 хв залежно від рівня
   var missionTime = 60 + (m.level * 10);
-  advanceTime(missionTime);
-
-  // Партнер
   var partner = m.partner || null;
   var partner2 = m.partner2 || null;
 
@@ -533,17 +535,9 @@ function _executeMission(m, index) {
     gameState.missions.current_partner2 = partner2;
   }
 
-  // Місійний діалог (якщо є)
-  if (partner && typeof getMissionDialogue === "function") {
-    var missionDlgLabel = getMissionDialogue(partner);
-    if (missionDlgLabel && SCRIPTS[missionDlgLabel]) {
-      // Зберегти дані місії для показу результату після діалогу
-      gameState.missions._pendingMission = {m: m, index: index, partner: partner, partner2: partner2};
-      runScript(missionDlgLabel);
-      // Результат покажеться після діалогу через onSceneEnd → _returnToLocation
-      return;
-    }
-  }
+  // Зберегти стан ДО місії для анімації
+  var oldRep = gameState.rank.hex_rep;
+  var oldMoney = gameState.money.amount;
 
   // Кидок на травму
   var injuryResult = null;
@@ -557,63 +551,154 @@ function _executeMission(m, index) {
   }
 
   // Нагороди
+  advanceTime(missionTime);
   if (m.reward > 0) addMoney(m.reward);
   if (m.rep > 0 && typeof addHexRep === "function") addHexRep(m.rep);
-
-  // Хімія з партнером (+3 за місію)
-  if (partner) {
-    addChemistry(partner, 3);
-    if (typeof resetInteraction === "function") resetInteraction(partner);
-  }
-  if (partner2) {
-    addChemistry(partner2, 2);
-    if (typeof resetInteraction === "function") resetInteraction(partner2);
-  }
-
-  // Скинути лічильник днів без місій
+  if (partner) { addChemistry(partner, 3); if (typeof resetInteraction === "function") resetInteraction(partner); }
+  if (partner2) { addChemistry(partner2, 2); if (typeof resetInteraction === "function") resetInteraction(partner2); }
   if (typeof onMissionComplete === "function") onMissionComplete();
-
-  // Оновити слот — нова місія замість виконаної
   if (typeof refreshMissionSlot === "function") refreshMissionSlot(index);
   else gameState.missions.list.splice(index, 1);
 
-  // Щоденник
   var journalText = "Місія: " + m.name + ". Рівень " + m.level + ".";
   if (m.reward > 0) journalText += " +" + m.reward + " крон.";
   if (m.rep > 0) journalText += " +" + m.rep + " реп.";
   if (typeof addJournalEntry === "function") addJournalEntry(journalText, "mission");
 
-  // Показати результат місії
-  _showMissionResult(m, injuryMessages);
+  var newRep = gameState.rank.hex_rep;
+  var newMoney = gameState.money.amount;
+
+  // Перевірити місійний діалог як івент
+  var hasEvent = false;
+  var eventLabel = null;
+  if (partner && typeof getMissionDialogue === "function") {
+    eventLabel = getMissionDialogue(partner);
+    if (eventLabel && SCRIPTS[eventLabel]) hasEvent = true;
+  }
+
+  // ═══ ФАЗА 1: LOADING (4 сек) ═══
+  var bg = document.querySelector(".game-bg");
+  if (bg) bg.style.background = "#000";
+  var dlg = document.querySelector(".dialogue");
+  if (dlg) dlg.style.display = "none";
+  var choices = document.querySelector(".choices");
+  if (choices) choices.style.display = "none";
+  if (typeof clearSceneSprites === "function") clearSceneSprites();
+
+  _showMissionLoader();
+
+  if (hasEvent) {
+    // Є івент → після loading запустити діалог → потім ще loading → звіт
+    setTimeout(function() {
+      _hideMissionLoader();
+      // Зберегти дані для звіту після івенту
+      gameState.missions._pendingReport = {
+        m: m, injuryMessages: injuryMessages,
+        oldRep: oldRep, newRep: newRep,
+        oldMoney: oldMoney, newMoney: newMoney
+      };
+      runScript(eventLabel);
+    }, 4000);
+  } else {
+    // Без івента → після loading одразу звіт
+    setTimeout(function() {
+      _hideMissionLoader();
+      _showMissionReport(m, injuryMessages, oldRep, newRep, oldMoney, newMoney);
+    }, 4000);
+  }
 }
 
 
-// Показати результат місії як діалог
-function _showMissionResult(m, injuryMessages) {
-  var resultLines = [];
-  resultLines.push("Місія завершена: " + m.name);
+// ═══ LOADING ІКОНКА ═══
+function _showMissionLoader() {
+  var existing = document.getElementById("mission-loader");
+  if (existing) existing.remove();
+  var loader = document.createElement("div");
+  loader.id = "mission-loader";
+  loader.innerHTML = '<img src="assets/icons/the-hex_pager.png" class="mission-loader-icon" onerror="this.textContent=\'⟳\'">';
+  document.getElementById("game-screen").appendChild(loader);
+}
 
-  if (m.reward > 0) resultLines.push("Нагорода: " + m.reward + " крон");
-  if (m.rep > 0) resultLines.push("Репутація: +" + m.rep);
+function _hideMissionLoader() {
+  var loader = document.getElementById("mission-loader");
+  if (loader) loader.remove();
+}
+
+
+// ═══ ЕКРАН ЗВІТУ МІСІЇ ═══
+function _showMissionReport(m, injuryMessages, oldRep, newRep, oldMoney, newMoney) {
+  var screen = document.createElement("div");
+  screen.id = "mission-report";
+
+  // Статус
+  var failed = injuryMessages.length > 0 && injuryMessages.some(function(msg) {
+    return msg.indexOf("без свідомості") >= 0 || msg.indexOf("Темрява") >= 0;
+  });
+  var statusText = failed ? "МІСІЮ ПРОВАЛЕНО" : "МІСІЮ ВИКОНАНО";
+  var statusClass = failed ? "mission-report-status failed" : "mission-report-status success";
+
+  var html = '<div class="' + statusClass + '">' + statusText + '</div>';
+  html += '<div class="mission-report-name">' + m.name + '</div>';
 
   // Травми
-  for (var i = 0; i < injuryMessages.length; i++) {
-    resultLines.push(injuryMessages[i]);
+  if (injuryMessages.length > 0) {
+    html += '<div class="mission-report-injuries">';
+    for (var i = 0; i < injuryMessages.length; i++) {
+      html += '<div class="mission-report-injury">' + injuryMessages[i] + '</div>';
+    }
+    html += '</div>';
   }
 
-  if (injuryMessages.length === 0) {
-    resultLines.push("Без травм.");
-  }
+  // Показники з анімацією
+  html += '<div class="mission-report-stats">';
+  html += '<div class="mission-report-stat">';
+  html += '<span class="stat-label">Репутація</span>';
+  html += '<span class="stat-dots">·····</span>';
+  html += '<span class="stat-value" id="report-rep">' + oldRep + '</span>';
+  html += '</div>';
+  html += '<div class="mission-report-stat">';
+  html += '<span class="stat-label">Гроші</span>';
+  html += '<span class="stat-dots">·····</span>';
+  html += '<span class="stat-value" id="report-money">' + oldMoney + '</span>';
+  html += '</div>';
+  html += '</div>';
 
-  // Побудувати тимчасовий скрипт для показу результату
-  var nodes = [];
-  for (var j = 0; j < resultLines.length; j++) {
-    nodes.push({ type: "say", who: null, text: resultLines[j] });
-  }
-  nodes.push({ type: "end", text: "" });
+  screen.innerHTML = html;
+  document.getElementById("game-screen").appendChild(screen);
 
-  registerScript("_mission_result_temp", nodes);
-  runScript("_mission_result_temp");
+  // Анімація чисел (рахує вгору)
+  setTimeout(function() {
+    _animateNumber("report-rep", oldRep, newRep, 800);
+    _animateNumber("report-money", oldMoney, newMoney, 800);
+  }, 500);
+
+  // Клік → закрити і повернутись до гаражу
+  screen.addEventListener("click", function _closeReport(e) {
+    e.stopPropagation();
+    screen.remove();
+    gameState.location.current = "garage";
+    showLocation();
+  });
+}
+
+
+// Анімація числа від start до end за duration мс
+function _animateNumber(elementId, start, end, duration) {
+  var el = document.getElementById(elementId);
+  if (!el || start === end) {
+    if (el) el.textContent = end;
+    return;
+  }
+  var diff = end - start;
+  var startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var current = Math.round(start + diff * progress);
+    el.textContent = current;
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 
