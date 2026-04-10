@@ -89,6 +89,13 @@ function checkCoffeeCafeFind() {
   setFlag("cafe_find_pager_sent");
 }
 
+// Реєстрація хуків в nextDay()
+registerDayHook(checkCoffeeExtractDeadline);
+registerDayHook(checkCoffeePartsPager);
+registerDayHook(checkCoffeeAmirDiy);
+registerDayHook(checkCoffeeCafeFind);
+registerDayHook(checkCoffeeCafeOpen);
+
 
 // ═══════════════════════════════════════════════════
 // МІСІЙНІ ДІАЛОГИ (ЕТАП 1)

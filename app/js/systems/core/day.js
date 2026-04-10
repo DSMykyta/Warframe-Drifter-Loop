@@ -22,7 +22,20 @@
 // 10. check_expired_events
 // 11. build_daily_deck
 // 12. spread_gossip
-// 13. autoSave
+// 13. Хуки квестів (DAY_HOOKS)
+// 14. autoSave
+
+// ═══ РЕЄСТР ХУКІВ ═══
+// Квест сам реєструє свої хуки при завантаженні:
+//   registerDayHook(checkCoffeeExtractDeadline);
+// nextDay() автоматично викличе всі зареєстровані.
+var DAY_HOOKS = [];
+
+function registerDayHook(fn) {
+  if (typeof fn !== "function") return;
+  if (DAY_HOOKS.indexOf(fn) >= 0) return; // без дублікатів
+  DAY_HOOKS.push(fn);
+}
 
 function nextDay() {
   // ═══ 1. Штраф за пізній сон ═══
@@ -98,12 +111,10 @@ function nextDay() {
   // ═══ 12. Поширити плітки ═══
   spreadGossip();
 
-  // ═══ 13. Кавовий квест: хуки ═══
-  if (typeof checkCoffeeExtractDeadline === "function") checkCoffeeExtractDeadline();
-  if (typeof checkCoffeePartsPager === "function") checkCoffeePartsPager();
-  if (typeof checkCoffeeAmirDiy === "function") checkCoffeeAmirDiy();
-  if (typeof checkCoffeeCafeFind === "function") checkCoffeeCafeFind();
-  if (typeof checkCoffeeCafeOpen === "function") checkCoffeeCafeOpen();
+  // ═══ 13. Хуки квестів (зареєстровані через registerDayHook) ═══
+  for (var _hi = 0; _hi < DAY_HOOKS.length; _hi++) {
+    try { DAY_HOOKS[_hi](); } catch(e) { console.error("[day hook]", e); }
+  }
 
   // ═══ 14. Переміщення в бекрум (прокинувся) ═══
   gameState.location.current = "backroom";
