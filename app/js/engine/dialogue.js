@@ -17,6 +17,8 @@ var _fullText = "";
 var _waitingForPager = false;
 var _waitPagerLabels = null;
 var _inputLocked = false;
+var _executeDepth = 0;
+var _MAX_EXECUTE_DEPTH = 500;
 var TEXT_SPEED_MS = 22;
 
 // ═══ СТАН ДІАЛОГУ ДЛЯ SAVE/LOAD ═══
@@ -143,6 +145,9 @@ function _clearDialogueState() {
 // ═══ РЕЄСТРАЦІЯ ТА ЗАПУСК ═══
 
 function registerScript(name, nodes) {
+  if (SCRIPTS[name]) {
+    console.warn("[registerScript] Overwriting existing script: " + name);
+  }
   SCRIPTS[name] = nodes;
   nodes._labels = {};
   nodes.forEach(function(node, i) {
@@ -204,6 +209,15 @@ function _hideContinueIndicator() {
 // ═══ ВИКОНАННЯ КОМАНД ═══
 
 function execute(index) {
+  _executeDepth++;
+  if (_executeDepth > _MAX_EXECUTE_DEPTH) {
+    console.error("[dialogue] Max recursion depth reached at index " + index + ". Possible infinite loop.");
+    _executeDepth = 0;
+    _inputLocked = false;
+    currentScript = null;
+    onSceneEnd();
+    return;
+  }
   if (!currentScript) return;
   if (index >= currentScript.length) {
     if (callStack.length > 0) {
@@ -577,6 +591,7 @@ function canSkipCurrentNode() {
 }
 
 function advance() {
+  _executeDepth = 0;
   if (_inputLocked) return;
   if (!currentScript) return;
   if (_waitingForPager) return; // Чекаємо кнопку пейджера

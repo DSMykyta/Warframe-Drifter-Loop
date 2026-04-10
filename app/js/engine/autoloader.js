@@ -56,23 +56,24 @@ function _loadContentFiles(callback) {
 
   console.log("[autoloader] Loading " + _contentTotal + " content files...");
 
-  for (var i = 0; i < _contentManifest.length; i++) {
+  function _loadNext() {
+    if (_contentLoaded >= _contentTotal) {
+      console.log("[autoloader] All " + _contentTotal + " files loaded");
+      if (callback) callback();
+      return;
+    }
     var script = document.createElement("script");
-    script.src = "js/" + _contentManifest[i] + "?v=" + Date.now();
+    script.src = "js/" + _contentManifest[_contentLoaded] + "?v=" + Date.now();
     script.onload = function() {
       _contentLoaded++;
-      if (_contentLoaded >= _contentTotal) {
-        console.log("[autoloader] All " + _contentTotal + " files loaded");
-        if (callback) callback();
-      }
+      _loadNext();
     };
     script.onerror = function() {
-      console.warn("[autoloader] Failed to load:", this.src);
+      console.error("[autoloader] FAILED:", _contentManifest[_contentLoaded]);
       _contentLoaded++;
-      if (_contentLoaded >= _contentTotal) {
-        if (callback) callback();
-      }
+      _loadNext();
     };
     document.head.appendChild(script);
   }
+  _loadNext();
 }
