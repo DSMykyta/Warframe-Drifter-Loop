@@ -1,38 +1,38 @@
 // ═══════════════════════════════════════════════════
-// АВТОЗАВАНТАЖУВАЧ ДІАЛОГІВ
+// АВТОЗАВАНТАЖУВАЧ КОНТЕНТУ
 // ═══════════════════════════════════════════════════
 //
-// Читає dialogues.json → завантажує всі .js файли з папки dialogues/.
-// Кожен файл сам реєструє себе через DIALOGUE_ENTRIES.push() і registerScript().
+// Читає content.json → завантажує ВСІ .js файли з scenes/ і dialogues/.
+// Кожен файл сам реєструє себе через registerScript() / DIALOGUE_ENTRIES.push().
 //
-// Щоб додати новий діалог:
-//   1. Створи .js файл в js/dialogues/ (будь-яка вкладеність)
-//   2. Запусти generate_manifest.bat (або вручну додай в dialogues.json)
+// Щоб додати новий контент:
+//   1. Створи .js файл в js/scenes/ або js/dialogues/ (будь-яка вкладеність)
+//   2. Запусти: node generate_manifest.js (або вручну додай в content.json)
 //   3. Готово — гра підхопить автоматично
 //
-// dialogues.json — масив відносних шляхів:
-//   ["stubs/arthur/stub_r0_talk1_weather.js", "intros/arthur_intro.js"]
+// content.json — масив шляхів відносно js/:
+//   ["scenes/intro.js", "dialogues/stubs/arthur/stub_r1_talk1_sword.js"]
 
-var _dialogueManifest = [];
-var _dialoguesLoaded = 0;
-var _dialoguesTotal = 0;
+var _contentManifest = [];
+var _contentLoaded = 0;
+var _contentTotal = 0;
 
-function loadDialogueManifest(callback) {
+function loadContentManifest(callback) {
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "js/dialogues/dialogues.json", true);
+  xhr.open("GET", "js/content.json", true);
   xhr.onload = function() {
     if (xhr.status === 200) {
       try {
-        _dialogueManifest = JSON.parse(xhr.responseText);
+        _contentManifest = JSON.parse(xhr.responseText);
       } catch(e) {
         console.error("[autoloader] Bad manifest:", e);
-        _dialogueManifest = [];
+        _contentManifest = [];
       }
     } else {
-      console.warn("[autoloader] No manifest found, skipping auto-load");
-      _dialogueManifest = [];
+      console.warn("[autoloader] No content.json found, skipping auto-load");
+      _contentManifest = [];
     }
-    _loadDialogueFiles(callback);
+    _loadContentFiles(callback);
   };
   xhr.onerror = function() {
     console.warn("[autoloader] Failed to fetch manifest");
@@ -41,32 +41,35 @@ function loadDialogueManifest(callback) {
   xhr.send();
 }
 
-function _loadDialogueFiles(callback) {
-  _dialoguesTotal = _dialogueManifest.length;
-  _dialoguesLoaded = 0;
+// Зворотна сумісність
+var loadDialogueManifest = loadContentManifest;
 
-  if (_dialoguesTotal === 0) {
-    console.log("[autoloader] No dialogue files in manifest");
+function _loadContentFiles(callback) {
+  _contentTotal = _contentManifest.length;
+  _contentLoaded = 0;
+
+  if (_contentTotal === 0) {
+    console.log("[autoloader] No content files in manifest");
     if (callback) callback();
     return;
   }
 
-  console.log("[autoloader] Loading " + _dialoguesTotal + " dialogue files...");
+  console.log("[autoloader] Loading " + _contentTotal + " content files...");
 
-  for (var i = 0; i < _dialogueManifest.length; i++) {
+  for (var i = 0; i < _contentManifest.length; i++) {
     var script = document.createElement("script");
-    script.src = "js/dialogues/" + _dialogueManifest[i] + "?v=" + Date.now();
+    script.src = "js/" + _contentManifest[i] + "?v=" + Date.now();
     script.onload = function() {
-      _dialoguesLoaded++;
-      if (_dialoguesLoaded >= _dialoguesTotal) {
-        console.log("[autoloader] All " + _dialoguesTotal + " dialogues loaded");
+      _contentLoaded++;
+      if (_contentLoaded >= _contentTotal) {
+        console.log("[autoloader] All " + _contentTotal + " files loaded");
         if (callback) callback();
       }
     };
     script.onerror = function() {
       console.warn("[autoloader] Failed to load:", this.src);
-      _dialoguesLoaded++;
-      if (_dialoguesLoaded >= _dialoguesTotal) {
+      _contentLoaded++;
+      if (_contentLoaded >= _contentTotal) {
         if (callback) callback();
       }
     };
