@@ -1,0 +1,19 @@
+name: NEXT engine tests
+on:
+  push:
+    paths:
+      - "NEXT/**"
+      - ".github/workflows/next-tests.yml"
+  pull_request:
+    paths:
+      - "NEXT/**"
+      - ".github/workflows/next-tests.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --test NEXT/tests.mjs
