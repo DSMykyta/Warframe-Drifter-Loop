@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Drifter Loop NEXT — ядро подій</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,Arial,sans-serif;background:#000;color:#f2f2f2}
+*{box-sizing:border-box}body{margin:0;background:#000;min-height:100vh}
+main{max-width:900px;margin:auto;padding:22px 16px 60px}h1{font-size:24px;letter-spacing:.05em;margin:6px 0}
+p{color:#999;line-height:1.5}h2{font-size:16px;margin:24px 0 12px}
+.panel{border:1px solid #292929;border-radius:12px;padding:16px;margin-top:14px;background:#070707}
+.controls{display:flex;gap:8px;flex-wrap:wrap}.muted{color:#999}.small{font-size:13px}
+button,select{color:#fff;background:#141414;border:1px solid #434343;border-radius:8px;padding:11px 14px;cursor:pointer;font:inherit;min-height:44px}
+button:hover{border-color:#999}button:focus-visible,select:focus-visible{outline:2px solid white}
+button.primary{border-color:#888;background:#222}
+.cards{display:grid;gap:12px}.event{border:1px solid #333;border-radius:10px;padding:14px;background:#080808}
+.event.locked{opacity:.7}.event h3{font-size:16px;margin:0 0 6px}.event p{margin:0 0 12px}
+.flag{display:inline-block;font-size:12px;color:#aaa;margin-bottom:8px}.choices{display:flex;flex-wrap:wrap;gap:8px}
+.reason{font-size:12px;color:#999;padding:3px 0;overflow-wrap:anywhere}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;color:#c5c5c5}
+#status{min-height:20px;margin-top:10px;color:#aaa}.layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:650px){.layout{grid-template-columns:1fr}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="small muted">WARFRAME · DRIFTER LOOP · NEXT / ПРОТОТИП 0.1</div>
+  <h1>Умовно-подієвий рушій</h1>
+  <p>Не послідовна новела: світ має стан, а каталог подій автоматично перевіряє умови. Відкрий місію, прочитай пейджер, зміни локацію та перевір, які нові події виникнуть.</p>
+  <section class="panel" aria-label="Керування світом">
+    <div class="controls">
+      <label for="location">Локація</label>
+      <select id="location">
+        <option value="garage">Гараж</option>
+        <option value="medbay">Медвідділ</option>
+        <option value="cafe">Кав'ярня</option>
+      </select>
+      <button id="day">Наступний день</button>
+    </div>
+    <div class="controls" style="margin-top:14px">
+      <button class="primary" id="save">Зберегти</button>
+      <button id="load">Завантажити</button>
+      <button id="reset">Нова петля</button>
+    </div>
+    <div id="status" role="status"></div>
+  </section>
+  <div class="layout">
+    <section><h2>Доступні події</h2><div class="cards" id="available"></div></section>
+    <section><h2>Заблоковані події: чому?</h2><div class="cards" id="blocked"></div></section>
+  </div>
+  <section class="panel">
+    <h2>Стан світу</h2><pre id="state"></pre>
+    <h2>Журнал наслідків</h2><div id="log" class="small muted"></div>
+  </section>
+</main>
+<script type="module" src="./ui.mjs"></script>
+</body>
+</html>
